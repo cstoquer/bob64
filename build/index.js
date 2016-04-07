@@ -5393,7 +5393,7 @@ Sound.prototype.stop = function (cb) {
 	return cb && cb(); // TODO: fade-out
 };
 
-},{"./ISound.js":29,"util":44}],32:[function(require,module,exports){
+},{"./ISound.js":29,"util":45}],32:[function(require,module,exports){
 var inherits = require('util').inherits;
 var ISound   = require('./ISound.js');
 
@@ -5776,7 +5776,7 @@ SoundBuffered.prototype.stop = function (cb) {
 };
 
 
-},{"./ISound.js":29,"util":44}],33:[function(require,module,exports){
+},{"./ISound.js":29,"util":45}],33:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** Set of sound played in sequence each times it triggers
  *  used for animation sfx
@@ -6532,7 +6532,7 @@ function showProgress(load, current, count, percent) {
 cls().paper(1).pen(1).rect(CENTER - HALF_WIDTH - 2, MIDDLE - 4, HALF_WIDTH * 2 + 4, 8); // loading bar
 assetLoader.preloadStaticAssets(onAssetsLoaded, showProgress);
 
-},{"../settings.json":36,"../src/main.js":40,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
+},{"../settings.json":36,"../src/main.js":41,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
 module.exports={
 	"screen": {
 		"width": 64,
@@ -6775,11 +6775,12 @@ Bob.prototype.draw = function () {
 	sprite(s, this.x, this.y, this.flipH);
 };
 },{"./Level.js":39}],38:[function(require,module,exports){
-var level = require('./Level.js');
-var bob   = require('./Bob.js');
+var level       = require('./Level.js');
+var bob         = require('./Bob.js');
+var TextDisplay = require('./TextDisplay.js');
 
-var background = new Map();
-var textWindow = new Texture(64, 19).pen(10);
+var background  = new Map();
+var textDisplay = new TextDisplay();
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
@@ -6788,8 +6789,8 @@ var MAX_GRAVITY = 2;
 
 
 var nextLevel, nextDoor, inTransition, transitionCount, nextSide;
-var displayedText = false;
-var textParts = [];
+var isDisplayingText = false;
+
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function GameController() {
@@ -6834,31 +6835,10 @@ GameController.prototype.goToSideLevel = function (direction) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-GameController.prototype._displayText = function () {
-	camera(0, 0);
-	draw(textWindow, 0, 0); // TODO character by character animation
-	if (btnp.A) {
-		if (textParts.length === 0) {
-			displayedText = false;
-			return;
-		}
-		textWindow.println(textParts.shift());
-	}
-};
-
 GameController.prototype.displayText = function (text) {
-	textWindow.cls();
-	displayedText = true;
-	// split text
-	textParts = text.split('\n');
-	// TODO check each line length and further split if too long
-	// print the first 3 lines
-	for (var i = 0; i < 3; i++) {
-		if (textParts.length === 0) break;
-		textWindow.println(textParts.shift());
-	}
+	textDisplay.setText(text);
+	isDisplayingText = true;
 };
-
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.ditherTransition = function () {
@@ -6872,10 +6852,10 @@ GameController.prototype.ditherTransition = function () {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
-	if (inTransition)  return this.ditherTransition();
-	if (displayedText) return this._displayText();
+	if (inTransition)     return this.ditherTransition();
+	if (isDisplayingText) return isDisplayingText = textDisplay.update();
 
-	if (btnp.B) return this.displayText(assets.dialogs.bobIntro);
+	if (btnp.B) return this.displayText(assets.dialogs.bobIntro); // FIXME just for testing
 
 	bob.update();
 
@@ -6887,7 +6867,8 @@ GameController.prototype.update = function () {
 	background.draw();
 	bob.draw();
 };
-},{"./Bob.js":37,"./Level.js":39}],39:[function(require,module,exports){
+
+},{"./Bob.js":37,"./Level.js":39,"./TextDisplay.js":40}],39:[function(require,module,exports){
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 
@@ -6996,9 +6977,103 @@ Level.prototype.getTileAt = function (x, y) {
 
 module.exports = new Level();
 },{}],40:[function(require,module,exports){
+TextDisplay = function () {
+	this.textWindow = new Texture(64, 19).pen(10);
+	this.textBuffer = '';
+	this.textParts  = [];
+}
+
+module.exports = TextDisplay;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+/** return true if there is still some text to be displayed */
+TextDisplay.prototype.update = function () {
+	camera(0, 0);
+	draw(this.textWindow, 0, 0);
+	if (this.textBuffer.length) {
+		if (btnp.A) {
+			// fast forward
+			this.textWindow.print(this.textBuffer);
+			this.textBuffer = '';
+			return true;
+		}
+		// character by character animation
+		var character = this.textBuffer[0];
+		this.textWindow.print(character);
+		this.textBuffer = this.textBuffer.substr(1);
+	} else if (btnp.A) {
+		// require next line
+		if (this.textParts.length === 0) {
+			return false;
+		}
+		for (var i = 0; i < 3; i++) {
+			this.textBuffer += '\n';
+			this.textBuffer += this.textParts.shift();
+			if (this.textParts.length === 0) break;
+		}
+	}
+	return true;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+TextDisplay.prototype.setText = function (text) {
+	this.textWindow.cls();
+	// split text with end line character
+	var textParts = text.split('\n');
+
+	// check each line length and further split if too long
+	for (var i = 0; i < textParts.length; i++) {
+		textPart = textParts[i];
+		if (textPart.length < 16) {
+			textParts[i] = [textPart];
+			continue;
+		}
+		var words = textPart.split(' ');
+		textPart = [];
+		var buffer = '';
+		for (var j = 0; j < words.length; j++) {
+			var word = words[j];
+			if (buffer.length + word.length >= 16) {
+				// flush buffer
+				textPart.push(buffer);
+				buffer = '';
+			}
+			if (buffer.length) buffer += ' ';
+			buffer += word;
+		}
+		textPart.push(buffer);
+		textParts[i] = textPart;
+	}
+
+	// merge back lines
+	this.textParts = [].concat.apply([], textParts);
+
+	// add the first 3 lines to be printed
+	this.textBuffer += this.textParts.shift() + '\n' + this.textParts.shift() + '\n' + this.textParts.shift();
+};
+
+
+},{}],41:[function(require,module,exports){
+var DEBUG = true;
+
 var gameController = require('./GameController.js');
 
 gameController.loadLevel("start");
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+// DEBUGGING FUNCTIONS 
+
+if (DEBUG) {
+	window.loadLevel = function (id) {
+		if (!assets.levels[id]) {
+			// let's try to create the level
+			var level = { "name": "", "background": id, "geometry": id + "_geo", "bgcolor": 6, "doors": ["", "", ""] };
+			assets.levels[id] = level;
+		}
+		gameController.loadLevel(id);
+	}
+}
+
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // Update is called once per frame
@@ -7006,7 +7081,7 @@ exports.update = function () {
 	gameController.update();
 };
 
-},{"./GameController.js":38}],41:[function(require,module,exports){
+},{"./GameController.js":38}],42:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -7031,7 +7106,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -7124,14 +7199,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7721,4 +7796,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":43,"_process":42,"inherits":41}]},{},[35]);
+},{"./support/isBuffer":44,"_process":43,"inherits":42}]},{},[35]);

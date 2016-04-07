@@ -1,8 +1,9 @@
-var level = require('./Level.js');
-var bob   = require('./Bob.js');
+var level       = require('./Level.js');
+var bob         = require('./Bob.js');
+var TextDisplay = require('./TextDisplay.js');
 
-var background = new Map();
-var textWindow = new Texture(64, 19).pen(10);
+var background  = new Map();
+var textDisplay = new TextDisplay();
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
@@ -11,8 +12,8 @@ var MAX_GRAVITY = 2;
 
 
 var nextLevel, nextDoor, inTransition, transitionCount, nextSide;
-var displayedText = false;
-var textParts = [];
+var isDisplayingText = false;
+
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function GameController() {
@@ -57,31 +58,10 @@ GameController.prototype.goToSideLevel = function (direction) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-GameController.prototype._displayText = function () {
-	camera(0, 0);
-	draw(textWindow, 0, 0); // TODO character by character animation
-	if (btnp.A) {
-		if (textParts.length === 0) {
-			displayedText = false;
-			return;
-		}
-		textWindow.println(textParts.shift());
-	}
-};
-
 GameController.prototype.displayText = function (text) {
-	textWindow.cls();
-	displayedText = true;
-	// split text
-	textParts = text.split('\n');
-	// TODO check each line length and further split if too long
-	// print the first 3 lines
-	for (var i = 0; i < 3; i++) {
-		if (textParts.length === 0) break;
-		textWindow.println(textParts.shift());
-	}
+	textDisplay.setText(text);
+	isDisplayingText = true;
 };
-
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.ditherTransition = function () {
@@ -95,10 +75,10 @@ GameController.prototype.ditherTransition = function () {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
-	if (inTransition)  return this.ditherTransition();
-	if (displayedText) return this._displayText();
+	if (inTransition)     return this.ditherTransition();
+	if (isDisplayingText) return isDisplayingText = textDisplay.update();
 
-	if (btnp.B) return this.displayText(assets.dialogs.bobIntro);
+	if (btnp.B) return this.displayText(assets.dialogs.bobIntro); // FIXME just for testing
 
 	bob.update();
 
