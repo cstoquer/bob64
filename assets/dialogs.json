@@ -1,3 +1,6 @@
 {
-	"bobIntro": "Oh boy,\nthe chainsaw I ordered finally came!\nIt’s only been a whole YEAR,\njeez..."
+	"bobIntro": [
+		{ "text": "hello world" },
+		{ "who": "bob", "text": "Oh boy,\nthe chainsaw I ordered finally came!\nIt’s only been a whole YEAR,\njeez..." }
+	]
 }

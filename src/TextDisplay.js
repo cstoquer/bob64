@@ -1,7 +1,8 @@
 TextDisplay = function () {
-	this.textWindow = new Texture(64, 19).pen(10);
+	this.textWindow = new Texture(64, 19);
 	this.textBuffer = '';
 	this.textParts  = [];
+	this.dialog     = [];
 }
 
 module.exports = TextDisplay;
@@ -25,6 +26,10 @@ TextDisplay.prototype.update = function () {
 	} else if (btnp.A) {
 		// require next line
 		if (this.textParts.length === 0) {
+			if (this.dialog.length) {
+				this._setDialog();
+				return true;
+			}
 			return false;
 		}
 		for (var i = 0; i < 3; i++) {
@@ -37,8 +42,20 @@ TextDisplay.prototype.update = function () {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-TextDisplay.prototype.setText = function (text) {
+TextDisplay.prototype._setDialog = function () {
 	this.textWindow.cls();
+
+	var currentDialog = this.dialog.shift();
+	console.log(currentDialog)
+
+	var who  = currentDialog.who;
+	var text = currentDialog.text;
+
+	switch (who) {
+		case 'bob': this.textWindow.pen(10); break;
+		default: this.textWindow.pen(1);
+	}
+
 	// split text with end line character
 	var textParts = text.split('\n');
 
@@ -70,6 +87,12 @@ TextDisplay.prototype.setText = function (text) {
 	this.textParts = [].concat.apply([], textParts);
 
 	// add the first 3 lines to be printed
-	this.textBuffer += this.textParts.shift() + '\n' + this.textParts.shift() + '\n' + this.textParts.shift();
+	this.textBuffer += this.textParts.shift() + '\n' + (this.textParts.shift() || '') + '\n' + (this.textParts.shift() || '');
 };
 
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+TextDisplay.prototype.setDialog = function (dialog) {
+	// make a copy of dialog
+	this.dialog = JSON.parse(JSON.stringify(dialog));
+	this._setDialog();
+};

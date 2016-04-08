@@ -58,8 +58,8 @@ GameController.prototype.goToSideLevel = function (direction) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-GameController.prototype.displayText = function (text) {
-	textDisplay.setText(text);
+GameController.prototype.displayDialog = function (dialog) {
+	textDisplay.setDialog(dialog);
 	isDisplayingText = true;
 };
 
@@ -78,7 +78,7 @@ GameController.prototype.update = function () {
 	if (inTransition)     return this.ditherTransition();
 	if (isDisplayingText) return isDisplayingText = textDisplay.update();
 
-	if (btnp.B) return this.displayText(assets.dialogs.bobIntro); // FIXME just for testing
+	if (btnp.B) return this.displayDialog(assets.dialogs.bobIntro); // FIXME just for testing
 
 	bob.update();
 
