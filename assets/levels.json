@@ -1,9 +1,11 @@
 {
-	"start": { "name": "", "background": "ground0", "geometry": "ground0_geo", "bgcolor": 6, "doors": ["cave:0",  "cave:1",  ""], "left": "grndF", "right": "grnd1"},
+	"start": { "name": "", "background": "ground0", "geometry": "ground0_geo", "bgcolor": 6, "doors": ["cave:0",  "cave:1",  "test:0"], "left": "grndF", "right": "grnd1"},
 	"grnd1": { "name": "", "background": "ground1", "geometry": "ground1_geo", "bgcolor": 6, "doors": ["",        "",        ""], "left": "start", "right": "grnd2"},
 	"grnd2": { "name": "", "background": "ground2", "geometry": "ground2_geo", "bgcolor": 6, "doors": ["",        "",        ""], "left": "grnd1", "right": "grnd3"},
 	"grnd3": { "name": "", "background": "ground3", "geometry": "ground3_geo", "bgcolor": 6, "doors": ["",        "",        ""], "left": "grnd2", "right": "grndF"},
 	"grndF": { "name": "", "background": "groundF", "geometry": "groundF_geo", "bgcolor": 6, "doors": ["",        "",        ""], "left": "grnd3", "right": "start"},
 	"cave":  { "name": "", "background": "cave",    "geometry": "cave_geo",    "bgcolor": 0, "doors": ["start:0", "start:1", ""] },
-	"roy":   { "name": "", "background": "royTest", "geometry": "royTest_geo", "bgcolor": 6, "doors": ["cave:0",  "",        ""] }
+	"roy":   { "name": "", "background": "royTest", "geometry": "royTest_geo", "bgcolor": 6, "doors": ["cave:0",  "",        ""] },
+	"test":  { "name": "", "background": "test",    "geometry": "test_geo",    "bgcolor": 6, "doors": ["start:2", "",        ""], "up":   "test2" },
+	"test2": { "name": "", "background": "test2",   "geometry": "test2_geo",   "bgcolor": 6, "doors": ["",        "",        ""], "down": "test"  }
 }

@@ -6597,10 +6597,14 @@ Bob.prototype.update = function () {
 	var x = this.x + this.sx;
 	var y = this.y + this.sy;
 
-	// avoid going out of the level
-	var maxX = level.width * TILE_WIDTH - 2;
-	if (x < -7)   { x = -7;   if (this.controller.goToSideLevel('left'))  return; }
-	if (x > maxX) { x = maxX; if (this.controller.goToSideLevel('right')) return; }
+	// check level boundaries
+	var maxX = level.width  * TILE_WIDTH  - 2; // TODO don't need to be calculated each frames
+	var maxY = level.height * TILE_HEIGHT - 4;
+	if (x < -7)   { x = -7;   if (this.controller.goToNeighbourLevel('left'))  return; }
+	if (x > maxX) { x = maxX; if (this.controller.goToNeighbourLevel('right')) return; }
+	if (y < -6   && this.controller.goToNeighbourLevel('up'))   return;
+	if (y > maxY && this.controller.goToNeighbourLevel('down')) return; // TODO: else should bob dies?
+
 
 	var front       = 8;
 	var frontOffset = 0;
@@ -6721,7 +6725,7 @@ GameController.prototype.changeLevel = function (id, doorId) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-GameController.prototype.goToSideLevel = function (direction) {
+GameController.prototype.goToNeighbourLevel = function (direction) {
 	if (!level[direction]) return false;
 	inTransition = true;
 	transitionCount = -30;
@@ -6823,6 +6827,8 @@ Level.prototype.init = function (def) {
 	this.height = map.height;
 	this.right  = def.right;
 	this.left   = def.left;
+	this.up     = def.up;
+	this.down   = def.down;
 
 	this._initDoors(map, def.doors);
 
@@ -6860,8 +6866,15 @@ Level.prototype.setBobPositionOnDoor = function (doorId) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Level.prototype.setBobPositionOnSide = function (bob, direction) {
-	this.bobPos.y = bob.y;
-	this.bobPos.x = direction === 'right' ? -7 : this.width * TILE_WIDTH - 2;
+	if (direction === 'right' || direction === 'left') {
+		// horizontal translation
+		this.bobPos.y = bob.y;
+		this.bobPos.x = direction === 'right' ? -7 : this.width * TILE_WIDTH - 2;
+	} else {
+		// vertical translation
+		this.bobPos.x = bob.x;
+		this.bobPos.y = direction === 'down' ? -1 : this.height * TILE_WIDTH - 7;
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

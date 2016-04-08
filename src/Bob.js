@@ -130,10 +130,14 @@ Bob.prototype.update = function () {
 	var x = this.x + this.sx;
 	var y = this.y + this.sy;
 
-	// avoid going out of the level
-	var maxX = level.width * TILE_WIDTH - 2;
-	if (x < -7)   { x = -7;   if (this.controller.goToSideLevel('left'))  return; }
-	if (x > maxX) { x = maxX; if (this.controller.goToSideLevel('right')) return; }
+	// check level boundaries
+	var maxX = level.width  * TILE_WIDTH  - 2; // TODO don't need to be calculated each frames
+	var maxY = level.height * TILE_HEIGHT - 4;
+	if (x < -7)   { x = -7;   if (this.controller.goToNeighbourLevel('left'))  return; }
+	if (x > maxX) { x = maxX; if (this.controller.goToNeighbourLevel('right')) return; }
+	if (y < -6   && this.controller.goToNeighbourLevel('up'))   return;
+	if (y > maxY && this.controller.goToNeighbourLevel('down')) return; // TODO: else should bob dies?
+
 
 	var front       = 8;
 	var frontOffset = 0;

@@ -47,7 +47,7 @@ GameController.prototype.changeLevel = function (id, doorId) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-GameController.prototype.goToSideLevel = function (direction) {
+GameController.prototype.goToNeighbourLevel = function (direction) {
 	if (!level[direction]) return false;
 	inTransition = true;
 	transitionCount = -30;

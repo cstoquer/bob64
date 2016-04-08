@@ -55,6 +55,8 @@ Level.prototype.init = function (def) {
 	this.height = map.height;
 	this.right  = def.right;
 	this.left   = def.left;
+	this.up     = def.up;
+	this.down   = def.down;
 
 	this._initDoors(map, def.doors);
 
@@ -92,8 +94,15 @@ Level.prototype.setBobPositionOnDoor = function (doorId) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Level.prototype.setBobPositionOnSide = function (bob, direction) {
-	this.bobPos.y = bob.y;
-	this.bobPos.x = direction === 'right' ? -7 : this.width * TILE_WIDTH - 2;
+	if (direction === 'right' || direction === 'left') {
+		// horizontal translation
+		this.bobPos.y = bob.y;
+		this.bobPos.x = direction === 'right' ? -7 : this.width * TILE_WIDTH - 2;
+	} else {
+		// vertical translation
+		this.bobPos.x = bob.x;
+		this.bobPos.y = direction === 'down' ? -1 : this.height * TILE_WIDTH - 7;
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
