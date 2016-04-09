@@ -17,8 +17,9 @@ var isDisplayingText = false;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function GameController() {
-	this.level = level;
-	this.bob   = bob;
+	this.level       = level;
+	this.bob         = bob;
+	this.entities    = [];
 
 	level.controller = this;
 	bob.controller   = this;
@@ -27,12 +28,24 @@ function GameController() {
 module.exports = new GameController();
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.addEntity = function (entity) {
+	this.entities.push(entity);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.removeEntity = function (entity) {
+	var index = this.entities.indexOf(entity);
+	if (index === -1) return console.warn('entity does not exist');
+	this.entities.splice(index, 1);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.loadLevel = function (id, doorId, side) {
 	var def = assets.levels[id];
 	level.init(def);
 	if (doorId !== undefined) level.setBobPositionOnDoor(doorId);
 	if (side) level.setBobPositionOnSide(bob, side);
-	bob.setPosition(level.bobPos); // TODO
+	bob.setPosition(level.bobPos);
 	background = getMap(def.background);
 	paper(def.bgcolor);
 };
@@ -88,5 +101,8 @@ GameController.prototype.update = function () {
 	cls();
 	camera(scrollX, scrollY);
 	background.draw();
+	for (var i = 0; i < this.entities.length; i++) {
+		this.entities[i].update(level, bob); // update and draw
+	}
 	bob.draw();
 };

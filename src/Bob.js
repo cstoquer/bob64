@@ -4,8 +4,11 @@ var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 var GRAVITY     = 0.5;
 var MAX_GRAVITY = 3;
-var WATER_FORCE = -0.3;
+var WATER_FORCE = -0.1;
 var MAX_WATER   = -1.5;
+
+var ATTACK_NONE  = 0;
+var ATTACK_SLASH = 1;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Bob() {
@@ -18,6 +21,11 @@ function Bob() {
 	this.frame = 0;
 	this.flipH = false;
 
+	// abilities
+	this.canAttack     = false;
+	this.canDive       = false;
+	this.canDoubleJump = false;
+
 	// state
 	this.onTile   = null;
 	this.grounded = false;
@@ -25,22 +33,43 @@ function Bob() {
 	this.inWater  = 0;
 	this.jumping  = false;
 	this.jumpCounter = 0;
+	this.doubleJumpUsed = false;
+
+	this.isLocked  = false; // e.g. when slashing
+	this.attacking = ATTACK_NONE;
+	this.slashCounter = 0;
 }
 
 module.exports = new Bob();
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Bob.prototype.setPosition = function (doorId) {
-	// TODO
-	this.x = level.bobPos.x || 0;
-	this.y = level.bobPos.y || 0;
+Bob.prototype.setPosition = function (pos) {
+	this.x = pos.x || 0;
+	this.y = pos.y || 0;
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Bob.prototype.action = function (tile) {
+Bob.prototype.attack = function () {
+	this.isLocked     = true;
+	this.attacking    = ATTACK_SLASH;
+	this.slashCounter = 0;
+};
+
+Bob.prototype.endAttack = function () {
+	this.isLocked     = false;
+	this.attacking    = ATTACK_NONE;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.action = function () {
+	var tile = this.onTile;
 	if (tile.isDoor) {
+		// enter door
 		var door = level.doors[tile.doorId];
 		this.controller.changeLevel(door.level, door.doorId);
+	} else if (this.canAttack) {
+		// attack
+		this.attack();
 	}
 };
 
@@ -50,9 +79,12 @@ Bob.prototype.startJump = function () {
 		// TODO
 		return;
 	}
-	if (!this.grounded && !this.inWater) return;
+	if (!this.grounded) {
+		if (this.canDoubleJump && !this.doubleJumpUsed) this.doubleJumpUsed = true;
+		else if (!this.inWater) return; // allow bob to jump from water
+	}
 	// if there is a ceiling directly on top of Bob's head, cancel jump.
-	if (level.getTileAt(this.x + 1, this.y - 2).isSolid || level.getTileAt(this.x + 6, this.y - 2).isSolid) return;
+	// if (level.getTileAt(this.x + 1, this.y - 2).isSolid || level.getTileAt(this.x + 6, this.y - 2).isSolid) return;
 	this.grounded    = false;
 	this.jumping     = true;
 	this.jumpCounter = 0;
@@ -75,6 +107,7 @@ Bob.prototype.jump = function () {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.goDown = function () {
 	if (this.inWater && !this.grounded) {
+		if (!this.canDive) return;
 		// water movement
 		this.sy = Math.min(2, this.sy + 0.5);
 	} else if (this.climbing) {
@@ -84,21 +117,31 @@ Bob.prototype.goDown = function () {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Bob.prototype._updateControls = function () {
-	if (btnp.up)  this.startJump();
-	if (btnr.up)  this.jumping = false;
-	if (btn.up)   this.jump();
-	if (btn.down) this.goDown();
-
-	// if (btn.down)  TODO going down from one way platforms
-	if ( btn.right && !btn.left) { this.sx = 1;  this.flipH = false; } // going right
-	if (!btn.right &&  btn.left) { this.sx = -1; this.flipH = true;  } // going left
-
+Bob.prototype._updateTileState = function () {
 	var tile = this.onTile = level.getTileAt(this.x + 4, this.y + 4);
 	this.inWater = tile.isWater; // TODO check enter, exit (for particles, etc)
 	this.onVine  = tile.isVine;
+};
 
-	if (btnp.A) this.action(tile);
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype._updateControls = function () {
+	if (!this.isLocked) {
+		if (btnp.up)  this.startJump();
+		if (btnr.up)  this.jumping = false;
+		if (btn.up)   this.jump();
+		if (btn.down) this.goDown();
+
+		// if (btn.down)  TODO going down from one way platforms
+		if ( btn.right && !btn.left) { this.sx = 1;  this.flipH = false; } // going right
+		if (!btn.right &&  btn.left) { this.sx = -1; this.flipH = true;  } // going left
+
+		this._updateTileState();
+
+		if (btnp.A) this.action();
+	} else {
+		if (btn.up)   this.jump(); // FIXME
+		this._updateTileState();
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -117,7 +160,7 @@ Bob.prototype.update = function () {
 		this.sy *= 0.9;
 	} else if (this.climbing) {
 		this.sy *= 0.8;
-		this.sx *= 0.7;
+		this.sx *= 0.5;
 		if (!this.onTile.isVine) this.climbing = false;
 	} else if (!this.grounded) {
 		this.sy += GRAVITY;
@@ -195,23 +238,31 @@ Bob.prototype.update = function () {
 Bob.prototype._ground = function () {
 	this.grounded = true;
 	this.jumping  = false;
+	this.doubleJumpUsed = false;
 	this.climbing = false;
 	this.sy = 0;
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.draw = function () {
-	var s = 255;
-	if (this.climbing) {
-		if (this.sy > 0.2 || this.sy < -0.2) {
-			this.frame += 0.1;
-			if (this.frame >= 4) this.frame = 0;
+	if (this.attacking === ATTACK_SLASH) {
+		var animId = 'slash' + (this.flipH ? 'Left' : 'Right') + ~~this.slashCounter;
+		draw(assets.chainsaw[animId], this.x - 16, this.y - 16);
+		this.slashCounter += 0.33;
+		if (this.slashCounter >= 5) this.endAttack();
+	} else {
+		var s = 255;
+		if (this.climbing) {
+			if (this.sy > 0.2 || this.sy < -0.2) {
+				this.frame += 0.1;
+				if (this.frame >= 4) this.frame = 0;
+			}
+			s = 248 + ~~this.frame;
+		} else if (this.sx > 0.4 || this.sx < -0.4) {
+			this.frame += 0.3;
+			if (this.frame >= 3) this.frame = 0;
+			s = 252 + ~~this.frame;
 		}
-		s = 248 + ~~this.frame;
-	} else if (this.sx > 0.4 || this.sx < -0.4) {
-		this.frame += 0.3;
-		if (this.frame >= 3) this.frame = 0;
-		s = 252 + ~~this.frame;
+		sprite(s, this.x, this.y, this.flipH);
 	}
-	sprite(s, this.x, this.y, this.flipH);
 };
