@@ -7,7 +7,9 @@ var doors  = assets.doors;
 
 for (var id in levels) {
 	var level = levels[id];
-	level.doors = ['', '', '']; 
+	if (!level.background) level.background = id;
+	if (!level.geometry)   level.geometry   = id + '_geo';
+	level.doors = ['', '', ''];
 }
 
 for (var i = 0; i < doors.length; i++) {
@@ -38,7 +40,7 @@ for (var i = 0; i < doors.length; i++) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 var gameController = require('./GameController.js');
 
-gameController.loadLevel("start");
+gameController.loadLevel("L0R2");
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // DEBUGGING FUNCTIONS 

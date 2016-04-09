@@ -1,4 +1,7 @@
 {
+	"L0R2": { "name": "", "bgcolor": 6, "left": null,   "right": "L0R3", "up": null,   "down": null   },
+	"L0R3": { "name": "", "bgcolor": 0, "left": "L0R2", "right": null,   "up": null,   "down": null   },
+
 	"start":  { "name": "", "background": "ground0", "geometry": "ground0_geo", "bgcolor": 6, "left": "grndF", "right": "grnd1" },
 	"grnd1":  { "name": "", "background": "ground1", "geometry": "ground1_geo", "bgcolor": 6, "left": "start", "right": "grnd2" },
 	"grnd2":  { "name": "", "background": "ground2", "geometry": "ground2_geo", "bgcolor": 6, "left": "grnd1", "right": "grnd3" },

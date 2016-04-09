@@ -6681,7 +6681,7 @@ Bob.prototype.goDown = function () {
 		// water movement
 		this.sy = Math.min(2, this.sy + 0.5);
 	} else if (this.climbing) {
-		// vine movement
+		// climbing movement
 		this.sy = 1;
 	}
 };
@@ -6709,7 +6709,7 @@ Bob.prototype._updateControls = function () {
 
 		if (btnp.A) this.action();
 	} else {
-		if (btn.up)   this.jump(); // FIXME
+		if (btn.up) this.jump(); // FIXME: this is to allow jump continuation during attack
 		this._updateTileState();
 	}
 };
@@ -6752,7 +6752,6 @@ Bob.prototype.update = function () {
 	if (y < -6   && this.controller.goToNeighbourLevel('up'))   return;
 	if (y > maxY && this.controller.goToNeighbourLevel('down')) return; // TODO: else should bob dies?
 
-
 	var front       = 8;
 	var frontOffset = 0;
 	if (this.sx < 0) { front = 0; frontOffset = 8; }
@@ -6790,7 +6789,7 @@ Bob.prototype.update = function () {
 			}
 		}
 	} else if (this.sy < 0) {
-		// Bair is moving upward. Check for ceiling collision
+		// Bob is moving upward. Check for ceiling collision
 		var tileUL = level.getTileAt(x + 1, y);
 		var tileUR = level.getTileAt(x + 6, y);
 		if (tileUL.isSolid || tileUR.isSolid) {
@@ -6800,6 +6799,7 @@ Bob.prototype.update = function () {
 		}
 	}
 
+	// fetch position
 	this.x = x;
 	this.y = y;
 };
@@ -7173,7 +7173,9 @@ var doors  = assets.doors;
 
 for (var id in levels) {
 	var level = levels[id];
-	level.doors = ['', '', '']; 
+	if (!level.background) level.background = id;
+	if (!level.geometry)   level.geometry   = id + '_geo';
+	level.doors = ['', '', ''];
 }
 
 for (var i = 0; i < doors.length; i++) {
@@ -7191,7 +7193,10 @@ for (var i = 0; i < doors.length; i++) {
 	var doorIdA = doorAsplit[1];
 	var doorIdB = doorBsplit[1];
 
-	console.log(levelA, doorIdA, levelB, doorIdB)
+	if (!levels[levelA] || !levels[levelB]) {
+		console.error('Level does not exist for this door', door);
+		continue;
+	}
 
 	levels[levelA].doors[doorIdA] = doorB;
 	levels[levelB].doors[doorIdB] = doorA;
@@ -7201,7 +7206,7 @@ for (var i = 0; i < doors.length; i++) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 var gameController = require('./GameController.js');
 
-gameController.loadLevel("start");
+gameController.loadLevel("L0R2");
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // DEBUGGING FUNCTIONS 
