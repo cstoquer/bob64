@@ -51,10 +51,11 @@ Bob.prototype.startJump = function () {
 		return;
 	}
 	if (!this.grounded && !this.inWater) return;
-	// TODO: ceiling test
-	this.jumping = true;
+	// if there is a ceiling directly on top of Bob's head, cancel jump.
+	if (level.getTileAt(this.x + 1, this.y - 2).isSolid || level.getTileAt(this.x + 6, this.y - 2).isSolid) return;
+	this.grounded    = false;
+	this.jumping     = true;
 	this.jumpCounter = 0;
-	this.grounded = false;
 };
 
 Bob.prototype.jump = function () {
@@ -143,7 +144,8 @@ Bob.prototype.update = function () {
 	var frontOffset = 0;
 	if (this.sx < 0) { front = 0; frontOffset = 8; }
 
-	// front collision
+	//---------------------------------------------------------
+	// horizontal collisions (check 2 front point)
 	if (this.sx !== 0) {
 		if (level.getTileAt(x + front, this.y + 1).isSolid || level.getTileAt(x + front, this.y + 7).isSolid) {
 			this.sx = 0;
@@ -151,38 +153,35 @@ Bob.prototype.update = function () {
 		}
 	}
 
+	//---------------------------------------------------------
+	// vertical collisions
 	if (this.grounded) {
-		// down
+		// check if there is still floor under Bob's feets
 		var tileDL = level.getTileAt(x + 1, y + 9);
 		var tileDR = level.getTileAt(x + 6, y + 9);
 		if (tileDL.isEmpty && tileDR.isEmpty) this.grounded = false;
 	} else if (this.sy > 0) {
-		// air down
+		// Bob is falling. Check what is underneath
 		var tileDL = level.getTileAt(x + 1, y + 8);
 		var tileDR = level.getTileAt(x + 6, y + 8);
 		if (tileDL.isSolid || tileDR.isSolid) {
-			this.grounded = true;
-			this.jumping  = false;
-			this.climbing = false;
-			this.sy = 0;
+			// collided with solid ground
+			this._ground();
 			y = ~~(y / TILE_HEIGHT) * TILE_HEIGHT;
 		} else if (tileDL.isTopSolid || tileDR.isTopSolid) {
+			// collided with one-way thru platform. Check if Bob where over the edge the frame before.
 			var targetY = ~~(y / TILE_HEIGHT) * TILE_HEIGHT;
 			if (this.y <= targetY) {
-				this.grounded = true;
-				this.jumping  = false;
-				this.climbing = false;
-				this.sy = 0;
+				this._ground();
 				y = targetY;
 			}
 		}
 	} else if (this.sy < 0) {
-		// air up (ceiling)
+		// Bair is moving upward. Check for ceiling collision
 		var tileUL = level.getTileAt(x + 1, y);
 		var tileUR = level.getTileAt(x + 6, y);
 		if (tileUL.isSolid || tileUR.isSolid) {
 			this.sy = 0;
-			// this.jumpCounter = 99;
 			this.jumpCounter += 2;
 			y = ~~(y / TILE_HEIGHT) * TILE_HEIGHT + 8;
 		}
@@ -191,6 +190,14 @@ Bob.prototype.update = function () {
 	this.x = x;
 	this.y = y;
 };
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype._ground = function () {
+	this.grounded = true;
+	this.jumping  = false;
+	this.climbing = false;
+	this.sy = 0;
+}
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.draw = function () {
