@@ -13,4 +13,6 @@ canvas {
 	image-rendering: optimize-contrast;
 	image-rendering: pixelated;
 	-ms-interpolation-mode: nearest-neighbor;
+	margin-top: 30px;
+	margin-bottom: 40px;
 }

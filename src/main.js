@@ -24,16 +24,16 @@ for (var i = 0; i < doors.length; i++) {
 	var levelA = doorAsplit[0];
 	var levelB = doorBsplit[0];
 
-	var doorIdA = doorAsplit[1];
-	var doorIdB = doorBsplit[1];
+	var doorIdA = doorAsplit[1] - 1;
+	var doorIdB = doorBsplit[1] - 1;
 
 	if (!levels[levelA] || !levels[levelB]) {
 		console.error('Level does not exist for this door', door);
 		continue;
 	}
 
-	levels[levelA].doors[doorIdA] = doorB;
-	levels[levelB].doors[doorIdB] = doorA;
+	levels[levelA].doors[doorIdA] = levelB + ':' + doorIdB;
+	levels[levelB].doors[doorIdB] = levelA + ':' + doorIdA;
 }
 
 

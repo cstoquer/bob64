@@ -59,6 +59,9 @@ function Bob() {
 	this.isLocked  = false; // e.g. when slashing
 	this.attacking = ATTACK_NONE;
 	this.attackCounter = 0;
+	this.hitCounter = 0;
+	this.isHit = false;
+	this.isAttackable = true;
 }
 
 module.exports = new Bob();
@@ -85,8 +88,8 @@ Bob.prototype.getattackBB = function () {
 	if (this.attacking === ATTACK_SLASH) {
 		var chainsawBB = (this.flipH ? CHAINSAW_SLASH_BBOXES_LEFT : CHAINSAW_SLASH_BBOXES_RIGHT)[~~this.attackCounter];
 		if (chainsawBB) return {
-			x:      this.x      + chainsawBB.x,
-			y:      this.y      + chainsawBB.y,
+			x:      chainsawBB.x + this.x,
+			y:      chainsawBB.y + this.y,
 			width:  chainsawBB.w,
 			height: chainsawBB.h,
 		};
@@ -181,7 +184,7 @@ Bob.prototype._updateControls = function () {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.update = function () {
 	// friction
-	this.sx *= 0.8;
+	this.sx *= this.isHit ? 0.99 : 0.8;
 
 	this._updateControls();
 
@@ -201,6 +204,19 @@ Bob.prototype.update = function () {
 		this.sy = Math.min(this.sy, MAX_GRAVITY);
 	}
 
+	// hit
+	if (this.isHit) {
+		this.hitCounter++;
+		if (this.hitCounter > 16) {
+			this.isLocked = false;
+		}
+		// keep Bob not attackable for few more frames
+		if (this.hitCounter > 50) {
+			this.isHit = false;
+			this.isAttackable = true;
+		}
+	}
+
 	// attack collision
 	if (this.attacking) {
 		var attackBB = this.getattackBB();
@@ -209,7 +225,7 @@ Bob.prototype.update = function () {
 			// going in reverse because collision might destroy entity
 			for (var i = entities.length - 1; i >= 0; i--) {
 				var entity = entities[i];
-				if (!entity.attackable) continue;
+				if (!entity.isAttackable) continue;
 				if (AABBcollision(entity, attackBB)) {
 					// collision detected
 					entity.hit(this);
@@ -231,9 +247,9 @@ Bob.prototype.levelCollisions = function () {
 	var y = this.y + this.sy;
 
 	// check level boundaries
-	var maxX = level.width  * TILE_WIDTH  - 2; // TODO don't need to be calculated each frames
+	var maxX = level.width  * TILE_WIDTH  - 4; // TODO don't need to be calculated each frames
 	var maxY = level.height * TILE_HEIGHT - 4;
-	if (x < -7)   { x = -7;   if (this.controller.goToNeighbourLevel('left'))  return; }
+	if (x < -4)   { x = -4;   if (this.controller.goToNeighbourLevel('left'))  return; }
 	if (x > maxX) { x = maxX; if (this.controller.goToNeighbourLevel('right')) return; }
 	if (y < -6   && this.controller.goToNeighbourLevel('up'))   return;
 	if (y > maxY && this.controller.goToNeighbourLevel('down')) return; // TODO: else should bob dies?
@@ -302,8 +318,8 @@ Bob.prototype._ground = function () {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.draw = function () {
 	if (this.attacking === ATTACK_SLASH) {
-		var animId = 'slash' + (this.flipH ? 'Left' : 'Right') + ~~this.attackCounter;
-		draw(assets.chainsaw[animId], this.x - 16, this.y - 16);
+		var animId = 'slash' + ~~this.attackCounter;
+		draw(assets.chainsaw[animId], this.x - 16, this.y - 16, this.flipH);
 		this.attackCounter += 0.33;
 		if (this.attackCounter >= 5) this.endAttack();
 	} else {
@@ -319,6 +335,22 @@ Bob.prototype.draw = function () {
 			if (this.frame >= 3) this.frame = 0;
 			s = 252 + ~~this.frame;
 		}
+		if (this.isHit && this.hitCounter < 16) {
+			s -= (~~(this.hitCounter / 3) % 3) * 16;
+		}
 		sprite(s, this.x, this.y, this.flipH);
 	}
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.hit = function (attacker) {
+	// from where do hit comes from ?
+	this.grounded   = false;
+	this.isHit      = true;
+	this.hitCounter = 0;
+	this.isLocked   = true;
+	this.isAttackable = false;
+
+	this.sx = attacker.x < this.x ? 1.6 : -1.6;
+	this.sy = attacker.y < this.y ? 2 : -3;
 };

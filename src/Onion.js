@@ -11,7 +11,7 @@ function Onion() {
 	Entity.call(this);
 
 	// properties
-	this.attackable = true;
+	this.isAttackable = true;
 
 	// physic
 	this.gravity    = 0.12;
@@ -40,12 +40,9 @@ module.exports = Onion;
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Onion.prototype.move = function (level, bob) {
 
-	if (AABBcollision(this, bob)) {
+	if (!this.isHit && bob.isAttackable && AABBcollision(this, bob)) {
 		// collision with Bob detected
-
-		// TODO
-
-		// this.controller.removeEntity(this);
+		bob.hit(this);
 	}
 
 	// keep in bounds
@@ -61,7 +58,7 @@ Onion.prototype.move = function (level, bob) {
 		if (this.hitCounter++ > 16) {
 			// hit end
 			this.isHit = false;
-			this.attackable = true;
+			this.isAttackable = true;
 		}
 	} else if (this.grounded && this.springCounter++ > 60) {
 		this.springCounter = 0;
@@ -142,7 +139,7 @@ Onion.prototype.hit = function (attacker) {
 	}
 	this.isHit = true;
 	this.hitCounter = 0;
-	this.attackable = false;
+	this.isAttackable = false;
 	this.sy = -2;
 	// this.controller.removeEntity(this);
 	// TODO add explosion animation

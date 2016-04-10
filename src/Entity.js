@@ -16,7 +16,7 @@ function Entity() {
 	this.maxGravity = 1;
 
 	// properties
-	this.attackable = false;
+	this.isAttackable = false;
 
 	// flags
 	this.hasCollidedLevelFront = false;

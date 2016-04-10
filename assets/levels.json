@@ -10,5 +10,6 @@
 	"cave":     { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null   },
 	"test":     { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": "test2", "down": null   },
 	"test2":    { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": null,    "down": "test" },
-	"forest":   { "name": "", "bgcolor": 5, "left": null,      "right": null,      "up": null,    "down": null   }
+	"forest":   { "name": "", "bgcolor": 5, "left": null,      "right": null,      "up": null,    "down": null   },
+	"bossRoom": { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null   }
 }
