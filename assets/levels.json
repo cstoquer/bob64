@@ -2,14 +2,13 @@
 	"L0R2": { "name": "", "bgcolor": 6, "left": null,   "right": "L0R3", "up": null,   "down": null   },
 	"L0R3": { "name": "", "bgcolor": 0, "left": "L0R2", "right": null,   "up": null,   "down": null   },
 
-	"start":  { "name": "", "background": "ground0", "geometry": "ground0_geo", "bgcolor": 6, "left": "grndF", "right": "grnd1" },
-	"grnd1":  { "name": "", "background": "ground1", "geometry": "ground1_geo", "bgcolor": 6, "left": "start", "right": "grnd2" },
-	"grnd2":  { "name": "", "background": "ground2", "geometry": "ground2_geo", "bgcolor": 6, "left": "grnd1", "right": "grnd3" },
-	"grnd3":  { "name": "", "background": "ground3", "geometry": "ground3_geo", "bgcolor": 6, "left": "grnd2", "right": "grndF" },
-	"grndF":  { "name": "", "background": "groundF", "geometry": "groundF_geo", "bgcolor": 6, "left": "grnd3", "right": "start" },
-	"cave":   { "name": "", "background": "cave",    "geometry": "cave_geo",    "bgcolor": 0                                    },
-	"roy":    { "name": "", "background": "royTest", "geometry": "royTest_geo", "bgcolor": 6                                    },
-	"test":   { "name": "", "background": "test",    "geometry": "test_geo",    "bgcolor": 6, "up":   "test2"                   },
-	"test2":  { "name": "", "background": "test2",   "geometry": "test2_geo",   "bgcolor": 6, "down": "test"                    },
-	"forest": { "name": "", "background": "forest",  "geometry": "forest_geo",  "bgcolor": 5                                    }
+	"ground0":  { "name": "", "bgcolor": 6, "left": "groundF", "right": "ground1", "up": null,    "down": null   },
+	"ground1":  { "name": "", "bgcolor": 6, "left": "ground0", "right": "ground2", "up": null,    "down": null   },
+	"ground2":  { "name": "", "bgcolor": 6, "left": "ground1", "right": "ground3", "up": null,    "down": null   },
+	"ground3":  { "name": "", "bgcolor": 6, "left": "ground2", "right": "groundF", "up": null,    "down": null   },
+	"groundF":  { "name": "", "bgcolor": 6, "left": "ground3", "right": "ground0", "up": null,    "down": null   },
+	"cave":     { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null   },
+	"test":     { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": "test2", "down": null   },
+	"test2":    { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": null,    "down": "test" },
+	"forest":   { "name": "", "bgcolor": 5, "left": null,      "right": null,      "up": null,    "down": null   }
 }

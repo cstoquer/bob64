@@ -37,6 +37,8 @@ function Level() {
 	this.width  = 0;
 	this.height = 0;
 	this.doors  = [null, null, null];
+
+	this.background  = new Texture();
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -64,6 +66,25 @@ Level.prototype.init = function (def) {
 	for (var y = 0; y < map.height; y++) {
 		this.grid[x][y] = getTileFromMapItem(map.items[x][y]);
 	}}
+
+	this._initBackground(def);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Level.prototype._initBackground = function (def) {
+	var texture = this.background;
+	var mapId = def.background;
+	var map = getMap(mapId);
+	texture.resize(map.width * TILE_WIDTH, map.height * TILE_HEIGHT);
+	texture.draw(map);
+
+	var layerId = 1;
+	var layer = getMap(mapId + '_L' + layerId);
+	while (layer) {
+		texture.draw(layer);
+		layerId++;
+		layer = getMap(mapId + '_L' + layerId);
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
