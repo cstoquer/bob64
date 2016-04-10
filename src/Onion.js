@@ -13,7 +13,7 @@ function Onion() {
 	this.maxGravity = 1;
 
 	// onion properties
-	this.speed     = 0.2;
+	this.speed     = 0.25;
 	this.direction = 1;
 
 	// rendering & animation
@@ -34,6 +34,14 @@ module.exports = Onion;
 Onion.prototype.move = function (level, bob) {
 
 	// TODO collision with bob here
+
+	// keep in bounds
+	if (level.getTileAt(this.x + 4 + this.direction * 6, this.y + 4).isEntityLimit) {
+		// turn around
+		this.direction *= -1;
+		this.flipH = this.direction === -1;
+		this.sx = 0;
+	}
 
 	// states
 	if (this.grounded && this.springCounter++ > 60) {
@@ -86,4 +94,10 @@ Onion.prototype.animate = function () {
 	if (this.frame >= this.anim.length) this.frame = 0;
 	var img = this.anim[~~this.frame];
 	draw(img, this.x, this.y - 8, this.flipH);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Onion.prototype.setDirection = function (direction) {
+	this.direction = direction;
+	this.flipH = this.direction === -1;
 };

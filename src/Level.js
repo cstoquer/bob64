@@ -1,3 +1,5 @@
+var Onion = require('./Onion.js');
+
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 
@@ -11,20 +13,22 @@ var DOOR_1  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, i
 var DOOR_2  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isDoor: true, doorId: 2 };
 var WATER   = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 1 };
 var WATER_S = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 2 };
+var ENLIMIT = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isEntityLimit: true };
 
 
 function getTileFromMapItem(mapItem) {
 	if (!mapItem) return EMPTY;
 	switch (mapItem.sprite) {
-		case 0: return SOLID;
-		case 1: return ONE_WAY;
-		case 2: return VINE;
-		case 3: return VINETOP;
-		case 4: return DOOR_0;
-		case 5: return DOOR_1;
-		case 6: return DOOR_2;
-		case 7: return WATER;
-		case 8: return WATER_S;
+		case 0:  return SOLID;
+		case 1:  return ONE_WAY;
+		case 2:  return VINE;
+		case 3:  return VINETOP;
+		case 4:  return DOOR_0;
+		case 5:  return DOOR_1;
+		case 6:  return DOOR_2;
+		case 7:  return WATER;
+		case 8:  return WATER_S;
+		case 32: return ENLIMIT;
 		default: return EMPTY;
 	}
 }
@@ -64,10 +68,25 @@ Level.prototype.init = function (def) {
 
 	for (var x = 0; x < map.width;  x++) {
 	for (var y = 0; y < map.height; y++) {
-		this.grid[x][y] = getTileFromMapItem(map.items[x][y]);
+		var item = map.items[x][y];
+		this.grid[x][y] = getTileFromMapItem(item);
+		this._addEntityFromMapItem(item);
+
 	}}
 
 	this._initBackground(def);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Level.prototype._addEntityFromMapItem = function (item) {
+	if (!item || item.sprite < 128) return;
+	switch (item.sprite) {
+		case 128: // onion
+			var onion = new Onion().setPosition(item.x, item.y);
+			if (item.flipH) onion.setDirection(-1); 
+			this.controller.addEntity(onion);
+			break;
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

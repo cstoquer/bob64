@@ -1,7 +1,6 @@
 var level       = require('./Level.js');
 var bob         = require('./Bob.js');
 var TextDisplay = require('./TextDisplay.js');
-var Onion       = require('./Onion.js');
 
 var textDisplay = new TextDisplay();
 
@@ -46,8 +45,6 @@ GameController.prototype.loadLevel = function (id, doorId, side) {
 	if (side) level.setBobPositionOnSide(bob, side);
 	bob.setPosition(level.bobPos);
 	paper(def.bgcolor);
-
-	this.addEntity(new Onion().setPosition(1, 3)); // REMOVEME
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

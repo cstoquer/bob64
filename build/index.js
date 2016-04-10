@@ -7006,7 +7006,6 @@ Entity.prototype.levelCollisions = function (level, bob) {
 var level       = require('./Level.js');
 var bob         = require('./Bob.js');
 var TextDisplay = require('./TextDisplay.js');
-var Onion       = require('./Onion.js');
 
 var textDisplay = new TextDisplay();
 
@@ -7051,8 +7050,6 @@ GameController.prototype.loadLevel = function (id, doorId, side) {
 	if (side) level.setBobPositionOnSide(bob, side);
 	bob.setPosition(level.bobPos);
 	paper(def.bgcolor);
-
-	this.addEntity(new Onion().setPosition(1, 3)); // REMOVEME
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -7112,7 +7109,9 @@ GameController.prototype.update = function () {
 	bob.draw();
 };
 
-},{"./Bob.js":37,"./Level.js":40,"./Onion.js":41,"./TextDisplay.js":42}],40:[function(require,module,exports){
+},{"./Bob.js":37,"./Level.js":40,"./TextDisplay.js":42}],40:[function(require,module,exports){
+var Onion = require('./Onion.js');
+
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 
@@ -7126,20 +7125,22 @@ var DOOR_1  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, i
 var DOOR_2  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isDoor: true, doorId: 2 };
 var WATER   = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 1 };
 var WATER_S = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 2 };
+var ENLIMIT = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isEntityLimit: true };
 
 
 function getTileFromMapItem(mapItem) {
 	if (!mapItem) return EMPTY;
 	switch (mapItem.sprite) {
-		case 0: return SOLID;
-		case 1: return ONE_WAY;
-		case 2: return VINE;
-		case 3: return VINETOP;
-		case 4: return DOOR_0;
-		case 5: return DOOR_1;
-		case 6: return DOOR_2;
-		case 7: return WATER;
-		case 8: return WATER_S;
+		case 0:  return SOLID;
+		case 1:  return ONE_WAY;
+		case 2:  return VINE;
+		case 3:  return VINETOP;
+		case 4:  return DOOR_0;
+		case 5:  return DOOR_1;
+		case 6:  return DOOR_2;
+		case 7:  return WATER;
+		case 8:  return WATER_S;
+		case 32: return ENLIMIT;
 		default: return EMPTY;
 	}
 }
@@ -7179,10 +7180,25 @@ Level.prototype.init = function (def) {
 
 	for (var x = 0; x < map.width;  x++) {
 	for (var y = 0; y < map.height; y++) {
-		this.grid[x][y] = getTileFromMapItem(map.items[x][y]);
+		var item = map.items[x][y];
+		this.grid[x][y] = getTileFromMapItem(item);
+		this._addEntityFromMapItem(item);
+
 	}}
 
 	this._initBackground(def);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Level.prototype._addEntityFromMapItem = function (item) {
+	if (!item || item.sprite < 128) return;
+	switch (item.sprite) {
+		case 128: // onion
+			var onion = new Onion().setPosition(item.x, item.y);
+			if (item.flipH) onion.setDirection(-1); 
+			this.controller.addEntity(onion);
+			break;
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -7250,7 +7266,7 @@ Level.prototype.getTileAt = function (x, y) {
 };
 
 module.exports = new Level();
-},{}],41:[function(require,module,exports){
+},{"./Onion.js":41}],41:[function(require,module,exports){
 var Entity = require('./Entity.js');
 
 var a = assets.entities.onion;
@@ -7266,7 +7282,7 @@ function Onion() {
 	this.maxGravity = 1;
 
 	// onion properties
-	this.speed     = 0.2;
+	this.speed     = 0.25;
 	this.direction = 1;
 
 	// rendering & animation
@@ -7287,6 +7303,14 @@ module.exports = Onion;
 Onion.prototype.move = function (level, bob) {
 
 	// TODO collision with bob here
+
+	// keep in bounds
+	if (level.getTileAt(this.x + 4 + this.direction * 6, this.y + 4).isEntityLimit) {
+		// turn around
+		this.direction *= -1;
+		this.flipH = this.direction === -1;
+		this.sx = 0;
+	}
 
 	// states
 	if (this.grounded && this.springCounter++ > 60) {
@@ -7340,6 +7364,13 @@ Onion.prototype.animate = function () {
 	var img = this.anim[~~this.frame];
 	draw(img, this.x, this.y - 8, this.flipH);
 };
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Onion.prototype.setDirection = function (direction) {
+	this.direction = direction;
+	this.flipH = this.direction === -1;
+};
+
 },{"./Entity.js":38}],42:[function(require,module,exports){
 TextDisplay = function () {
 	this.textWindow = new Texture(64, 19);
