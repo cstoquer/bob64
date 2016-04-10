@@ -5409,7 +5409,7 @@ Sound.prototype.stop = function (cb) {
 	return cb && cb(); // TODO: fade-out
 };
 
-},{"./ISound.js":29,"util":47}],32:[function(require,module,exports){
+},{"./ISound.js":29,"util":48}],32:[function(require,module,exports){
 var inherits = require('util').inherits;
 var ISound   = require('./ISound.js');
 
@@ -5792,7 +5792,7 @@ SoundBuffered.prototype.stop = function (cb) {
 };
 
 
-},{"./ISound.js":29,"util":47}],33:[function(require,module,exports){
+},{"./ISound.js":29,"util":48}],33:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** Set of sound played in sequence each times it triggers
  *  used for animation sfx
@@ -6548,7 +6548,7 @@ function showProgress(load, current, count, percent) {
 cls().paper(1).pen(1).rect(CENTER - HALF_WIDTH - 2, MIDDLE - 4, HALF_WIDTH * 2 + 4, 8); // loading bar
 assetLoader.preloadStaticAssets(onAssetsLoaded, showProgress);
 
-},{"../settings.json":36,"../src/main.js":43,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
+},{"../settings.json":36,"../src/main.js":44,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
 module.exports={
 	"screen": {
 		"width": 64,
@@ -6584,7 +6584,19 @@ module.exports={
 	}
 }
 },{}],37:[function(require,module,exports){
+
+function AABBcollision(a, b) {
+	return a.x < b.x + b.width  
+		&& a.y < b.y + b.height
+		&& b.x < a.x + a.width 
+		&& b.y < a.y + a.height;
+}
+
+module.exports = AABBcollision;
+
+},{}],38:[function(require,module,exports){
 var level = require('./Level.js');
+var AABBcollision = require('./AABBcollision.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
@@ -6596,12 +6608,32 @@ var MAX_WATER   = -1.5;
 var ATTACK_NONE  = 0;
 var ATTACK_SLASH = 1;
 
+var CHAINSAW_SLASH_BBOXES_RIGHT = [
+	{ x:  2, y: -11, w: 5, h: 7 },
+	{ x: 10, y:  -7, w: 6, h: 6 },
+	{ x: 11, y:   3, w: 8, h: 5 },
+	{ x: 11, y:   3, w: 8, h: 5 },
+	{ x: 10, y:   3, w: 8, h: 5 },
+	{ x:  9, y:   3, w: 7, h: 5 }
+];
+
+var CHAINSAW_SLASH_BBOXES_LEFT = [
+	{ x:   1, y: -11, w: 5, h: 7 },
+	{ x:  -8, y:  -7, w: 6, h: 6 },
+	{ x: -11, y:   3, w: 8, h: 5 },
+	{ x: -11, y:   3, w: 8, h: 5 },
+	{ x: -10, y:   3, w: 8, h: 5 },
+	{ x:  -8, y:   3, w: 7, h: 5 }
+];
+
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Bob() {
-	this.x  = 0;
-	this.y  = 0;
-	this.sx = 0;
-	this.sy = 0;
+	this.x      = 0;
+	this.y      = 0;
+	this.width  = 8;
+	this.height = 8;
+	this.sx     = 0;
+	this.sy     = 0;
 
 	// animation
 	this.frame = 0;
@@ -6623,7 +6655,7 @@ function Bob() {
 
 	this.isLocked  = false; // e.g. when slashing
 	this.attacking = ATTACK_NONE;
-	this.slashCounter = 0;
+	this.attackCounter = 0;
 }
 
 module.exports = new Bob();
@@ -6638,12 +6670,25 @@ Bob.prototype.setPosition = function (pos) {
 Bob.prototype.attack = function () {
 	this.isLocked     = true;
 	this.attacking    = ATTACK_SLASH;
-	this.slashCounter = 0;
+	this.attackCounter = 0;
 };
 
 Bob.prototype.endAttack = function () {
 	this.isLocked     = false;
 	this.attacking    = ATTACK_NONE;
+};
+
+Bob.prototype.getattackBB = function () {
+	if (this.attacking === ATTACK_SLASH) {
+		var chainsawBB = (this.flipH ? CHAINSAW_SLASH_BBOXES_LEFT : CHAINSAW_SLASH_BBOXES_RIGHT)[~~this.attackCounter];
+		if (chainsawBB) return {
+			x:      this.x      + chainsawBB.x,
+			y:      this.y      + chainsawBB.y,
+			width:  chainsawBB.w,
+			height: chainsawBB.h,
+		};
+	}
+	return null;
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -6753,6 +6798,28 @@ Bob.prototype.update = function () {
 		this.sy = Math.min(this.sy, MAX_GRAVITY);
 	}
 
+	// attack collision
+	if (this.attacking) {
+		var attackBB = this.getattackBB();
+		if (attackBB) {
+			var entities = this.controller.entities;
+			// going in reverse because collision might destroy entity
+			for (var i = entities.length - 1; i >= 0; i--) {
+				var entity = entities[i];
+				if (!entity.attackable) continue;
+				if (AABBcollision(entity, attackBB)) {
+					// collision detected
+					entity.hit(this);
+				}
+			}
+		}
+	}
+
+	this.levelCollisions();
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.levelCollisions = function () {
 	// round speed
 	this.sx = ~~(this.sx * 100) / 100;
 	this.sy = ~~(this.sy * 100) / 100;
@@ -6832,10 +6899,10 @@ Bob.prototype._ground = function () {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.draw = function () {
 	if (this.attacking === ATTACK_SLASH) {
-		var animId = 'slash' + (this.flipH ? 'Left' : 'Right') + ~~this.slashCounter;
+		var animId = 'slash' + (this.flipH ? 'Left' : 'Right') + ~~this.attackCounter;
 		draw(assets.chainsaw[animId], this.x - 16, this.y - 16);
-		this.slashCounter += 0.33;
-		if (this.slashCounter >= 5) this.endAttack();
+		this.attackCounter += 0.33;
+		if (this.attackCounter >= 5) this.endAttack();
 	} else {
 		var s = 255;
 		if (this.climbing) {
@@ -6852,7 +6919,7 @@ Bob.prototype.draw = function () {
 		sprite(s, this.x, this.y, this.flipH);
 	}
 };
-},{"./Level.js":40}],38:[function(require,module,exports){
+},{"./AABBcollision.js":37,"./Level.js":41}],39:[function(require,module,exports){
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 
@@ -6870,6 +6937,9 @@ function Entity() {
 	this.gravity    = 0.1;
 	this.maxGravity = 1;
 
+	// properties
+	this.attackable = false;
+
 	// flags
 	this.hasCollidedLevelFront = false;
 	this.hasCollidedLevelDown  = false;
@@ -6886,23 +6956,14 @@ module.exports = Entity;
 //█████████████████████████████████████████████████████████████████████████████████
 Entity.prototype.move = function (level, bob) {
 	// OVERIDE THIS
-	return false; // return true if you need to check collision with level
+	return false; // return true if entity needs to check collision with level
 };
 
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Entity.prototype.collideFront = function () {
-	// OVERIDE THIS
-};
-
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Entity.prototype.onGrounds = function () {
-	// OVERIDE THIS
-};
-
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Entity.prototype.animate = function () {
-	// OVERIDE THIS
-};
+// OVERIDE THESE
+Entity.prototype.collideFront = function () {};
+Entity.prototype.onGrounds = function () {};
+Entity.prototype.animate = function () {};
+Entity.prototype.hit = function (attacker) {};
 
 //████████████████████████████████████████████████
 //████████████████████████████████████████████████
@@ -7002,10 +7063,11 @@ Entity.prototype.levelCollisions = function (level, bob) {
 	this.y = y;
 };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var level       = require('./Level.js');
 var bob         = require('./Bob.js');
 var TextDisplay = require('./TextDisplay.js');
+var Entity      = require('./Entity.js');
 
 var textDisplay = new TextDisplay();
 
@@ -7025,6 +7087,7 @@ function GameController() {
 
 	level.controller = this;
 	bob.controller   = this;
+	Entity.prototype.controller = this;
 }
 
 module.exports = new GameController();
@@ -7109,7 +7172,7 @@ GameController.prototype.update = function () {
 	bob.draw();
 };
 
-},{"./Bob.js":37,"./Level.js":40,"./TextDisplay.js":42}],40:[function(require,module,exports){
+},{"./Bob.js":38,"./Entity.js":39,"./Level.js":41,"./TextDisplay.js":43}],41:[function(require,module,exports){
 var Onion = require('./Onion.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -7266,16 +7329,21 @@ Level.prototype.getTileAt = function (x, y) {
 };
 
 module.exports = new Level();
-},{"./Onion.js":41}],41:[function(require,module,exports){
-var Entity = require('./Entity.js');
+},{"./Onion.js":42}],42:[function(require,module,exports){
+var Entity        = require('./Entity.js');
+var AABBcollision = require('./AABBcollision.js');
 
 var a = assets.entities.onion;
 var walk   = [a.walk0, a.walk1, a.walk2, a.walk3, a.walk4];
 var attack = [a.attack0, a.attack1, a.attack2, a.attack4];
+var hitImg = a.hit;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Onion() {
 	Entity.call(this);
+
+	// properties
+	this.attackable = true;
 
 	// physic
 	this.gravity    = 0.12;
@@ -7284,6 +7352,8 @@ function Onion() {
 	// onion properties
 	this.speed     = 0.25;
 	this.direction = 1;
+	this.isHit       = false;
+	this.hitCounter = 0;
 
 	// rendering & animation
 	this.flipH     = false;
@@ -7302,7 +7372,13 @@ module.exports = Onion;
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Onion.prototype.move = function (level, bob) {
 
-	// TODO collision with bob here
+	if (AABBcollision(this, bob)) {
+		// collision with Bob detected
+
+		// TODO
+
+		// this.controller.removeEntity(this);
+	}
 
 	// keep in bounds
 	if (level.getTileAt(this.x + 4 + this.direction * 6, this.y + 4).isEntityLimit) {
@@ -7313,7 +7389,13 @@ Onion.prototype.move = function (level, bob) {
 	}
 
 	// states
-	if (this.grounded && this.springCounter++ > 60) {
+	if (this.isHit) {
+		if (this.hitCounter++ > 16) {
+			// hit end
+			this.isHit = false;
+			this.attackable = true;
+		}
+	} else if (this.grounded && this.springCounter++ > 60) {
 		this.springCounter = 0;
 		this.sy = -2;
 		this.grounded = false;
@@ -7353,6 +7435,10 @@ Onion.prototype.collideFront = function () {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Onion.prototype.animate = function () {
+	if (this.isHit) {
+		draw(hitImg, this.x, this.y - 8, this.flipH);
+		return;
+	}
 	this.frame += this.animSpeed;
 	if (this.anim === attack) {
 		if (this.frame >= this.anim.length) {
@@ -7371,7 +7457,30 @@ Onion.prototype.setDirection = function (direction) {
 	this.flipH = this.direction === -1;
 };
 
-},{"./Entity.js":38}],42:[function(require,module,exports){
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Onion.prototype.hit = function (attacker) {
+	// TODO
+	// from where do hit comes from ?
+	this.grounded = false;
+	this.springCounter = 0;
+	if (attacker.x < this.x) {
+		this.direction = -1;
+		this.flipH = true;
+		this.sx = 1;
+	} else {
+		this.direction = 1;
+		this.flipH = false;
+		this.sx = -1;
+	}
+	this.isHit = true;
+	this.hitCounter = 0;
+	this.attackable = false;
+	this.sy = -2;
+	// this.controller.removeEntity(this);
+	// TODO add explosion animation
+};
+
+},{"./AABBcollision.js":37,"./Entity.js":39}],43:[function(require,module,exports){
 TextDisplay = function () {
 	this.textWindow = new Texture(64, 19);
 	this.textBuffer = '';
@@ -7471,7 +7580,7 @@ TextDisplay.prototype.setDialog = function (dialog) {
 	this._setDialog();
 };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var DEBUG = true;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -7544,7 +7653,7 @@ exports.update = function () {
 	gameController.update();
 };
 
-},{"./Bob.js":37,"./GameController.js":39}],44:[function(require,module,exports){
+},{"./Bob.js":38,"./GameController.js":40}],45:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -7569,7 +7678,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -7662,14 +7771,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -8259,4 +8368,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":46,"_process":45,"inherits":44}]},{},[35]);
+},{"./support/isBuffer":47,"_process":46,"inherits":45}]},{},[35]);

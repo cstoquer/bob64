@@ -1,4 +1,5 @@
 var level = require('./Level.js');
+var AABBcollision = require('./AABBcollision.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
@@ -10,12 +11,32 @@ var MAX_WATER   = -1.5;
 var ATTACK_NONE  = 0;
 var ATTACK_SLASH = 1;
 
+var CHAINSAW_SLASH_BBOXES_RIGHT = [
+	{ x:  2, y: -11, w: 5, h: 7 },
+	{ x: 10, y:  -7, w: 6, h: 6 },
+	{ x: 11, y:   3, w: 8, h: 5 },
+	{ x: 11, y:   3, w: 8, h: 5 },
+	{ x: 10, y:   3, w: 8, h: 5 },
+	{ x:  9, y:   3, w: 7, h: 5 }
+];
+
+var CHAINSAW_SLASH_BBOXES_LEFT = [
+	{ x:   1, y: -11, w: 5, h: 7 },
+	{ x:  -8, y:  -7, w: 6, h: 6 },
+	{ x: -11, y:   3, w: 8, h: 5 },
+	{ x: -11, y:   3, w: 8, h: 5 },
+	{ x: -10, y:   3, w: 8, h: 5 },
+	{ x:  -8, y:   3, w: 7, h: 5 }
+];
+
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Bob() {
-	this.x  = 0;
-	this.y  = 0;
-	this.sx = 0;
-	this.sy = 0;
+	this.x      = 0;
+	this.y      = 0;
+	this.width  = 8;
+	this.height = 8;
+	this.sx     = 0;
+	this.sy     = 0;
 
 	// animation
 	this.frame = 0;
@@ -37,7 +58,7 @@ function Bob() {
 
 	this.isLocked  = false; // e.g. when slashing
 	this.attacking = ATTACK_NONE;
-	this.slashCounter = 0;
+	this.attackCounter = 0;
 }
 
 module.exports = new Bob();
@@ -52,12 +73,25 @@ Bob.prototype.setPosition = function (pos) {
 Bob.prototype.attack = function () {
 	this.isLocked     = true;
 	this.attacking    = ATTACK_SLASH;
-	this.slashCounter = 0;
+	this.attackCounter = 0;
 };
 
 Bob.prototype.endAttack = function () {
 	this.isLocked     = false;
 	this.attacking    = ATTACK_NONE;
+};
+
+Bob.prototype.getattackBB = function () {
+	if (this.attacking === ATTACK_SLASH) {
+		var chainsawBB = (this.flipH ? CHAINSAW_SLASH_BBOXES_LEFT : CHAINSAW_SLASH_BBOXES_RIGHT)[~~this.attackCounter];
+		if (chainsawBB) return {
+			x:      this.x      + chainsawBB.x,
+			y:      this.y      + chainsawBB.y,
+			width:  chainsawBB.w,
+			height: chainsawBB.h,
+		};
+	}
+	return null;
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -167,6 +201,28 @@ Bob.prototype.update = function () {
 		this.sy = Math.min(this.sy, MAX_GRAVITY);
 	}
 
+	// attack collision
+	if (this.attacking) {
+		var attackBB = this.getattackBB();
+		if (attackBB) {
+			var entities = this.controller.entities;
+			// going in reverse because collision might destroy entity
+			for (var i = entities.length - 1; i >= 0; i--) {
+				var entity = entities[i];
+				if (!entity.attackable) continue;
+				if (AABBcollision(entity, attackBB)) {
+					// collision detected
+					entity.hit(this);
+				}
+			}
+		}
+	}
+
+	this.levelCollisions();
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.levelCollisions = function () {
 	// round speed
 	this.sx = ~~(this.sx * 100) / 100;
 	this.sy = ~~(this.sy * 100) / 100;
@@ -246,10 +302,10 @@ Bob.prototype._ground = function () {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.draw = function () {
 	if (this.attacking === ATTACK_SLASH) {
-		var animId = 'slash' + (this.flipH ? 'Left' : 'Right') + ~~this.slashCounter;
+		var animId = 'slash' + (this.flipH ? 'Left' : 'Right') + ~~this.attackCounter;
 		draw(assets.chainsaw[animId], this.x - 16, this.y - 16);
-		this.slashCounter += 0.33;
-		if (this.slashCounter >= 5) this.endAttack();
+		this.attackCounter += 0.33;
+		if (this.attackCounter >= 5) this.endAttack();
 	} else {
 		var s = 255;
 		if (this.climbing) {

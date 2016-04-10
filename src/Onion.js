@@ -1,12 +1,17 @@
-var Entity = require('./Entity.js');
+var Entity        = require('./Entity.js');
+var AABBcollision = require('./AABBcollision.js');
 
 var a = assets.entities.onion;
 var walk   = [a.walk0, a.walk1, a.walk2, a.walk3, a.walk4];
 var attack = [a.attack0, a.attack1, a.attack2, a.attack4];
+var hitImg = a.hit;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Onion() {
 	Entity.call(this);
+
+	// properties
+	this.attackable = true;
 
 	// physic
 	this.gravity    = 0.12;
@@ -15,6 +20,8 @@ function Onion() {
 	// onion properties
 	this.speed     = 0.25;
 	this.direction = 1;
+	this.isHit       = false;
+	this.hitCounter = 0;
 
 	// rendering & animation
 	this.flipH     = false;
@@ -33,7 +40,13 @@ module.exports = Onion;
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Onion.prototype.move = function (level, bob) {
 
-	// TODO collision with bob here
+	if (AABBcollision(this, bob)) {
+		// collision with Bob detected
+
+		// TODO
+
+		// this.controller.removeEntity(this);
+	}
 
 	// keep in bounds
 	if (level.getTileAt(this.x + 4 + this.direction * 6, this.y + 4).isEntityLimit) {
@@ -44,7 +57,13 @@ Onion.prototype.move = function (level, bob) {
 	}
 
 	// states
-	if (this.grounded && this.springCounter++ > 60) {
+	if (this.isHit) {
+		if (this.hitCounter++ > 16) {
+			// hit end
+			this.isHit = false;
+			this.attackable = true;
+		}
+	} else if (this.grounded && this.springCounter++ > 60) {
 		this.springCounter = 0;
 		this.sy = -2;
 		this.grounded = false;
@@ -84,6 +103,10 @@ Onion.prototype.collideFront = function () {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Onion.prototype.animate = function () {
+	if (this.isHit) {
+		draw(hitImg, this.x, this.y - 8, this.flipH);
+		return;
+	}
 	this.frame += this.animSpeed;
 	if (this.anim === attack) {
 		if (this.frame >= this.anim.length) {
@@ -100,4 +123,27 @@ Onion.prototype.animate = function () {
 Onion.prototype.setDirection = function (direction) {
 	this.direction = direction;
 	this.flipH = this.direction === -1;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Onion.prototype.hit = function (attacker) {
+	// TODO
+	// from where do hit comes from ?
+	this.grounded = false;
+	this.springCounter = 0;
+	if (attacker.x < this.x) {
+		this.direction = -1;
+		this.flipH = true;
+		this.sx = 1;
+	} else {
+		this.direction = 1;
+		this.flipH = false;
+		this.sx = -1;
+	}
+	this.isHit = true;
+	this.hitCounter = 0;
+	this.attackable = false;
+	this.sy = -2;
+	// this.controller.removeEntity(this);
+	// TODO add explosion animation
 };

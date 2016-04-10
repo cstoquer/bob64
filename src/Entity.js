@@ -15,6 +15,9 @@ function Entity() {
 	this.gravity    = 0.1;
 	this.maxGravity = 1;
 
+	// properties
+	this.attackable = false;
+
 	// flags
 	this.hasCollidedLevelFront = false;
 	this.hasCollidedLevelDown  = false;
@@ -31,23 +34,14 @@ module.exports = Entity;
 //█████████████████████████████████████████████████████████████████████████████████
 Entity.prototype.move = function (level, bob) {
 	// OVERIDE THIS
-	return false; // return true if you need to check collision with level
+	return false; // return true if entity needs to check collision with level
 };
 
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Entity.prototype.collideFront = function () {
-	// OVERIDE THIS
-};
-
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Entity.prototype.onGrounds = function () {
-	// OVERIDE THIS
-};
-
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Entity.prototype.animate = function () {
-	// OVERIDE THIS
-};
+// OVERIDE THESE
+Entity.prototype.collideFront = function () {};
+Entity.prototype.onGrounds = function () {};
+Entity.prototype.animate = function () {};
+Entity.prototype.hit = function (attacker) {};
 
 //████████████████████████████████████████████████
 //████████████████████████████████████████████████

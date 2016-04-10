@@ -1,6 +1,7 @@
 var level       = require('./Level.js');
 var bob         = require('./Bob.js');
 var TextDisplay = require('./TextDisplay.js');
+var Entity      = require('./Entity.js');
 
 var textDisplay = new TextDisplay();
 
@@ -20,6 +21,7 @@ function GameController() {
 
 	level.controller = this;
 	bob.controller   = this;
+	Entity.prototype.controller = this;
 }
 
 module.exports = new GameController();
