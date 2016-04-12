@@ -1,6 +1,16 @@
 {
-	"bobIntro": [
-		{ "text": "hello world" },
+	"bobChainsaw": [
 		{ "who": "bob", "text": "Oh boy,\nthe chainsaw I ordered finally came!\nIt’s only been a whole YEAR,\njeez..." }
+	],
+	"bossIntro": [
+		{ "who": "stump", "text": "Sir, we have a problem." },
+		{ "who": "boss",  "text": "Can’t you see I’m in the middle of something!\nYou think it’s EASY to fight off every threat to this forest with just a computer and no FINGERS?!" },
+		{ "who": "stump", "text": "N-no, sir. Not at all!\n I-I just thought you should know that... Bob... he... the CHX-2000..." },
+		{ "who": "boss",  "text": "YOU DARE SPEAK THAT NAME?!" },
+		{ "who": "stump", "text": "You mean, Bob? Or..." },
+		{ "who": "boss",  "text": "GAH!" },
+		{ "who": "boss",  "text": "...No matter. I  totally h4xx3d his order! Had the fairies that power that little tool of his sent to the deepest reaches of the land! There’s no way that bumbling lumberjack will be able to find all three! Hahahaha!" },
+		{ "who": "stump", "text": "Hah... Y-yeah I guess you’re right." },
+		{ "who": "boss",  "text": "\n   HAHAHAHAH!" }
 	]
 }

@@ -3,9 +3,19 @@ TextDisplay = function () {
 	this.textBuffer = '';
 	this.textParts  = [];
 	this.dialog     = [];
+	this.onFinishCallback = null;
 }
 
 module.exports = TextDisplay;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+TextDisplay.prototype.start = function (dialog, cb) {
+	this.onFinishCallback = cb;
+	// make a copy of dialog
+	this.dialog = JSON.parse(JSON.stringify(dialog));
+	this._setDialog();
+	return this;
+};
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** return true if there is still some text to be displayed */
@@ -30,6 +40,8 @@ TextDisplay.prototype.update = function () {
 				this._setDialog();
 				return true;
 			}
+			this.onFinishCallback && this.onFinishCallback();
+			this.onFinishCallback = null;
 			return false;
 		}
 		for (var i = 0; i < 3; i++) {
@@ -46,13 +58,14 @@ TextDisplay.prototype._setDialog = function () {
 	this.textWindow.cls();
 
 	var currentDialog = this.dialog.shift();
-	console.log(currentDialog)
 
 	var who  = currentDialog.who;
 	var text = currentDialog.text;
 
 	switch (who) {
-		case 'bob': this.textWindow.pen(10); break;
+		case 'bob':   this.textWindow.pen(10); break;
+		case 'boss':  this.textWindow.pen(4); break;
+		case 'stump': this.textWindow.pen(3); break;
 		default: this.textWindow.pen(1);
 	}
 
@@ -88,11 +101,4 @@ TextDisplay.prototype._setDialog = function () {
 
 	// add the first 3 lines to be printed
 	this.textBuffer += this.textParts.shift() + '\n' + (this.textParts.shift() || '') + '\n' + (this.textParts.shift() || '');
-};
-
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-TextDisplay.prototype.setDialog = function (dialog) {
-	// make a copy of dialog
-	this.dialog = JSON.parse(JSON.stringify(dialog));
-	this._setDialog();
 };

@@ -5409,7 +5409,7 @@ Sound.prototype.stop = function (cb) {
 	return cb && cb(); // TODO: fade-out
 };
 
-},{"./ISound.js":29,"util":48}],32:[function(require,module,exports){
+},{"./ISound.js":29,"util":51}],32:[function(require,module,exports){
 var inherits = require('util').inherits;
 var ISound   = require('./ISound.js');
 
@@ -5792,7 +5792,7 @@ SoundBuffered.prototype.stop = function (cb) {
 };
 
 
-},{"./ISound.js":29,"util":48}],33:[function(require,module,exports){
+},{"./ISound.js":29,"util":51}],33:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** Set of sound played in sequence each times it triggers
  *  used for animation sfx
@@ -6548,7 +6548,7 @@ function showProgress(load, current, count, percent) {
 cls().paper(1).pen(1).rect(CENTER - HALF_WIDTH - 2, MIDDLE - 4, HALF_WIDTH * 2 + 4, 8); // loading bar
 assetLoader.preloadStaticAssets(onAssetsLoaded, showProgress);
 
-},{"../settings.json":36,"../src/main.js":44,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
+},{"../settings.json":36,"../src/main.js":47,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
 module.exports={
 	"screen": {
 		"width": 64,
@@ -6664,6 +6664,25 @@ function Bob() {
 module.exports = new Bob();
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.saveState = function () {
+	return {
+		x:             this.x,
+		y:             this.y,
+		canAttack:     this.canAttack,
+		canDive:       this.canDive,
+		canDoubleJump: this.canDoubleJump
+	};
+};
+
+Bob.prototype.restoreState = function (state) {
+	this.x             = state.x;
+	this.y             = state.y;
+	this.canAttack     = state.canAttack;
+	this.canDive       = state.canDive;
+	this.canDoubleJump = state.canDoubleJump;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.setPosition = function (pos) {
 	this.x = pos.x || 0;
 	this.y = pos.y || 0;
@@ -6671,14 +6690,14 @@ Bob.prototype.setPosition = function (pos) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.attack = function () {
-	this.isLocked     = true;
-	this.attacking    = ATTACK_SLASH;
+	this.isLocked      = true;
+	this.attacking     = ATTACK_SLASH;
 	this.attackCounter = 0;
 };
 
 Bob.prototype.endAttack = function () {
-	this.isLocked     = false;
-	this.attacking    = ATTACK_NONE;
+	this.isLocked  = false;
+	this.attacking = ATTACK_NONE;
 };
 
 Bob.prototype.getattackBB = function () {
@@ -6951,7 +6970,121 @@ Bob.prototype.hit = function (attacker) {
 	this.sx = attacker.x < this.x ? 1.6 : -1.6;
 	this.sy = attacker.y < this.y ? 2 : -3;
 };
-},{"./AABBcollision.js":37,"./Level.js":41}],39:[function(require,module,exports){
+},{"./AABBcollision.js":37,"./Level.js":43}],39:[function(require,module,exports){
+var TextDisplay    = require('./TextDisplay.js');
+var FadeTransition = require('./FadeTransition.js');
+
+var textDisplay = new TextDisplay();
+var fader       = new FadeTransition();
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+function CutScene() {
+	this._backgroundColor  = 0; // to store level BG color
+	this._onFinishCallback = null;
+	this._isDisplayingText = false;
+	this._isFading         = false;
+	this._animation        = null;
+
+	this._actions = [];
+}
+
+module.exports = CutScene;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype.start = function (cb) {
+	this._onFinishCallback = cb;
+	this._backgroundColor = $screen._paper; // FIXME this is a bit hacky
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype.enqueue = function (fn) {
+	this._actions.push(fn);
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype.addDialog = function (dialog) {
+	this._actions.push(function () {
+		this._displayDialog(dialog);
+	});
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype.addFade = function () {
+	this._actions.push(function () {
+		this._startFade();
+	});
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype.addDelay = function (delay) {
+	delay = delay || 1;
+	var counter = ~~(delay * 60);
+	this.addAnimation(function () {
+		return (counter-- <= 0);
+	});
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+/** 
+ * @param {Function} animation - a function that needs to be called every frame until its returns true
+ */
+CutScene.prototype.addAnimation = function (animation) {
+	this._actions.push(function () {
+		this._animation = animation;
+	});
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype.update = function () {
+	camera(0, 0);
+	if (this._isDisplayingText) return textDisplay.update();
+	if (this._isFading) return fader.update();
+	if (this._animation) {
+		if (this._animation()) this._animation = null;
+		return;
+	}
+
+	if (this._actions.length) {
+		var nextAction = this._actions.shift();
+		if (typeof nextAction === 'function') nextAction.apply(this);
+		return;
+	}
+
+	this._finish();
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype._finish = function () {
+	this._onFinishCallback && this._onFinishCallback();
+	this._onFinishCallback = null;
+	paper(this._backgroundColor);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype._displayDialog = function (dialog) {
+	var self = this;
+	this._isDisplayingText = true;
+	textDisplay.start(dialog, function () {
+		self._isDisplayingText = false;
+	});
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype._startFade = function (options) {
+	var self = this;
+	this._isFading = true;
+	fader.start(options, function () {
+		self._isFading = false;
+	});
+};
+
+},{"./FadeTransition.js":41,"./TextDisplay.js":45}],40:[function(require,module,exports){
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 
@@ -7095,21 +7228,60 @@ Entity.prototype.levelCollisions = function (level, bob) {
 	this.y = y;
 };
 
-},{}],40:[function(require,module,exports){
-var level       = require('./Level.js');
-var bob         = require('./Bob.js');
-var TextDisplay = require('./TextDisplay.js');
-var Entity      = require('./Entity.js');
+},{}],41:[function(require,module,exports){
+var TILE_WIDTH  = settings.spriteSize[0];
+var TILE_HEIGHT = settings.spriteSize[1];
 
-var textDisplay = new TextDisplay();
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+function FadeTransition() {
+	this.transitionCount  = 0;
+	this.onFinishCallback = null;
+}
+
+module.exports = FadeTransition;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+FadeTransition.prototype.start = function (options, cb) {
+	this.onFinishCallback = cb;
+	this.transitionCount = -30;
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+/** return true if it continues and false when ended */
+FadeTransition.prototype.update = function () {
+	camera(0, 0);
+	draw(assets.ditherFondu, 0, this.transitionCount * TILE_HEIGHT);
+	if (++this.transitionCount > 0) {
+		// this.loadLevel(nextLevel, nextDoor, nextSide);
+		this.onFinishCallback && this.onFinishCallback();
+		this.onFinishCallback = null;
+		return false;
+	}
+	return true;
+};
+
+},{}],42:[function(require,module,exports){
+var level          = require('./Level.js');
+var bob            = require('./Bob.js');
+var TextDisplay    = require('./TextDisplay.js');
+var Entity         = require('./Entity.js');
+var FadeTransition = require('./FadeTransition.js');
+var bossIntro      = require('./cutscenes/bossIntro.js');
+
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 var GRAVITY     = 0.5;
 var MAX_GRAVITY = 2;
 
-var nextLevel, nextDoor, inTransition, transitionCount, nextSide;
-var isDisplayingText = false;
+
+var nextLevel, nextDoor, nextSide;
+
+// lock game when fade transition, text display, cutscene.
+var isLocked    = null;
+var fader       = new FadeTransition();
+var textDisplay = new TextDisplay();
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function GameController() {
@@ -7120,9 +7292,28 @@ function GameController() {
 	level.controller = this;
 	bob.controller   = this;
 	Entity.prototype.controller = this;
+
+	this.checkpoint = {
+		levelId: 'ground0',
+		bob: null // TODO
+	};
 }
 
 module.exports = new GameController();
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.saveState = function () {
+	this.checkpoint = {
+		levelId: this.level.id,
+		bob: bob.saveState()
+	};
+};
+
+GameController.prototype.restoreState = function () {
+	if (!this.checkpoint) return;
+	this.loadLevel(this.checkpoint.id);
+	bob.restoreState(this.checkpoint.bob);
+};
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.addEntity = function (entity) {
@@ -7140,7 +7331,8 @@ GameController.prototype.removeEntity = function (entity) {
 GameController.prototype.loadLevel = function (id, doorId, side) {
 	this.entities = []; // remove all entities
 	var def = assets.levels[id];
-	level.init(def);
+	if (!def) return console.error('Level does not exist', id);
+	level.init(id, def);
 	if (doorId !== undefined) level.setBobPositionOnDoor(doorId);
 	if (side) level.setBobPositionOnSide(bob, side);
 	bob.setPosition(level.bobPos);
@@ -7148,9 +7340,18 @@ GameController.prototype.loadLevel = function (id, doorId, side) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.startFade = function () {
+	isLocked = fader;
+	var self = this;
+	fader.start(null, function () {
+		self.loadLevel(nextLevel, nextDoor, nextSide);
+		isLocked = false;
+	});
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.changeLevel = function (id, doorId) {
-	inTransition = true;
-	transitionCount = -30;
+	this.startFade();
 	nextLevel = id;
 	nextDoor  = doorId;
 	nextSide  = undefined;
@@ -7159,8 +7360,7 @@ GameController.prototype.changeLevel = function (id, doorId) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.goToNeighbourLevel = function (direction) {
 	if (!level[direction]) return false;
-	inTransition = true;
-	transitionCount = -30;
+	this.startFade();
 	nextLevel = level[direction];
 	nextDoor  = undefined;
 	nextSide  = direction;
@@ -7169,26 +7369,25 @@ GameController.prototype.goToNeighbourLevel = function (direction) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.displayDialog = function (dialog) {
-	textDisplay.setDialog(dialog);
-	isDisplayingText = true;
+	isLocked = textDisplay;
+	textDisplay.start(dialog, function () {
+		isLocked = null;
+	});
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-GameController.prototype.ditherTransition = function () {
-	camera(0, 0);
-	draw(assets.ditherFondu, 0, transitionCount * TILE_HEIGHT);
-	if (++transitionCount > 0) {
-		this.loadLevel(nextLevel, nextDoor, nextSide);
-		inTransition = false;
-	}
+GameController.prototype.startCutScene = function (cutscene) {
+	isLocked = cutscene;
+	cutscene.start(function () {
+		isLocked = null;
+	});
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
-	if (inTransition)     return this.ditherTransition();
-	if (isDisplayingText) return isDisplayingText = textDisplay.update();
+	if (isLocked) return isLocked.update();
 
-	if (btnp.B) return this.displayDialog(assets.dialogs.bobIntro); // FIXME just for testing
+	if (btnp.B) return this.startCutScene(bossIntro()); // FIXME just for testing
 
 	bob.update();
 
@@ -7204,7 +7403,7 @@ GameController.prototype.update = function () {
 	bob.draw();
 };
 
-},{"./Bob.js":38,"./Entity.js":39,"./Level.js":41,"./TextDisplay.js":43}],41:[function(require,module,exports){
+},{"./Bob.js":38,"./Entity.js":40,"./FadeTransition.js":41,"./Level.js":43,"./TextDisplay.js":45,"./cutscenes/bossIntro.js":46}],43:[function(require,module,exports){
 var Onion = require('./Onion.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -7242,6 +7441,7 @@ function getTileFromMapItem(mapItem) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Level() {
+	this.id     = null;
 	this.map    = null;
 	this.bobPos = { x: 0, y: 0 };
 	this.grid   = [[]];
@@ -7253,7 +7453,7 @@ function Level() {
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Level.prototype.init = function (def) {
+Level.prototype.init = function (id, def) {
 	var map = getMap(def.geometry);
 	var bobPosition = map.find(255)[0];
 
@@ -7278,7 +7478,6 @@ Level.prototype.init = function (def) {
 		var item = map.items[x][y];
 		this.grid[x][y] = getTileFromMapItem(item);
 		this._addEntityFromMapItem(item);
-
 	}}
 
 	this._initBackground(def);
@@ -7341,15 +7540,6 @@ Level.prototype.setBobPositionOnDoor = function (doorId) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Level.prototype.setBobPositionOnSide = function (bob, direction) {
-	// if (direction === 'right' || direction === 'left') {
-	// 	// horizontal translation
-	// 	this.bobPos.y = bob.y;
-	// 	this.bobPos.x = direction === 'right' ? -4 : this.width * TILE_WIDTH - 4;
-	// } else {
-	// 	// vertical translation
-	// 	this.bobPos.x = bob.x;
-	// 	this.bobPos.y = direction === 'down' ? -4 : this.height * TILE_WIDTH - 2;
-	// }
 	if (direction === 'right' || direction === 'left') {
 		// horizontal translation
 		this.bobPos.y = bob.y;
@@ -7370,7 +7560,7 @@ Level.prototype.getTileAt = function (x, y) {
 };
 
 module.exports = new Level();
-},{"./Onion.js":42}],42:[function(require,module,exports){
+},{"./Onion.js":44}],44:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var AABBcollision = require('./AABBcollision.js');
 
@@ -7518,15 +7708,25 @@ Onion.prototype.hit = function (attacker) {
 	// TODO add explosion animation
 };
 
-},{"./AABBcollision.js":37,"./Entity.js":39}],43:[function(require,module,exports){
+},{"./AABBcollision.js":37,"./Entity.js":40}],45:[function(require,module,exports){
 TextDisplay = function () {
 	this.textWindow = new Texture(64, 19);
 	this.textBuffer = '';
 	this.textParts  = [];
 	this.dialog     = [];
+	this.onFinishCallback = null;
 }
 
 module.exports = TextDisplay;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+TextDisplay.prototype.start = function (dialog, cb) {
+	this.onFinishCallback = cb;
+	// make a copy of dialog
+	this.dialog = JSON.parse(JSON.stringify(dialog));
+	this._setDialog();
+	return this;
+};
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** return true if there is still some text to be displayed */
@@ -7551,6 +7751,8 @@ TextDisplay.prototype.update = function () {
 				this._setDialog();
 				return true;
 			}
+			this.onFinishCallback && this.onFinishCallback();
+			this.onFinishCallback = null;
 			return false;
 		}
 		for (var i = 0; i < 3; i++) {
@@ -7567,13 +7769,14 @@ TextDisplay.prototype._setDialog = function () {
 	this.textWindow.cls();
 
 	var currentDialog = this.dialog.shift();
-	console.log(currentDialog)
 
 	var who  = currentDialog.who;
 	var text = currentDialog.text;
 
 	switch (who) {
-		case 'bob': this.textWindow.pen(10); break;
+		case 'bob':   this.textWindow.pen(10); break;
+		case 'boss':  this.textWindow.pen(4); break;
+		case 'stump': this.textWindow.pen(3); break;
 		default: this.textWindow.pen(1);
 	}
 
@@ -7611,14 +7814,72 @@ TextDisplay.prototype._setDialog = function () {
 	this.textBuffer += this.textParts.shift() + '\n' + (this.textParts.shift() || '') + '\n' + (this.textParts.shift() || '');
 };
 
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-TextDisplay.prototype.setDialog = function (dialog) {
-	// make a copy of dialog
-	this.dialog = JSON.parse(JSON.stringify(dialog));
-	this._setDialog();
-};
+},{}],46:[function(require,module,exports){
+var CutScene = require('../CutScene.js');
 
-},{}],44:[function(require,module,exports){
+function bossIntro() {
+
+	//------------------------------------------------------------
+	// create an empty cutscene
+	var cutscene = new CutScene();
+
+	//------------------------------------------------------------
+	// add a fading transition animation
+	cutscene.addFade();
+
+	//------------------------------------------------------------
+	// enqueue a function: this one clear screen and draw the boss room
+	var bossRoom = getMap('bossCutScene');
+	cutscene.enqueue(function () {
+		camera(0, 0);   // camera needs to be reset before drawing scene
+		paper(0).cls(); // set background color to 0 (black) and clear screen
+		draw(bossRoom); // draw boss room
+		// TODO draw the boss
+	});
+
+	//------------------------------------------------------------
+	// add a waiting delay of 0.2 seconds
+	cutscene.addDelay(0.2);
+
+	//------------------------------------------------------------
+	// add an animation.
+	// an animation is a function that will be called every frame until its returns true
+	var onionX = -7;
+	var onionFrame = 0;
+	cutscene.addAnimation(function () {
+		onionX += 0.5;
+
+		// to make the onion guy walk animation. TODO: create an animator to abstract this
+		onionFrame += 0.2;
+		if (onionFrame > 4) onionFrame = 0;
+		var onionImage = assets.entities.onion['walk' + ~~onionFrame];
+
+		// draw the scene
+		cls();
+		draw(bossRoom);
+		// TODO draw the boss
+		draw(onionImage, onionX, 40);
+		if (onionX < 10) return false; // continue the animation
+
+		return true; // ends the animation
+	});
+
+	//------------------------------------------------------------
+	// display a dialog
+	cutscene.addDialog(assets.dialogs.bossIntro);
+
+	//------------------------------------------------------------
+	// add a last fade before going back to the game
+	cutscene.addFade();
+
+	//------------------------------------------------------------
+	// return the cutscene	
+	return cutscene;
+}
+
+module.exports = bossIntro;
+
+},{"../CutScene.js":39}],47:[function(require,module,exports){
 var DEBUG = true;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -7691,7 +7952,7 @@ exports.update = function () {
 	gameController.update();
 };
 
-},{"./Bob.js":38,"./GameController.js":40}],45:[function(require,module,exports){
+},{"./Bob.js":38,"./GameController.js":42}],48:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -7716,7 +7977,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],46:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -7809,14 +8070,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],47:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],48:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -8406,4 +8667,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":47,"_process":46,"inherits":45}]},{},[35]);
+},{"./support/isBuffer":50,"_process":49,"inherits":48}]},{},[35]);

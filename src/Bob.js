@@ -67,6 +67,25 @@ function Bob() {
 module.exports = new Bob();
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.saveState = function () {
+	return {
+		x:             this.x,
+		y:             this.y,
+		canAttack:     this.canAttack,
+		canDive:       this.canDive,
+		canDoubleJump: this.canDoubleJump
+	};
+};
+
+Bob.prototype.restoreState = function (state) {
+	this.x             = state.x;
+	this.y             = state.y;
+	this.canAttack     = state.canAttack;
+	this.canDive       = state.canDive;
+	this.canDoubleJump = state.canDoubleJump;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.setPosition = function (pos) {
 	this.x = pos.x || 0;
 	this.y = pos.y || 0;
@@ -74,14 +93,14 @@ Bob.prototype.setPosition = function (pos) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.attack = function () {
-	this.isLocked     = true;
-	this.attacking    = ATTACK_SLASH;
+	this.isLocked      = true;
+	this.attacking     = ATTACK_SLASH;
 	this.attackCounter = 0;
 };
 
 Bob.prototype.endAttack = function () {
-	this.isLocked     = false;
-	this.attacking    = ATTACK_NONE;
+	this.isLocked  = false;
+	this.attacking = ATTACK_NONE;
 };
 
 Bob.prototype.getattackBB = function () {

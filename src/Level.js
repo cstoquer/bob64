@@ -35,6 +35,7 @@ function getTileFromMapItem(mapItem) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Level() {
+	this.id     = null;
 	this.map    = null;
 	this.bobPos = { x: 0, y: 0 };
 	this.grid   = [[]];
@@ -46,7 +47,7 @@ function Level() {
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Level.prototype.init = function (def) {
+Level.prototype.init = function (id, def) {
 	var map = getMap(def.geometry);
 	var bobPosition = map.find(255)[0];
 
@@ -71,7 +72,6 @@ Level.prototype.init = function (def) {
 		var item = map.items[x][y];
 		this.grid[x][y] = getTileFromMapItem(item);
 		this._addEntityFromMapItem(item);
-
 	}}
 
 	this._initBackground(def);
@@ -134,15 +134,6 @@ Level.prototype.setBobPositionOnDoor = function (doorId) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Level.prototype.setBobPositionOnSide = function (bob, direction) {
-	// if (direction === 'right' || direction === 'left') {
-	// 	// horizontal translation
-	// 	this.bobPos.y = bob.y;
-	// 	this.bobPos.x = direction === 'right' ? -4 : this.width * TILE_WIDTH - 4;
-	// } else {
-	// 	// vertical translation
-	// 	this.bobPos.x = bob.x;
-	// 	this.bobPos.y = direction === 'down' ? -4 : this.height * TILE_WIDTH - 2;
-	// }
 	if (direction === 'right' || direction === 'left') {
 		// horizontal translation
 		this.bobPos.y = bob.y;
