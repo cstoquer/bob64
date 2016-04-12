@@ -1,16 +1,43 @@
 {
 	"bobChainsaw": [
-		{ "who": "bob", "text": "Oh boy,\nthe chainsaw I ordered finally came!\nIt’s only been a whole YEAR,\njeez..." }
+		{ "who": "bob", "text": "Oh boy,\nthe chainsaw I ordered finally came!\nIt's only been a whole YEAR,\njeez..." }
 	],
 	"bossIntro": [
 		{ "who": "stump", "text": "Sir, we have a problem." },
-		{ "who": "boss",  "text": "Can’t you see I’m in the middle of something!\nYou think it’s EASY to fight off every threat to this forest with just a computer and no FINGERS?!" },
+		{ "who": "boss",  "text": "Can't you see I'm in the middle of something!\nYou think it's EASY to fight off every threat to this forest with just a computer and no FINGERS?!" },
 		{ "who": "stump", "text": "N-no, sir. Not at all!\n I-I just thought you should know that... Bob... he... the CHX-2000..." },
 		{ "who": "boss",  "text": "YOU DARE SPEAK THAT NAME?!" },
-		{ "who": "stump", "text": "You mean, Bob? Or..." },
-		{ "who": "boss",  "text": "GAH!" },
-		{ "who": "boss",  "text": "...No matter. I  totally h4xx3d his order! Had the fairies that power that little tool of his sent to the deepest reaches of the land! There’s no way that bumbling lumberjack will be able to find all three! Hahahaha!" },
-		{ "who": "stump", "text": "Hah... Y-yeah I guess you’re right." },
+		{ "who": "stump", "text": "You mean Bob? Or..." },
+		{ "who": "boss",  "text": "GAH!\n ...No matter. I  totally hacked his order! That bumbling lumberjack will never find the fairies he needs! Hahahaha!" },
+		{ "who": "stump", "text": "Hah... Y-yeah I guess you're right." },
 		{ "who": "boss",  "text": "\n   HAHAHAHAH!" }
+	],
+	"cloudFairy": [
+		{ "who": "bob", "text": "A fairy!" },
+		{ "who": "cloudFairy", "text": "Yeah, what's it to you?" },
+		{ "who": "bob", "text": "You belong inside my chainsaw!" },
+		{ "who": "cloudFairy", "text": "Jeez, you sure know how to treat a lady!" },
+		{ "who": "bob", "text": "Pleeeeease!" },
+		{ "who": "cloudFairy", "text": "Alright, fine! Was getting kinda bored up here anyhow. But only if I can bring my comics and pop!" }
+	],
+	"firstFairy": [
+		{ "who": "stump", "text": "Uh..." },
+		{ "who": "boss", "text": "What is it now?!" },
+		{ "who": "stump", "text": "My apologies, sir. It's Bob. He's... Found the first fairy." },
+		{ "who": "boss", "text": "...\n ...\nHah, this cat gif is pretty great. Hahaha! Upvote!" },
+		{ "who": "stump", "text": "Sir?" },
+		{ "who": "boss", "text": "Hmm? You're still here? Honestly, that mouthbreather probably stumbled on the fairy by accident! There's no way he'll find all three. Close the door on your way out?" },
+		{ "who": "stump", "text": "Hah... Y-yeah, I guess you're right." }
+	],
+	"waterFairy": [
+		{ "who": "waterFairy", "text": "La lala la\nOh, well hello there stranger! Ya'll come down to buy some of my seaweed? It's mighty tasty!" },
+		{ "who": "bob", "text": "Now that you mention it I AM kinda hungry...\nBut, no! I'm here to get YOU in MY chainsaw! Hop in! ...Uh, please." },
+		{ "who": "waterFairy", "text": "Your what now? You mean that doohickey? Well, shucks, I suppose I could. All I really do is sing to this seaweed anyhow. I reckon it'll grow just fine without me." }
+	],
+	"secondFairy": [
+		{ "who": "boss", "text": "Aw, man! What the heck! You know I like the lights off! It makes me feel like a badass!" },
+		{ "who": "stump", "text": "SIR! Bob has obtained the second fairy! Something must be done!" },
+		{ "who": "boss", "text": "Aw, come on, it'll be fine. Besides, I had a huge lunch and I totally need a nap. Get the lights on your way out, would ya?" },
+		{ "who": "stump", "text": "Argh!" }
 	]
 }
