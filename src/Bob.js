@@ -48,7 +48,13 @@ function Bob() {
 	this.canDoubleJump = false;
 
 	// state
-	this.onTile   = null;
+	this.resetState();
+}
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.resetState = function () {
+	this.isDead   = null;
+	this.onTile   = { isEmpty: true }; // TODO
 	this.grounded = false;
 	this.climbing = false;
 	this.inWater  = 0;
@@ -62,11 +68,10 @@ function Bob() {
 	this.hitCounter = 0;
 	this.isHit = false;
 	this.isAttackable = true;
-}
+	this.sx = 0;
+	this.sy = 0;
+};
 
-module.exports = new Bob();
-
-//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.saveState = function () {
 	return {
 		x:             this.x,
@@ -78,11 +83,16 @@ Bob.prototype.saveState = function () {
 };
 
 Bob.prototype.restoreState = function (state) {
+	// reset all flags
+	this.resetState();
+
+	// restore state
 	this.x             = state.x;
 	this.y             = state.y;
 	this.canAttack     = state.canAttack;
 	this.canDive       = state.canDive;
 	this.canDoubleJump = state.canDoubleJump;
+
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -175,6 +185,7 @@ Bob.prototype.goDown = function () {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype._updateTileState = function () {
 	var tile = this.onTile = level.getTileAt(this.x + 4, this.y + 4);
+	if (tile.kill) return this.kill({ fromTile: tile });
 	this.inWater = tile.isWater; // TODO check enter, exit (for particles, etc)
 	this.onVine  = tile.isVine;
 };
@@ -202,6 +213,8 @@ Bob.prototype._updateControls = function () {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.update = function () {
+	if (this.isDead) return this.controller.killBob(this.isDead);
+
 	// friction
 	this.sx *= this.isHit ? 0.99 : 0.8;
 
@@ -373,3 +386,12 @@ Bob.prototype.hit = function (attacker) {
 	this.sx = attacker.x < this.x ? 1.6 : -1.6;
 	this.sy = attacker.y < this.y ? 2 : -3;
 };
+
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Bob.prototype.kill = function (params) {
+	this.isDead = params;
+};
+
+
+module.exports = new Bob();

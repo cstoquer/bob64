@@ -13,6 +13,7 @@ var DOOR_1  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, i
 var DOOR_2  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isDoor: true, doorId: 2 };
 var WATER   = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 1 };
 var WATER_S = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 2 };
+var KILL    = { isEmpty: true,  isSolid: false, isTopSolid: false, kill: true };
 var ENLIMIT = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isEntityLimit: true };
 
 
@@ -28,6 +29,7 @@ function getTileFromMapItem(mapItem) {
 		case 6:  return DOOR_2;
 		case 7:  return WATER;
 		case 8:  return WATER_S;
+		case 9:  return KILL;
 		case 32: return ENLIMIT;
 		default: return EMPTY;
 	}
@@ -47,7 +49,13 @@ function Level() {
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Level.prototype.init = function (id, def) {
+Level.prototype.load = function (id) {
+	this.id = id;
+
+	var def = assets.levels[id];
+	if (!def) return console.error('Level does not exist', id);
+	paper(def.bgcolor);
+
 	var map = getMap(def.geometry);
 	var bobPosition = map.find(255)[0];
 
@@ -152,5 +160,11 @@ Level.prototype.getTileAt = function (x, y) {
 	if (x < 0 || y < 0 || x >= this.width || y >= this.height) return EMPTY;
 	return this.grid[x][y];
 };
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Level.prototype.draw = function () {
+	// TODO background animations
+	draw(this.background);
+}
 
 module.exports = new Level();

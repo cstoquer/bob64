@@ -24,7 +24,7 @@
 		{ "who": "stump", "text": "Uh..." },
 		{ "who": "boss", "text": "What is it now?!" },
 		{ "who": "stump", "text": "My apologies, sir. It's Bob. He's... Found the first fairy." },
-		{ "who": "boss", "text": "...\n ...\nHah, this cat gif is pretty great. Hahaha! Upvote!" },
+		{ "who": "boss", "text": "...\n...\nHah, this cat gif is pretty great. Hahaha! Upvote!" },
 		{ "who": "stump", "text": "Sir?" },
 		{ "who": "boss", "text": "Hmm? You're still here? Honestly, that mouthbreather probably stumbled on the fairy by accident! There's no way he'll find all three. Close the door on your way out?" },
 		{ "who": "stump", "text": "Hah... Y-yeah, I guess you're right." }
@@ -39,5 +39,18 @@
 		{ "who": "stump", "text": "SIR! Bob has obtained the second fairy! Something must be done!" },
 		{ "who": "boss", "text": "Aw, come on, it'll be fine. Besides, I had a huge lunch and I totally need a nap. Get the lights on your way out, would ya?" },
 		{ "who": "stump", "text": "Argh!" }
+	],
+	"fireFairy": [
+		{ "who": "fireFairy", "text": "Alright, I overhauled your transmission so she should be good to go! Just promise you'll take good care of her, ya hear? That means no more driving through molten lava, OK?" },
+		{ "who": "fireFairy", "text": "I-is that? It can't be...The CHX-2000! Ho, baby! You're holding a real work of art, pal!" },
+		{ "who": "bob", "text": "Tell me about it! You want in?" },
+		{ "who": "fireFairy", "text": "Y-you mean me?! Wow. I-I'm honored. You won't regret this, pal. I'm gonna soup-up the throttle, hone the chainblade... She'll run like a dream!" }
+	],
+	"lastFairy": [
+		{ "who": "stump", "text": "Sir! Sir! It's happened!" },
+		{ "who": "boss", "text": "I know, the new iFone model was finally announced! I think it's too big, personally. Though the integrated selfie stick IS a nice touch...." },
+		{ "who": "stump", "text": "No no no! It's Bob! He's found the last fairy!" },
+		{ "who": "boss", "text": "What?! H-he has? You fool! Why didn't you warn me! The forest is doomed!" },
+		{ "who": "stump", "text": "..." }
 	]
 }

@@ -31,6 +31,17 @@ CutScene.prototype.enqueue = function (fn) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+CutScene.prototype.addBackgroundChange = function (color, image) {
+	this._actions.push(function () {
+		camera(0, 0);
+		paper(color);
+		cls();
+		if (image) draw(image);
+	});
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 CutScene.prototype.addDialog = function (dialog) {
 	this._actions.push(function () {
 		this._displayDialog(dialog);

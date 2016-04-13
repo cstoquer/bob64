@@ -3,14 +3,20 @@ var bob            = require('./Bob.js');
 var TextDisplay    = require('./TextDisplay.js');
 var Entity         = require('./Entity.js');
 var FadeTransition = require('./FadeTransition.js');
-var bossIntro      = require('./cutscenes/bossIntro.js');
 
+// cutscenes
+var bossIntro      = require('./cutscenes/bossIntro.js');
+var cloudFairy     = require('./cutscenes/cloudFairy.js');
+var firstFairy     = require('./cutscenes/firstFairy.js');
+var waterFairy     = require('./cutscenes/waterFairy.js');
+var secondFairy    = require('./cutscenes/secondFairy.js');
+var fireFairy      = require('./cutscenes/fireFairy.js');
+var lastFairy      = require('./cutscenes/lastFairy.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 var GRAVITY     = 0.5;
 var MAX_GRAVITY = 2;
-
 
 var nextLevel, nextDoor, nextSide;
 
@@ -47,7 +53,7 @@ GameController.prototype.saveState = function () {
 
 GameController.prototype.restoreState = function () {
 	if (!this.checkpoint) return;
-	this.loadLevel(this.checkpoint.id);
+	this.loadLevel(this.checkpoint.levelId);
 	bob.restoreState(this.checkpoint.bob);
 };
 
@@ -66,13 +72,11 @@ GameController.prototype.removeEntity = function (entity) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.loadLevel = function (id, doorId, side) {
 	this.entities = []; // remove all entities
-	var def = assets.levels[id];
-	if (!def) return console.error('Level does not exist', id);
-	level.init(id, def);
+	level.load(id);
 	if (doorId !== undefined) level.setBobPositionOnDoor(doorId);
 	if (side) level.setBobPositionOnSide(bob, side);
 	bob.setPosition(level.bobPos);
-	paper(def.bgcolor);
+	if (doorId || doorId === 0) this.saveState();
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -81,7 +85,7 @@ GameController.prototype.startFade = function () {
 	var self = this;
 	fader.start(null, function () {
 		self.loadLevel(nextLevel, nextDoor, nextSide);
-		isLocked = false;
+		isLocked = null;
 	});
 };
 
@@ -120,10 +124,21 @@ GameController.prototype.startCutScene = function (cutscene) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.killBob = function (params) {
+	var self = this;
+	// BIG HACK FIX THIS
+	isLocked = fader;
+	fader.start(null, function () {
+		self.restoreState();
+		isLocked = false;
+	});
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
 	if (isLocked) return isLocked.update();
 
-	if (btnp.B) return this.startCutScene(bossIntro()); // FIXME just for testing
+	if (btnp.B) return this.startCutScene(lastFairy()); // FIXME just for testing
 
 	bob.update();
 
@@ -132,7 +147,7 @@ GameController.prototype.update = function () {
 
 	cls();
 	camera(scrollX, scrollY);
-	draw(level.background);
+	level.draw();
 	for (var i = 0; i < this.entities.length; i++) {
 		this.entities[i].update(level, bob); // update and draw
 	}

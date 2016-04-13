@@ -2,6 +2,20 @@ var DEBUG = true;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // PREPARE LEVELS
+
+function createDefaultLevel(id, error) {
+	// TODO check map existance
+	var geometryId = id + "_geo";
+	var background = id;
+	var bgcolor = 0;
+	if (!getMap(geometryId)) return console.error('No geometry found for level', id);
+	if (!getMap(background)) { background = geometryId; bgcolor = 10; }
+	// if only geo exist, create a default for rendering
+	var level = { "name": "", "background": background, "geometry": geometryId, "bgcolor": bgcolor, "doors": ["", "", ""] };
+	assets.levels[id] = level;
+	if (error) console.error();
+}
+
 var levels = assets.levels;
 var doors  = assets.doors;
 
@@ -27,10 +41,8 @@ for (var i = 0; i < doors.length; i++) {
 	var doorIdA = doorAsplit[1] - 1;
 	var doorIdB = doorBsplit[1] - 1;
 
-	if (!levels[levelA] || !levels[levelB]) {
-		console.error('Level does not exist for this door', door);
-		continue;
-	}
+	if (!levels[levelA]) createDefaultLevel(levelA, 'Level does not exist for this door: ' + door);
+	if (!levels[levelB]) createDefaultLevel(levelB, 'Level does not exist for this door: ' + door);
 
 	levels[levelA].doors[doorIdA] = levelB + ':' + doorIdB;
 	levels[levelB].doors[doorIdB] = levelA + ':' + doorIdA;
@@ -48,12 +60,10 @@ gameController.loadLevel('ground0');
 if (DEBUG) {
 	// load level from console
 	window.loadLevel = function (id) {
-		if (!assets.levels[id]) {
-			// let's try to create the level
-			var level = { "name": "", "background": id, "geometry": id + "_geo", "bgcolor": 6, "doors": ["", "", ""] };
-			assets.levels[id] = level;
-		}
+		// let's try to create the level if it does't exist
+		if (!assets.levels[id]) createDefaultLevel(id);
 		gameController.loadLevel(id);
+		gameController.saveState();
 	}
 
 	// hack Bob abilities
