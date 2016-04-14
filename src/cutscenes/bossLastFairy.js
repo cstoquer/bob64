@@ -12,7 +12,7 @@ function bossLastFairy() {
 
 	//------------------------------------------------------------
 	// add a fading transition animation
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// enqueue a function: this one clear screen and draw the boss room

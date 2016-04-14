@@ -83,6 +83,11 @@ Level.prototype.load = function (id) {
 	}}
 
 	this._initBackground(def);
+
+	if (def.cutscene) {
+		this.controller.startCutScene(def.cutscene());
+		def.cutscene = null; // make sure to play cutscene only once
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -157,7 +162,10 @@ Level.prototype.setBobPositionOnSide = function (bob, direction) {
 Level.prototype.getTileAt = function (x, y) {
 	x = ~~(x / TILE_WIDTH);
 	y = ~~(y / TILE_HEIGHT);
-	if (x < 0 || y < 0 || x >= this.width || y >= this.height) return EMPTY;
+	// clamp position in level bondaries
+	if (x < 0) x = 0; else if (x >= this.width)  x = this.width  - 1;
+	if (y < 0) y = 0; else if (y >= this.height) y = this.height - 1;
+	// if (x < 0 || y < 0 || x >= this.width || y >= this.height) return EMPTY;
 	return this.grid[x][y];
 };
 

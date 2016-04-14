@@ -6,7 +6,7 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 function fireFairy() {
 	var cutscene = new CutScene();
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// clear screen and draw background

@@ -284,7 +284,11 @@ Bob.prototype.levelCollisions = function () {
 	if (x < -4)   { x = -4;   if (this.controller.goToNeighbourLevel('left'))  return; }
 	if (x > maxX) { x = maxX; if (this.controller.goToNeighbourLevel('right')) return; }
 	if (y < -6   && this.controller.goToNeighbourLevel('up'))   return;
-	if (y > maxY && this.controller.goToNeighbourLevel('down')) return; // TODO: else should bob dies?
+	if (y > maxY) {
+		if (this.controller.goToNeighbourLevel('down')) return;
+		// if bob fall off a bottomless level, kill him after falling 2 more tiles
+		else if (y > maxY + 16) return this.kill(true); // TODO add death param
+	}
 
 	var front       = 8;
 	var frontOffset = 0;
@@ -386,7 +390,6 @@ Bob.prototype.hit = function (attacker) {
 	this.sx = attacker.x < this.x ? 1.6 : -1.6;
 	this.sy = attacker.y < this.y ? 2 : -3;
 };
-
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.kill = function (params) {

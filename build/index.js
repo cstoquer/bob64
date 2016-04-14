@@ -6930,7 +6930,11 @@ Bob.prototype.levelCollisions = function () {
 	if (x < -4)   { x = -4;   if (this.controller.goToNeighbourLevel('left'))  return; }
 	if (x > maxX) { x = maxX; if (this.controller.goToNeighbourLevel('right')) return; }
 	if (y < -6   && this.controller.goToNeighbourLevel('up'))   return;
-	if (y > maxY && this.controller.goToNeighbourLevel('down')) return; // TODO: else should bob dies?
+	if (y > maxY) {
+		if (this.controller.goToNeighbourLevel('down')) return;
+		// if bob fall off a bottomless level, kill him after falling 2 more tiles
+		else if (y > maxY + 16) return this.kill(true); // TODO add death param
+	}
 
 	var front       = 8;
 	var frontOffset = 0;
@@ -7032,7 +7036,6 @@ Bob.prototype.hit = function (attacker) {
 	this.sx = attacker.x < this.x ? 1.6 : -1.6;
 	this.sy = attacker.y < this.y ? 2 : -3;
 };
-
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.kill = function (params) {
@@ -7351,15 +7354,6 @@ var TextDisplay    = require('./TextDisplay.js');
 var Entity         = require('./Entity.js');
 var FadeTransition = require('./FadeTransition.js');
 
-// cutscenes
-var bossIntro      = require('./cutscenes/bossIntro.js');
-var cloudFairy     = require('./cutscenes/cloudFairy.js');
-var bossFirstFairy = require('./cutscenes/bossFirstFairy.js');
-var waterFairy     = require('./cutscenes/waterFairy.js');
-var bossSecondFairy= require('./cutscenes/bossSecondFairy.js');
-var fireFairy      = require('./cutscenes/fireFairy.js');
-var bossLastFairy  = require('./cutscenes/bossLastFairy.js');
-
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 var GRAVITY     = 0.5;
@@ -7431,8 +7425,8 @@ GameController.prototype.startFade = function () {
 	isLocked = fader;
 	var self = this;
 	fader.start(null, function () {
-		self.loadLevel(nextLevel, nextDoor, nextSide);
 		isLocked = null;
+		self.loadLevel(nextLevel, nextDoor, nextSide);
 	});
 };
 
@@ -7475,8 +7469,8 @@ GameController.prototype.killBob = function (params) {
 	var self = this;
 	isLocked = fader;
 	fader.start(null, function () {
+		isLocked = null;
 		self.restoreState();
-		isLocked = false;
 	});
 };
 
@@ -7484,7 +7478,7 @@ GameController.prototype.killBob = function (params) {
 GameController.prototype.update = function () {
 	if (isLocked) return isLocked.update();
 
-	if (btnp.B) return this.startCutScene(bossFirstFairy()); // FIXME just for testing
+	// if (btnp.B) return this.startCutScene(bossFirstFairy()); // FIXME just for testing
 
 	bob.update();
 
@@ -7500,7 +7494,7 @@ GameController.prototype.update = function () {
 	bob.draw();
 };
 
-},{"./Bob.js":39,"./Entity.js":41,"./FadeTransition.js":42,"./Level.js":44,"./TextDisplay.js":46,"./cutscenes/bossFirstFairy.js":47,"./cutscenes/bossIntro.js":48,"./cutscenes/bossLastFairy.js":49,"./cutscenes/bossSecondFairy.js":50,"./cutscenes/cloudFairy.js":51,"./cutscenes/fireFairy.js":52,"./cutscenes/waterFairy.js":53}],44:[function(require,module,exports){
+},{"./Bob.js":39,"./Entity.js":41,"./FadeTransition.js":42,"./Level.js":44,"./TextDisplay.js":46}],44:[function(require,module,exports){
 var Onion = require('./Onion.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -7586,6 +7580,11 @@ Level.prototype.load = function (id) {
 	}}
 
 	this._initBackground(def);
+
+	if (def.cutscene) {
+		this.controller.startCutScene(def.cutscene());
+		def.cutscene = null; // make sure to play cutscene only once
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -7660,7 +7659,10 @@ Level.prototype.setBobPositionOnSide = function (bob, direction) {
 Level.prototype.getTileAt = function (x, y) {
 	x = ~~(x / TILE_WIDTH);
 	y = ~~(y / TILE_HEIGHT);
-	if (x < 0 || y < 0 || x >= this.width || y >= this.height) return EMPTY;
+	// clamp position in level bondaries
+	if (x < 0) x = 0; else if (x >= this.width)  x = this.width  - 1;
+	if (y < 0) y = 0; else if (y >= this.height) y = this.height - 1;
+	// if (x < 0 || y < 0 || x >= this.width || y >= this.height) return EMPTY;
 	return this.grid[x][y];
 };
 
@@ -7943,7 +7945,7 @@ function bossFirstFairy() {
 
 	//------------------------------------------------------------
 	// add a fading transition animation
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// enqueue a function: this one clear screen and draw the boss room
@@ -7970,24 +7972,14 @@ function bossFirstFairy() {
 		// draw the scene
 		cls();
 		draw(bossRoom);
-		// TODO draw the boss
 		onionGuy.draw();
+		// TODO draw the boss
 		if (onionGuy.x < 13) return false; // continue the animation
 		return true; // ends the animation
 	});
 	
 	cutscene.addDelay(1);
 	
-	// cutscene.addAnimation(function () {
-	// 	onionGuy.x += 0.5;
-	// 	cls();
-	// 	draw(bossRoom);
-	// 	onionGuy.draw();
-	// 	// TODO draw the boss
-	// 	if (onionGuy.x < 10) return false; // continue the animation
-	// 	return true; // ends the animation
-	// });
-
 	//------------------------------------------------------------
 	// display a dialog
 	cutscene.addDialog(assets.dialogs.bossFirstFairy);
@@ -8018,7 +8010,7 @@ function bossIntro() {
 
 	//------------------------------------------------------------
 	// add a fading transition animation
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// enqueue a function: this one clear screen and draw the boss room
@@ -8083,7 +8075,7 @@ function bossLastFairy() {
 
 	//------------------------------------------------------------
 	// add a fading transition animation
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// enqueue a function: this one clear screen and draw the boss room
@@ -8153,7 +8145,7 @@ function bossSecondFairy() {
 
 	//------------------------------------------------------------
 	// add a fading transition animation
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// enqueue a function: this one clear screen and draw the boss room
@@ -8219,7 +8211,7 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 function cloudFairy() {
 	var cutscene = new CutScene();
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// clear screen and draw background
@@ -8266,7 +8258,7 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 function fireFairy() {
 	var cutscene = new CutScene();
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// clear screen and draw background
@@ -8313,7 +8305,7 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 function waterFairy() {
 	var cutscene = new CutScene();
-	cutscene.addFade();
+	// cutscene.addFade();
 
 	//------------------------------------------------------------
 	// clear screen and draw background
@@ -8368,6 +8360,7 @@ function createDefaultLevel(id, error) {
 	var level = { "name": "", "background": background, "geometry": geometryId, "bgcolor": bgcolor, "doors": ["", "", ""] };
 	assets.levels[id] = level;
 	if (error) console.error();
+	return true;
 }
 
 var levels = assets.levels;
@@ -8395,11 +8388,39 @@ for (var i = 0; i < doors.length; i++) {
 	var doorIdA = doorAsplit[1] - 1;
 	var doorIdB = doorBsplit[1] - 1;
 
-	if (!levels[levelA]) createDefaultLevel(levelA, 'Level does not exist for this door: ' + door);
-	if (!levels[levelB]) createDefaultLevel(levelB, 'Level does not exist for this door: ' + door);
+	if (!levels[levelA] && createDefaultLevel(levelA, 'Level does not exist for this door: ' + door)) continue;
+	if (!levels[levelB] && createDefaultLevel(levelB, 'Level does not exist for this door: ' + door)) continue;
 
 	levels[levelA].doors[doorIdA] = levelB + ':' + doorIdB;
 	levels[levelB].doors[doorIdB] = levelA + ':' + doorIdA;
+}
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+// PREPARE CUTSCENES
+
+var CUTSCENES_ANIMATIONS = {
+	bossIntro:       require('./cutscenes/bossIntro.js'),
+	cloudFairy:      require('./cutscenes/cloudFairy.js'),
+	bossFirstFairy:  require('./cutscenes/bossFirstFairy.js'),
+	waterFairy:      require('./cutscenes/waterFairy.js'),
+	bossSecondFairy: require('./cutscenes/bossSecondFairy.js'),
+	fireFairy:       require('./cutscenes/fireFairy.js'),
+	bossLastFairy:   require('./cutscenes/bossLastFairy.js')
+};
+
+var cutscenes = assets.cutscenes;
+
+for (var i = 0; i < cutscenes.length; i++) {
+	var cutscene   = cutscenes[i];
+	var levelId    = cutscene.level;
+	var cutsceneId = cutscene.cutsceneId;
+	if (!CUTSCENES_ANIMATIONS[cutsceneId]) {
+		console.error('Cut scene is not included in build:' + cutsceneId, cutscene);
+		continue;
+	}
+	var level = levels[levelId];
+	if (!level && createDefaultLevel(levelId, 'Level does not exist for this cutscene: ' + cutsceneId)) continue;
+	level.cutscene = CUTSCENES_ANIMATIONS[cutsceneId];
 }
 
 
@@ -8434,7 +8455,7 @@ exports.update = function () {
 	gameController.update();
 };
 
-},{"./Bob.js":39,"./GameController.js":43}],55:[function(require,module,exports){
+},{"./Bob.js":39,"./GameController.js":43,"./cutscenes/bossFirstFairy.js":47,"./cutscenes/bossIntro.js":48,"./cutscenes/bossLastFairy.js":49,"./cutscenes/bossSecondFairy.js":50,"./cutscenes/cloudFairy.js":51,"./cutscenes/fireFairy.js":52,"./cutscenes/waterFairy.js":53}],55:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
