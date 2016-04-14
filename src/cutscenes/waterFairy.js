@@ -1,4 +1,8 @@
-var CutScene = require('../CutScene.js');
+var CutScene       = require('../CutScene.js');
+var AnimatedSprite = require('../AnimatedSprite.js');
+
+var FAIRY_ANIMATION = [122, 123, 124, 125, 126, 127];
+var BOB_WALK_ANIM   = [252, 253, 254];
 
 function waterFairy() {
 	var cutscene = new CutScene();
@@ -11,25 +15,21 @@ function waterFairy() {
 
 	//------------------------------------------------------------
 	// bob walk in animation
-	var bobX = -12;
-	var bobFrame = 0;
+	var fairy = new AnimatedSprite(FAIRY_ANIMATION, 0.3).setPosition(40, 30);
+	var bob   = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(-20, 48);
 	cutscene.addAnimation(function () {
-		bobX += 0.5;
-		bobFrame += 0.2;
-		if (bobFrame > 3) bobFrame = 0;
-		var bobImage = assets.entities.bob['walk' + ~~bobFrame];
-		var fairyImage = assets.entities.onion['walk0']; // TODO: fairy assets
+		bob.x += 0.4;
 
 		// draw the scene
 		cls();
 		draw(background);
-		draw(bobImage, bobX, 50);
-		if (bobX < 10) {
-			draw(fairyImage, 40, 30);
+		bob.draw();
+		if (bob.x < 10) {
+			fairy.draw();
 			return false;
 		}
-		
-		draw(fairyImage, 40, 30, true); // flip fairy
+		fairy.flipH = true; // flip fairy
+		fairy.draw(); 
 		return true;
 	});
 	

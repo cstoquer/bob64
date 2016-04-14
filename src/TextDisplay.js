@@ -63,10 +63,13 @@ TextDisplay.prototype._setDialog = function () {
 	var text = currentDialog.text;
 
 	switch (who) {
-		case 'bob':   this.textWindow.pen(10); break;
-		case 'boss':  this.textWindow.pen(4); break;
-		case 'stump': this.textWindow.pen(3); break;
-		default: this.textWindow.pen(1);
+		case 'bob':        this.textWindow.pen(10); break;
+		case 'boss':       this.textWindow.pen(4);  break;
+		case 'stump':      this.textWindow.pen(3);  break;
+		case 'cloudFairy': this.textWindow.pen(7);  break;
+		case 'waterFairy': this.textWindow.pen(6);  break;
+		case 'fireFairy':  this.textWindow.pen(15); break;
+		default:           this.textWindow.pen(1);
 	}
 
 	// split text with end line character

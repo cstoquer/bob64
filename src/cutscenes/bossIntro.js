@@ -1,4 +1,8 @@
-var CutScene = require('../CutScene.js');
+var CutScene       = require('../CutScene.js');
+var AnimatedSprite = require('../AnimatedSprite.js');
+
+var onion = assets.entities.onion;
+var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
 
 function bossIntro() {
 
@@ -27,22 +31,18 @@ function bossIntro() {
 	//------------------------------------------------------------
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
-	var onionX = -7;
-	var onionFrame = 0;
+	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
 	cutscene.addAnimation(function () {
-		onionX += 0.5;
-
-		// to make the onion guy walk animation. TODO: create an animator to abstract this
-		onionFrame += 0.2;
-		if (onionFrame > 4) onionFrame = 0;
-		var onionImage = assets.entities.onion['walk' + ~~onionFrame];
+		// to make the onion guy move forward
+		onionGuy.x += 0.5;
 
 		// draw the scene
 		cls();
 		draw(bossRoom);
+		onionGuy.draw();
 		// TODO draw the boss
-		draw(onionImage, onionX, 40);
-		if (onionX < 10) return false; // continue the animation
+
+		if (onionGuy.x < 10) return false; // continue the animation
 
 		return true; // ends the animation
 	});

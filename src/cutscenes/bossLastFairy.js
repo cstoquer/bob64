@@ -1,6 +1,10 @@
-var CutScene = require('../CutScene.js');
+var CutScene       = require('../CutScene.js');
+var AnimatedSprite = require('../AnimatedSprite.js');
 
-function lastFairy() {
+var onion = assets.entities.onion;
+var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+
+function bossLastFairy() {
 
 	//------------------------------------------------------------
 	// create an empty cutscene
@@ -25,36 +29,24 @@ function lastFairy() {
 	//------------------------------------------------------------
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
-	var onionX = -7;
-	var onionFrame = 0;
+	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
 	cutscene.addAnimation(function () {
-		onionX += 0.8;
-
-		// to make the onion guy walk animation. TODO: create an animator to abstract this
-		onionFrame += 0.2;
-		if (onionFrame > 4) onionFrame = 0;
-		var onionImage = assets.entities.onion['walk' + ~~onionFrame];
-
-		// draw the scene
+		onionGuy.x += 0.8;
 		cls();
 		draw(background);
+		onionGuy.draw();
 		// TODO draw the boss
-		draw(onionImage, onionX, 40);
-		if (onionX < 10) return false; // continue the animation
-
+		if (onionGuy.x < 10) return false; // continue the animation
 		return true; // ends the animation
 	});
 	
 	cutscene.addDelay(1);
 	
 	cutscene.enqueue(function () {
-	var onionImage = assets.entities.onion['walk' + ~~onionFrame];
-	
 		background = getMap('bossCutScene');
 		cls(); // set background color to 0 (black) and clear screen
-		
 		draw(background); // draw boss room
-		draw(onionImage, onionX, 40);
+		onionGuy.draw();
 		// TODO draw the boss
 	});
 	
@@ -62,7 +54,7 @@ function lastFairy() {
 	
 	//------------------------------------------------------------
 	// display a dialog
-	cutscene.addDialog(assets.dialogs.lastFairy);
+	cutscene.addDialog(assets.dialogs.bossLastFairy);
 
 	//------------------------------------------------------------
 	// add a last fade before going back to the game
@@ -73,4 +65,4 @@ function lastFairy() {
 	return cutscene;
 }
 
-module.exports = lastFairy;
+module.exports = bossLastFairy;

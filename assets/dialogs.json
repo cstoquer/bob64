@@ -13,44 +13,44 @@
 		{ "who": "boss",  "text": "\n   HAHAHAHAH!" }
 	],
 	"cloudFairy": [
-		{ "who": "bob", "text": "A fairy!" },
+		{ "who": "bob",        "text": "A fairy!" },
 		{ "who": "cloudFairy", "text": "Yeah, what's it to you?" },
-		{ "who": "bob", "text": "You belong inside my chainsaw!" },
+		{ "who": "bob",        "text": "You belong inside my chainsaw!" },
 		{ "who": "cloudFairy", "text": "Jeez, you sure know how to treat a lady!" },
-		{ "who": "bob", "text": "Pleeeeease!" },
+		{ "who": "bob",        "text": "Pleeeeease!" },
 		{ "who": "cloudFairy", "text": "Alright, fine! Was getting kinda bored up here anyhow. But only if I can bring my comics and pop!" }
 	],
-	"firstFairy": [
+	"bossFirstFairy": [
 		{ "who": "stump", "text": "Uh..." },
-		{ "who": "boss", "text": "What is it now?!" },
+		{ "who": "boss",  "text": "What is it now?!" },
 		{ "who": "stump", "text": "My apologies, sir. It's Bob. He's... Found the first fairy." },
-		{ "who": "boss", "text": "...\n...\nHah, this cat gif is pretty great. Hahaha! Upvote!" },
+		{ "who": "boss",  "text": "...\n...\nHah, this cat gif is pretty great. Hahaha! Upvote!" },
 		{ "who": "stump", "text": "Sir?" },
-		{ "who": "boss", "text": "Hmm? You're still here? Honestly, that mouthbreather probably stumbled on the fairy by accident! There's no way he'll find all three. Close the door on your way out?" },
+		{ "who": "boss",  "text": "Hmm? You're still here? Honestly, that mouthbreather probably stumbled on the fairy by accident! There's no way he'll find all three. Close the door on your way out?" },
 		{ "who": "stump", "text": "Hah... Y-yeah, I guess you're right." }
 	],
 	"waterFairy": [
 		{ "who": "waterFairy", "text": "La lala la\nOh, well hello there stranger! Ya'll come down to buy some of my seaweed? It's mighty tasty!" },
-		{ "who": "bob", "text": "Now that you mention it I AM kinda hungry...\nBut, no! I'm here to get YOU in MY chainsaw! Hop in! ...Uh, please." },
+		{ "who": "bob",        "text": "Now that you mention it I AM kinda hungry...\nBut, no! I'm here to get YOU in MY chainsaw! Hop in! ...Uh, please." },
 		{ "who": "waterFairy", "text": "Your what now? You mean that doohickey? Well, shucks, I suppose I could. All I really do is sing to this seaweed anyhow. I reckon it'll grow just fine without me." }
 	],
-	"secondFairy": [
-		{ "who": "boss", "text": "Aw, man! What the heck! You know I like the lights off! It makes me feel like a badass!" },
+	"bossSecondFairy": [
+		{ "who": "boss",  "text": "Aw, man! What the heck! You know I like the lights off! It makes me feel like a badass!" },
 		{ "who": "stump", "text": "SIR! Bob has obtained the second fairy! Something must be done!" },
-		{ "who": "boss", "text": "Aw, come on, it'll be fine. Besides, I had a huge lunch and I totally need a nap. Get the lights on your way out, would ya?" },
+		{ "who": "boss",  "text": "Aw, come on, it'll be fine. Besides, I had a huge lunch and I totally need a nap. Get the lights on your way out, would ya?" },
 		{ "who": "stump", "text": "Argh!" }
 	],
 	"fireFairy": [
 		{ "who": "fireFairy", "text": "Alright, I overhauled your transmission so she should be good to go! Just promise you'll take good care of her, ya hear? That means no more driving through molten lava, OK?" },
 		{ "who": "fireFairy", "text": "I-is that? It can't be...The CHX-2000! Ho, baby! You're holding a real work of art, pal!" },
-		{ "who": "bob", "text": "Tell me about it! You want in?" },
+		{ "who": "bob",       "text": "Tell me about it! You want in?" },
 		{ "who": "fireFairy", "text": "Y-you mean me?! Wow. I-I'm honored. You won't regret this, pal. I'm gonna soup-up the throttle, hone the chainblade... She'll run like a dream!" }
 	],
-	"lastFairy": [
+	"bossLastFairy": [
 		{ "who": "stump", "text": "Sir! Sir! It's happened!" },
-		{ "who": "boss", "text": "I know, the new iFone model was finally announced! I think it's too big, personally. Though the integrated selfie stick IS a nice touch...." },
+		{ "who": "boss",  "text": "I know, the new iFone model was finally announced! I think it's too big, personally. Though the integrated selfie stick IS a nice touch...." },
 		{ "who": "stump", "text": "No no no! It's Bob! He's found the last fairy!" },
-		{ "who": "boss", "text": "What?! H-he has? You fool! Why didn't you warn me! The forest is doomed!" },
+		{ "who": "boss",  "text": "What?! H-he has? You fool! Why didn't you warn me! The forest is doomed!" },
 		{ "who": "stump", "text": "..." }
 	]
 }
