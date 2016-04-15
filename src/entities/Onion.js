@@ -1,5 +1,5 @@
 var Entity        = require('./Entity.js');
-var AABBcollision = require('./AABBcollision.js');
+var AABBcollision = require('../AABBcollision.js');
 
 var a = assets.entities.onion;
 var walk   = [a.walk0, a.walk1, a.walk2, a.walk3, a.walk4];
@@ -124,7 +124,6 @@ Onion.prototype.setDirection = function (direction) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Onion.prototype.hit = function (attacker) {
-	// TODO
 	// from where do hit comes from ?
 	this.grounded = false;
 	this.springCounter = 0;
@@ -141,6 +140,5 @@ Onion.prototype.hit = function (attacker) {
 	this.hitCounter = 0;
 	this.isAttackable = false;
 	this.sy = -2;
-	// this.controller.removeEntity(this);
 	// TODO add explosion animation
 };

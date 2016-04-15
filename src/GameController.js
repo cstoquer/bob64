@@ -1,7 +1,7 @@
 var level          = require('./Level.js');
 var bob            = require('./Bob.js');
 var TextDisplay    = require('./TextDisplay.js');
-var Entity         = require('./Entity.js');
+var Entity         = require('./entities/Entity.js');
 var FadeTransition = require('./FadeTransition.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -127,8 +127,6 @@ GameController.prototype.killBob = function (params) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
 	if (isLocked) return isLocked.update();
-
-	// if (btnp.B) return this.startCutScene(bossFirstFairy()); // FIXME just for testing
 
 	bob.update();
 
