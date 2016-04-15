@@ -38,6 +38,7 @@ inherits(Onion, Entity);
 module.exports = Onion;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+/* return true if entity needs to check collision with level */
 Onion.prototype.move = function (level, bob) {
 
 	if (!this.isHit && bob.isAttackable && AABBcollision(this, bob)) {
@@ -91,7 +92,8 @@ Onion.prototype.onGrounds = function () {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Onion.prototype.collideFront = function () {
+Onion.prototype.collideFront = function (direction) {
+	if (this.direction !== direction) return;
 	// make entity turn around
 	this.sx = 0;
 	this.direction *= -1;

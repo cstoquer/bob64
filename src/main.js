@@ -87,6 +87,9 @@ gameController.loadLevel('ground0');
 // DEBUGGING FUNCTIONS 
 
 if (DEBUG) {
+	window.controller = gameController;
+	window.bob        = gameController.bob;
+	window.level      = gameController.level;
 	// load level from console
 	window.loadLevel = function (id) {
 		// let's try to create the level if it does't exist

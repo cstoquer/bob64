@@ -78,18 +78,19 @@ Entity.prototype.levelCollisions = function (level, bob) {
 
 	// check level boundaries
 	var maxX = level.width * TILE_WIDTH - this.width; // TODO don't need to be calculated each frames
-	if (x < 0)    {x = 0;    this.hasCollidedLevelFront = true; this.collideFront(); }
-	if (x > maxX) {x = maxX; this.hasCollidedLevelFront = true; this.collideFront(); }
+	if (this.sx < 0 && x < 0)    {x = 0;    this.hasCollidedLevelFront = true; this.collideFront(-1); }
+	if (this.sx > 0 && x > maxX) {x = maxX; this.hasCollidedLevelFront = true; this.collideFront(1); }
 
-	var front       = 8;
+	var front = this.width;
 	var frontOffset = 0;
-	if (this.sx < 0) { front = 0; frontOffset = 8; }
+	var collideDirection = 1;
+	if (this.sx < 0) { front = 0; frontOffset = this.width; collideDirection = -1; }
 
 	//---------------------------------------------------------
 	// horizontal collisions (check 2 front point)
-	if (level.getTileAt(x + front, this.y + 1).isSolid || level.getTileAt(x + front, this.y + 7).isSolid) {
+	if (this.sx > 0 && level.getTileAt(x + front, this.y + 1).isSolid || level.getTileAt(x + front, this.y + this.height - 1).isSolid) {
 		this.hasCollidedLevelFront = true;
-		this.collideFront();
+		this.collideFront(collideDirection);
 		x = ~~(x / TILE_WIDTH) * TILE_WIDTH + frontOffset;
 	}
 

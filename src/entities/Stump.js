@@ -1,10 +1,11 @@
 var Entity        = require('./Entity.js');
+var Spit          = require('./Spit.js');
 var AABBcollision = require('../AABBcollision.js');
 
 var a = assets.entities.stump;
 var WALK_ANIM = [a.walk0, a.walk1, a.walk2, a.walk3, a.walk4, a.walk5];
 var SPIT_ANIM = [a.spit0, a.spit1, a.spit2, a.spit3, a.spit4];
-var hitImg = a.idle; // TODO
+var HIT_IMG   = a.hit;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Stump() {
@@ -17,7 +18,7 @@ function Stump() {
 	this.gravity    = 0.12;
 	this.maxGravity = 1;
 
-	// onion properties
+	// stump properties
 	this.speed      = 0.10;
 	this.direction  = 1;
 	this.isHit      = false;
@@ -31,13 +32,14 @@ function Stump() {
 
 	// state
 	this.attackCounter = 0;
-	this.jumping = false;
+	this.hasSpit = false;
 }
 inherits(Stump, Entity);
 
 module.exports = Stump;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+/* return true if entity needs to check collision with level */
 Stump.prototype.move = function (level, bob) {
 
 	if (!this.isHit && bob.isAttackable && AABBcollision(this, bob)) {
@@ -87,7 +89,8 @@ Stump.prototype.move = function (level, bob) {
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-Stump.prototype.collideFront = function () {
+Stump.prototype.collideFront = function (direction) {
+	if (this.direction !== direction) return;
 	// make entity turn around
 	this.sx = 0;
 	this.direction *= -1;
@@ -97,14 +100,19 @@ Stump.prototype.collideFront = function () {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Stump.prototype.animate = function () {
 	if (this.isHit) {
-		draw(hitImg, this.x, this.y - 8, this.flipH);
+		draw(HIT_IMG, this.x, this.y - 8, this.flipH);
 		return;
 	}
 	this.frame += this.animSpeed;
 	if (this.anim === SPIT_ANIM) {
+		if (!this.hasSpit && this.frame >= 4) {
+			this.hasSpit = true;
+			this.spit();
+		}
 		if (this.frame >= this.anim.length) {
 			this.anim = WALK_ANIM;
 			this.frame = 0;
+			this.hasSpit = false;
 		}
 	}
 	if (this.frame >= this.anim.length) this.frame = 0;
@@ -137,4 +145,11 @@ Stump.prototype.hit = function (attacker) {
 	this.isAttackable = false;
 	this.sy = -2;
 	this.anim = WALK_ANIM;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Stump.prototype.spit = function () {
+	var spit = new Spit();
+	spit.setDirection(this.direction).setPosition(this.x, this.y + 3);
+	this.controller.addEntity(spit);
 };
