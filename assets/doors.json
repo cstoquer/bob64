@@ -1,7 +1,8 @@
 [
-	["ground0:1", "cave:1"],
-	["ground0:2", "cave:2"],
-	["ground0:3", "test:1"],
-	["ground3:1", "bossRoom:1"],
-	["lava:1",    "lava2:1"]
+	["house:1",    "inside:1"],
+	["house:1",    "inside:1"],
+	["ground4:1",  "mountainCave:1"],
+	["ground7:1",  "tree:1"],
+	["mountain:1", "mountainCave:2"],
+	["ground3:1",  "bossRoom:1"]
 ]

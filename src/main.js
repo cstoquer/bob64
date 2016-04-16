@@ -4,11 +4,12 @@ var DEBUG = true;
 // PREPARE LEVELS
 
 function createDefaultLevel(id, error) {
+	error = error || '';
 	// TODO check map existance
 	var geometryId = id + "_geo";
 	var background = id;
 	var bgcolor = 0;
-	if (!getMap(geometryId)) return console.error('No geometry found for level', id);
+	if (!getMap(geometryId)) return console.error(error + ': No geometry found for level', id);
 	if (!getMap(background)) { background = geometryId; bgcolor = 10; }
 	// if only geo exist, create a default for rendering
 	var level = { "name": "", "background": background, "geometry": geometryId, "bgcolor": bgcolor, "doors": ["", "", ""] };
@@ -53,13 +54,10 @@ for (var i = 0; i < doors.length; i++) {
 // PREPARE CUTSCENES
 
 var CUTSCENES_ANIMATIONS = {
-	bossIntro:       require('./cutscenes/bossIntro.js'),
-	cloudFairy:      require('./cutscenes/cloudFairy.js'),
-	bossFirstFairy:  require('./cutscenes/bossFirstFairy.js'),
-	waterFairy:      require('./cutscenes/waterFairy.js'),
-	bossSecondFairy: require('./cutscenes/bossSecondFairy.js'),
-	fireFairy:       require('./cutscenes/fireFairy.js'),
-	bossLastFairy:   require('./cutscenes/bossLastFairy.js')
+	intro:       require('./cutscenes/intro.js'),
+	cloudFairy:  require('./cutscenes/cloudFairy.js'),
+	waterFairy:  require('./cutscenes/waterFairy.js'),
+	fireFairy:   require('./cutscenes/fireFairy.js')
 };
 
 var cutscenes = assets.cutscenes;
@@ -81,7 +79,7 @@ for (var i = 0; i < cutscenes.length; i++) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 var gameController = require('./GameController.js');
 
-gameController.loadLevel('ground0');
+
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // DEBUGGING FUNCTIONS 
@@ -90,13 +88,21 @@ if (DEBUG) {
 	window.controller = gameController;
 	window.bob        = gameController.bob;
 	window.level      = gameController.level;
+
+	// load cutscene from console
+	window.cutscene = function (id) {
+		var cutscene = CUTSCENES_ANIMATIONS[id];
+		if (!cutscene) return console.error('cutscene does not exist');
+		gameController.startCutScene(cutscene());
+	}
+
 	// load level from console
 	window.loadLevel = function (id) {
 		// let's try to create the level if it does't exist
 		if (!assets.levels[id]) createDefaultLevel(id);
 		gameController.loadLevel(id);
 		gameController.saveState();
-	}
+	};
 
 	// hack Bob abilities
 	var bob = require('./Bob.js');
@@ -104,6 +110,11 @@ if (DEBUG) {
 	bob.canDoubleJump = true;
 	bob.canAttack     = true;
 }
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+// START GAME
+gameController.loadLevel('inside');
+gameController.saveState();
 
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

@@ -23,6 +23,7 @@ function Stump() {
 	this.direction  = 1;
 	this.isHit      = false;
 	this.hitCounter = 0;
+	this.lifePoints = 3;
 
 	// rendering & animation
 	this.flipH     = false;
@@ -59,6 +60,8 @@ Stump.prototype.move = function (level, bob) {
 	if (this.isHit) {
 		if (this.hitCounter++ > 16) {
 			// hit end
+			this.lifePoints -= 1;
+			if (this.lifePoints <= 0) return this.explode();
 			this.isHit = false;
 			this.isAttackable = true;
 		}

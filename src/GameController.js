@@ -2,6 +2,7 @@ var level          = require('./Level.js');
 var bob            = require('./Bob.js');
 var TextDisplay    = require('./TextDisplay.js');
 var Entity         = require('./entities/Entity.js');
+var ShortAnimation = require('./entities/ShortAnimation.js');
 var FadeTransition = require('./FadeTransition.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -21,10 +22,12 @@ function GameController() {
 	this.level       = level;
 	this.bob         = bob;
 	this.entities    = [];
+	this.animations  = [];
 
 	level.controller = this;
 	bob.controller   = this;
 	Entity.prototype.controller = this;
+	ShortAnimation.prototype.controller = this;
 
 	this.checkpoint = {
 		levelId: 'ground0',
@@ -58,6 +61,18 @@ GameController.prototype.removeEntity = function (entity) {
 	var index = this.entities.indexOf(entity);
 	if (index === -1) return console.warn('entity does not exist');
 	this.entities.splice(index, 1);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.addAnimation = function (animation) {
+	this.animations.push(animation);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.removeAnimation = function (animation) {
+	var index = this.animations.indexOf(animation);
+	if (index === -1) return console.warn('entity does not exist');
+	this.animations.splice(index, 1);
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -118,7 +133,7 @@ GameController.prototype.startCutScene = function (cutscene) {
 GameController.prototype.killBob = function (params) {
 	var self = this;
 	isLocked = fader;
-	fader.start(null, function () {
+	fader.start({ img: assets.ditherFonduRed }, function () {
 		isLocked = null;
 		self.restoreState();
 	});
@@ -136,8 +151,11 @@ GameController.prototype.update = function () {
 	cls();
 	camera(scrollX, scrollY);
 	level.draw();
-	for (var i = 0; i < this.entities.length; i++) {
+	for (var i = this.entities.length - 1; i >= 0; i--) {
 		this.entities[i].update(level, bob); // update and draw
+	}
+	for (var i = this.animations.length - 1; i >= 0; i--) {
+		this.animations[i].update(); // update and draw
 	}
 	bob.draw();
 };

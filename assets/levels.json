@@ -1,17 +1,23 @@
 {
-	"L0R2": { "name": "", "bgcolor": 6, "left": null,   "right": "L0R3", "up": null,   "down": null   },
-	"L0R3": { "name": "", "bgcolor": 0, "left": "L0R2", "right": null,   "up": null,   "down": null   },
+	"house":        { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": null,    "down": "ground0" },
+	"inside":       { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+	"tree":         { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
 
-	"ground0":  { "name": "", "bgcolor": 6, "left": "groundF", "right": "ground1", "up": null,    "down": null   },
-	"ground1":  { "name": "", "bgcolor": 6, "left": "ground0", "right": "ground2", "up": null,    "down": null   },
-	"ground2":  { "name": "", "bgcolor": 6, "left": "ground1", "right": "ground3", "up": null,    "down": null   },
-	"ground3":  { "name": "", "bgcolor": 6, "left": "ground2", "right": "groundF", "up": null,    "down": null   },
-	"groundF":  { "name": "", "bgcolor": 6, "left": "ground3", "right": "ground0", "up": null,    "down": null   },
-	"cave":     { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null   },
-	"test":     { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": "test2", "down": null   },
-	"test2":    { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": null,    "down": "test" },
-	"forest":   { "name": "", "bgcolor": 5, "left": null,      "right": null,      "up": null,    "down": null   },
-	"bossRoom": { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null   },
-	"lava":     { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null   },
-	"lava2":    { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null   }
+	"ground0":      { "name": "", "bgcolor": 6, "left": "groundB", "right": "ground1", "up": "house", "down": null      },
+	"ground1":      { "name": "", "bgcolor": 6, "left": "ground0", "right": "ground2", "up": null,    "down": null      },
+	"ground2":      { "name": "", "bgcolor": 6, "left": "ground1", "right": "ground3", "up": null,    "down": null      },
+	"ground3":      { "name": "", "bgcolor": 6, "left": "ground2", "right": "ground4", "up": null,    "down": null      },
+	"ground4":      { "name": "", "bgcolor": 6, "left": "ground3", "right": "ground5", "up": null,    "down": null      },
+	"ground5":      { "name": "", "bgcolor": 6, "left": "ground4", "right": "ground6", "up": null,    "down": null      },
+	"ground6":      { "name": "", "bgcolor": 6, "left": "ground5", "right": "ground7", "up": null,    "down": null      },
+	"ground7":      { "name": "", "bgcolor": 5, "left": "ground6", "right": "ground8", "up": null,    "down": null      },
+	"ground8":      { "name": "", "bgcolor": 6, "left": "ground7", "right": "ground9", "up": null,    "down": null      },
+	"ground9":      { "name": "", "bgcolor": 6, "left": "ground8", "right": "groundA", "up": null,    "down": null      },
+	"groundA":      { "name": "", "bgcolor": 6, "left": "ground9", "right": "groundB", "up": null,    "down": null      },
+	"groundB":      { "name": "", "bgcolor": 6, "left": "groundA", "right": "ground0", "up": null,    "down": null      },
+
+	"mountainCave": { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+	"mountain":     { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": null,    "down": null      },
+
+	"bossRoom":     { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      }
 }
