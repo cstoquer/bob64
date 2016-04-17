@@ -7832,8 +7832,14 @@ function afterLastBattle(gameController) {
 
 
 	//------------------------------------------------------------
-	// TODO rolloff
-
+	// rolloff
+	var scroll = 70;
+	cutscene.addAnimation(function () {
+		scroll -= 0.15;
+		cls();
+		draw(assets.credits, 0, scroll);
+		return (scroll < -220);
+	});
 
 	//------------------------------------------------------------
 	// HACK: game has ended, loop forever
@@ -8509,7 +8515,7 @@ function Boss() {
 	this.animSpeed = BOSS_HACK_ANIM_SPEED;
 
 	// state
-	this.lifePoints = 1;
+	this.lifePoints = 3;
 	this.phase = 0;
 	this.blocCount = 0;
 

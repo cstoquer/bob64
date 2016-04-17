@@ -101,8 +101,14 @@ function afterLastBattle(gameController) {
 
 
 	//------------------------------------------------------------
-	// TODO rolloff
-
+	// rolloff
+	var scroll = 70;
+	cutscene.addAnimation(function () {
+		scroll -= 0.15;
+		cls();
+		draw(assets.credits, 0, scroll);
+		return (scroll < -220);
+	});
 
 	//------------------------------------------------------------
 	// HACK: game has ended, loop forever
