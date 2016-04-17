@@ -1,6 +1,7 @@
 var tiles         = require('./tiles.js');
 var Onion         = require('./entities/Onion.js');
 var Stump         = require('./entities/Stump.js');
+var Boss          = require('./entities/Boss.js');
 var SingletonItem = require('./entities/SingletonItem.js');
 var Bloc          = require('./entities/Bloc.js');
 
@@ -92,6 +93,7 @@ Level.prototype._addEntityFromMapItem = function (item) {
 	switch (item.sprite) {
 		case 128: this._addEntity(Onion, item); break;
 		case 129: this._addEntity(Stump, item); break;
+		case 144: this._addEntity(Boss,  item); break;
 		case 160: // cloud bloc
 		case 161: // water bloc
 		case 162: // fire block

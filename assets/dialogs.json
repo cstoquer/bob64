@@ -1,24 +1,24 @@
 {
 	"bobSnack": [
-		{ "who": "bob", "text": "Whew, am I BEAT!\n*grumble*\n\nAnd hungry!\nSure could go for a grilled cheese...\nGuess I'll head home and grab a snack." }
+		{ "who": "bob", "text": "Whew, am I BEAT!\n*grumble*\nAnd hungry!\nI sure could go for a grilled cheese sandwich.\nGuess I'll head home and grab a snack." }
 	],
 	"bobPackage": [
-		{ "who": "bob", "text": "C-could it be?!"}
+		{ "who": "bob", "text": "A package! C-could it be?!"}
 	],
 	"bobConfirm": [
 		{ "who": "bob", "text": "It is!"}
 	],
 	"bobApproach": [
-		{ "who": "bob", "text": "'The CHX-2000:\nThe greatest chainsaw\never made!\nIncludes three fairy spirits to provide\npower, speed and durability.\nStrange...\nI must have ordered this about...\nA year ago? To the day, in fact!\n...\n...\nHOLD ON!\nThe fairies were\nsent separately?!\n...\n...\nOne was sent to\n'the cloud shrine',\nanother to 'the water shrine',\nand the last to 'the fire shrine.'\nJust what the heck is going on..."}
+		{ "who": "bob", "text": "'The CHX-2000: The #1 chainsaw ever made!\nIncludes 3 fairies for a boost in power.'\n...\n\n\nHOLD ON!\nThe fairies were\nsent separately?\nTo the sky, water, and fire shrines.\nJust what the heck is going on..."}
 	],
 	"bossIntro": [
 		{ "who": "stump", "text": "Sir, we have a problem." },
-		{ "who": "boss",  "text": "Can't you see I'm in the middle of something!\nYou think it's EASY to fight off every threat to this forest with just a computer and no FINGERS?!" },
-		{ "who": "stump", "text": "N-no, sir. Not at all!\n I-I just thought you should know that... Bob... he... the CHX-2000..." },
+		{ "who": "boss",  "text": "Can't you see I'm busy!\n\nYou think it's EASY defending this forest?" },
+		{ "who": "stump", "text": "N-no, sir. Not at all!\n\nI-I just thought you should know... Bob... the CHX-2000...\n" },
 		{ "who": "boss",  "text": "YOU DARE SPEAK THAT NAME?!" },
 		{ "who": "stump", "text": "You mean Bob? Or..." },
-		{ "who": "boss",  "text": "GAH!\n...No matter. I  totally hacked his order! That bumbling lumberjack will never find the fairies he needs! Hahahaha!" },
-		{ "who": "stump", "text": "Hah... Y-yeah I guess you're right." },
+		{ "who": "boss",  "text": "GAH! No matter. I hacked his order!\nThat fool will never find all 3 fairies!\nHahahaha!" },
+		{ "who": "stump", "text": "Hah... Y-yeah.\nI guess you're right." },
 		{ "who": "boss",  "text": "\n   HAHAHAHAH!" }
 	],
 	"cloudFairy": [
@@ -27,55 +27,92 @@
 		{ "who": "bob",        "text": "You belong inside my chainsaw!" },
 		{ "who": "cloudFairy", "text": "Jeez, you sure know how to treat a lady!" },
 		{ "who": "bob",        "text": "Pleeeeease!" },
-		{ "who": "cloudFairy", "text": "Alright, fine! Was getting kinda bored up here anyhow. But only if I can bring my comics and pop!" }
+		{ "who": "cloudFairy", "text": "Alright, fine!" },
+		{ "who": "cloudFairy", "text": "It is kinda boring up here anyhow." },
+		{ "who": "cloudFairy", "text": "Cool if I bring along my comics and pop?" }
 	],
 	"bossFirstFairy": [
 		{ "who": "stump", "text": "Uh..." },
 		{ "who": "boss",  "text": "What is it now?!" },
-		{ "who": "stump", "text": "My apologies, sir. It's Bob. He's... Found the first fairy." },
-		{ "who": "boss",  "text": "...\n..." },
-		{ "who": "boss",  "text": "Hah,\nthis cat gif is pretty great. Hahaha! Upvote!" },
+		{ "who": "stump", "text": "My apologies, sir. It's Bob." },
+		{ "who": "stump", "text": "He's... Found the first fairy." },
+		{ "who": "boss",  "text": "..." },
+		{ "who": "boss",  "text": "..." },
+		{ "who": "boss",  "text": "Hah,\nthis cat gif is pretty great." },
+		{ "who": "boss",  "text": "Hahaha! Upvote!" },		
 		{ "who": "stump", "text": "Sir?" },
-		{ "who": "boss",  "text": "Hmm? You're still here? Honestly, that mouthbreather probably stumbled on the fairy by accident! There's no way he'll find all three. Close the door on your way out?" },
-		{ "who": "stump", "text": "Hah... Y-yeah, I guess you're right." }
+		{ "who": "boss",  "text": "You're still here?" },
+		{ "who": "boss",  "text": "He probably found the fairy by accident!" },
+		{ "who": "boss",  "text": "There's no way he'll find all three." },
+		{ "who": "boss",  "text": "Close the door on your way out?" },		
+		{ "who": "stump", "text": "Hah... Y-yeah.\nI guess you're right." }
 	],
 	"waterFairy": [
-		{ "who": "waterFairy", "text": "La lala la\nOh, well hello there stranger! Ya'll come down to buy some of my seaweed? It's mighty tasty!" },
-		{ "who": "bob",        "text": "Now that you mention it I AM kinda hungry...\nBut, no! I'm here to get YOU in MY chainsaw! Hop in! ...Uh, please." },
-		{ "who": "waterFairy", "text": "Your what now? You mean that doohickey? Well, shucks, I suppose I could. All I really do is sing to this seaweed anyhow. I reckon it'll grow just fine without me." }
+		{ "who": "waterFairy", "text": "La lala la" },
+		{ "who": "waterFairy", "text": "Oh, well hello there stranger!" },
+		{ "who": "waterFairy", "text": "Ya'll come down to buy some of my seaweed?" },
+		{ "who": "waterFairy", "text": "It's mighty tasty!" },
+		{ "who": "bob",        "text": "Now that you mention it I AM kinda hungry..." },
+		{ "who": "bob",        "text": "But, no! I'm here to get YOU in MY chainsaw!" },
+		{ "who": "bob",        "text": "Hop in! ...Uh, please." },
+		{ "who": "waterFairy", "text": "Your what now? You mean that doohickey?" },
+		{ "who": "waterFairy", "text": "Well, shucks, I suppose I could." },
+		{ "who": "waterFairy", "text": "All I really do is sing to this seaweed anyhow." },
+		{ "who": "waterFairy", "text": "I reckon it'll grow just fine without me." }
 	],
 	"bossSecondFairy": [
-		{ "who": "boss",  "text": "Aw, man! What the heck! You know I like the lights off! It makes me feel like a badass!" },
-		{ "who": "stump", "text": "SIR! Bob has obtained the second fairy! Something must be done!" },
-		{ "who": "boss",  "text": "Aw, come on, it'll be fine. Besides, I had a huge lunch and I totally need a nap. Get the lights on your way out, would ya?" },
+		{ "who": "boss",  "text": "Hey, man! What the heck!" },
+		{ "who": "boss",  "text": "You know I like the lights off!" },
+		{ "who": "boss",  "text": "It makes me feel like a badass!" },
+		{ "who": "stump", "text": "SIR! Bob has obtained the second fairy!" },
+		{ "who": "stump", "text": "Something must be done!" },
+		{ "who": "boss",  "text": "Aw, come on, it'll be fine." },
+		{ "who": "boss",  "text": "Besides, I had a huge lunch." },
+		{ "who": "boss",  "text": "Totally feel a nap coming on." },
+		{ "who": "boss",  "text": "Get the lights on your way out, would ya?" },
 		{ "who": "stump", "text": "Argh!" }
 	],
 	"fireFairy": [
-		{ "who": "fireFairy", "text": "Alright, I overhauled your transmission so she should be good to go! Just promise you'll take good care of her, ya hear? That means no more driving through molten lava, OK?" },
-		{ "who": "fireFairy", "text": "I-is that? It can't be...The CHX-2000! Ho, baby! You're holding a real work of art, pal!" },
+		{ "who": "fireFairy", "text": "I-is that? ...The CHX-2000! Ho, baby!" },
+		{ "who": "fireFairy", "text": "You're holding a real work of art, pal!" },
 		{ "who": "bob",       "text": "Tell me about it! You want in?" },
-		{ "who": "fireFairy", "text": "Y-you mean me?! Wow. I-I'm honored. You won't regret this, pal. I'm gonna soup-up the throttle, hone the chainblade... She'll run like a dream!" }
+		{ "who": "fireFairy", "text": "Y-you mean me?! I'm honored." },
+		{ "who": "fireFairy", "text": "You won't regret this, pal." },
+		{ "who": "fireFairy", "text": "With me in there she'll run like a dream!" }
 	],
 	"bossLastFairy": [
 		{ "who": "stump", "text": "Sir! Sir! It's happened!" },
-		{ "who": "boss",  "text": "I know, the new iFone model was finally announced! I think it's too big, personally. Though the integrated selfie stick IS a nice touch...." },
+		{ "who": "boss",  "text": "I know, the new iFone model was announced!" },
+		{ "who": "boss",  "text": "I think it's too big, personally." },
+		{ "who": "boss",  "text": "Though the attached selfie stick is cool." },
 		{ "who": "stump", "text": "No no no! It's Bob! He's found the last fairy!" },
-		{ "who": "boss",  "text": "What?! H-he has? You fool! Why didn't you warn me! The forest is doomed!" },
+		{ "who": "boss",  "text": "What?! H-he has? Why didn't you warn me!" },
+		{ "who": "boss",  "text": "The forest is doomed!" },
 		{ "who": "stump", "text": "..." }
 	],
 	"beforeLastBattle":[
-		{ "who": "boss",  "text": "So... It's come to this.\nI'm the last line of defense\nagainst the greed of men..." },
-		{ "who": "stump", "text": "S-sir?\nWhen did you\nbecome so poetic? " },
-		{ "who": "bob",   "text": "Huh, I was wondering\nwhat was behind\nthat door.\nSeems like some kinda\nsci-fi tree party or something?\nMan, I hate nature." }
+		{ "who": "boss",  "text": "So... It's come to this." },
+		{ "who": "boss",  "text": "I'm the last hope of the forest." },
+		{ "who": "boss",  "text": "All that stands against the greed of man..." },
+		{ "who": "stump", "text": "S-sir? When did you become\nso poetic?" },
+		{ "who": "bob",   "text": "Huh, I was wondering what was in here." },
+		{ "who": "bob",   "text": "Seems like some kinda sci-fi tree party?" },
+		{ "who": "bob",   "text": "Man, I hate nature." }
 	],
 	"afterLastBattle":[
 		{ "who": "boss",  "text": "Aarrrrrggghhhhh" }
 	],
 	"afterLastBattleCont":[
-		{ "who": "bob",   "text": "Wait a sec...\nThis Twoot!\n'Totally hacked\nBob's chainsaw\norder Lol rofl\n#ThugLife'\n\nIt was you! How dare you\ninterfere with a man's\nonline interactions!" },
-		{ "who": "stump", "text": "Hah. Maybe we're\nnot so different, you and I.\nShame it has to end this way.\nIn another life…\nMaybe... we could\nhave been... Smilebook friends.\nHah...\nHahahaha!" }
+		{ "who": "bob",   "text": "Wait a sec... This Twoot!" },
+		{ "who": "bob",   "text": "'Hacked Bob's chainsaw order Lol #ThugLife'" },
+		{ "who": "bob",   "text": "No one meddles with my online activity!" },
+		{ "who": "stump", "text": "Hah. Maybe we're not so different you and I..." },
+		{ "who": "stump", "text": "In another life… Maybe... " },
+		{ "who": "stump", "text": "We could have been Smilebook friends." },
+		{ "who": "stump", "text": "Hah...\nHahahaha!" }
 	],
 	"afterLastBattleFinal":[	
-		{ "who": "bob",   "text": "That was weird.\n...\nMan, I hate nature." }
+		{ "who": "bob",   "text": "That was weird..." },
+		{ "who": "bob",   "text": "Man, I hate nature." }
 	]
 }

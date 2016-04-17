@@ -67,6 +67,8 @@ function waterFairy(gameController) {
 		if (onionGuy.x < 10) return false; // continue the animation
 		return true; // ends the animation
 	});
+
+	cutscene.addDelay(1);
 	
 	//------------------------------------------------------------
 	cutscene.enqueue(function () {

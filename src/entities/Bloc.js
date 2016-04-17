@@ -53,16 +53,17 @@ Bloc.prototype.move = function (level, bob) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bloc.prototype.hit = function (bob) {
-	// TODO check Bob's attibute
+	// check Bob's attibute
 	if (this.needCloudFairy && !bob.hasCloudFairy) return;
 	if (this.needWaterFairy && !bob.hasWaterFairy) return;
 	if (this.needFireFairy  && !bob.hasFireFairy)  return;
 
 	// destroy bloc
 	var item = this.mapItem;
-	this.level.removeTile(item.x, item.y);
-	this.explode();
+
+	this.level     && this.level.removeTile(item.x, item.y);
 	this.onDestroy && this.onDestroy();
+	this.explode();
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

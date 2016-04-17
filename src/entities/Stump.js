@@ -23,7 +23,7 @@ function Stump() {
 	this.direction  = 1;
 	this.isHit      = false;
 	this.hitCounter = 0;
-	this.lifePoints = 3;
+	this.lifePoints = 2;
 
 	// rendering & animation
 	this.flipH     = false;
@@ -71,7 +71,7 @@ Stump.prototype.move = function (level, bob) {
 		this.frame = 0;
 		this.sx = 0;
 		// TODO
-		return true
+		return true;
 	}
 
 	// walking

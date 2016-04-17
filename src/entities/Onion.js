@@ -22,7 +22,7 @@ function Onion() {
 	this.direction = 1;
 	this.isHit       = false;
 	this.hitCounter = 0;
-	this.lifePoints = 3;
+	this.lifePoints = 1;
 
 	// rendering & animation
 	this.flipH     = false;
