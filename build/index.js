@@ -7737,9 +7737,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk2];
-
-var stump = assets.entities.stump;
-var STUMP_ANIM = [stump.walk0];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0];
 
 var expl = assets.entities.explosion;
 var EXPLOSION_ANIMATION = [expl.frame0, expl.frame1, expl.frame2, expl.frame3, expl.frame4, expl.frame5, expl.frame6, expl.frame7, expl.frame8];
@@ -7755,10 +7754,10 @@ function afterLastBattle(gameController) {
 
 	//------------------------------------------------------------
 	// bob walk in animation
-	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(10, 48);
+	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(15, 48);
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(5, 40);
-	var stumpGuy = new AnimatedSprite(STUMP_ANIM, 0.2).setPosition(15, 40);
-	var explodey = new AnimatedSprite(EXPLOSION_ANIMATION, 0.5).setPosition(15, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(8, 16);
+	var explodey = new AnimatedSprite(EXPLOSION_ANIMATION, 0.5).setPosition(18, 25);
 
 	cutscene.addAnimation(function () {
 		// draw the scene
@@ -7766,8 +7765,7 @@ function afterLastBattle(gameController) {
 		draw(background);
 		bob.draw();
 		onionGuy.draw();
-		stumpGuy.draw();
-		//TODO draw boss
+		bossGuy.draw();
 		return true;
 	});
 
@@ -7786,12 +7784,13 @@ function afterLastBattle(gameController) {
 		cls();
 		draw(background);
 		onionGuy.draw();
-		stumpGuy.draw();
+		bossGuy.draw();
+		
 		bob.draw();
-		if (bob.x < 30) {
+		if (bob.x < 35) {
 			return false;
 		}
-		//TODO draw boss
+
 		return true;
 	});
 
@@ -7845,6 +7844,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function beforeLastBattle(gameController) {
 
@@ -7857,9 +7858,11 @@ function beforeLastBattle(gameController) {
 
 	//------------------------------------------------------------
 	// bob walk in animation
-	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(10, 48);
-	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(40, 40);
-	onionGuy.flipH = true;
+	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(5, 48);
+	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(15, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
+
+	bossGuy.flipH = true;
 
 	cutscene.addAnimation(function () {
 		// draw the scene
@@ -7867,7 +7870,7 @@ function beforeLastBattle(gameController) {
 		draw(background);
 		bob.draw();
 		onionGuy.draw();
-		//TODO draw boss
+		bossGuy.draw();
 		return true;
 	});
 
@@ -7895,6 +7898,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function cloudFairy(gameController) {
 	// give Bob new abilities
@@ -7950,15 +7955,17 @@ function cloudFairy(gameController) {
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-10, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
+
 	var counter = 0;
 	
 	cutscene.addAnimation(function () {
 		if (++counter % 45 > 20) return false;
-		onionGuy.x += 0.25;
+		onionGuy.x += 0.33;
 		cls();
 		draw(background);
 		onionGuy.draw();
-		// TODO draw the boss
+		bossGuy.draw();
 		if (onionGuy.x < 13) return false; // continue the animation
 		return true; // ends the animation
 	});
@@ -7989,6 +7996,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function fireFairy(gameController) {
 	// give Bob new abilities
@@ -8031,7 +8040,7 @@ function fireFairy(gameController) {
 	// add a last fade before going to next scene
 	cutscene.addFade();
 
-	cutscene.addBackgroundChange(0);
+	// cutscene.addBackgroundChange(0);
 
 	//------------------------------------------------------------
 	cutscene.enqueue(function () {
@@ -8042,28 +8051,45 @@ function fireFairy(gameController) {
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
+
 	cutscene.addAnimation(function () {
+		background = getMap('bossCutScene');
 		onionGuy.x += 0.8;
 		cls();
+		draw(background); // draw boss room
 		onionGuy.draw();
-		// TODO draw the boss
+		bossGuy.draw();
 		if (onionGuy.x < 10) return false; // continue the animation
 		return true; // ends the animation
 	});
 	
-	cutscene.enqueue(function () {
-		background = getMap('bossCutScene');
-		cls(); // set background color to 0 (black) and clear screen
-		draw(background); // draw boss room
-		onionGuy.draw();
-		// TODO draw the boss
-	});
-	
-	cutscene.addDelay(1);
-	
 	//------------------------------------------------------------
 	// display a dialog
 	cutscene.addDialog(assets.dialogs.bossLastFairy);
+
+	cutscene.enqueue(function(){
+		bossGuy.flipH = true;
+	});
+
+	cutscene.addAnimation(function () {
+		background = getMap('bossCutScene');
+		onionGuy.x += 0.8;
+		cls();
+		draw(background); // draw boss room
+		onionGuy.draw();
+		bossGuy.draw();
+		return true; // ends the animation
+	});
+	
+	//------------------------------------------------------------
+	// add a waiting delay of 0.2 seconds
+	cutscene.addDelay(0.2);
+
+	//------------------------------------------------------------
+	// display a dialog
+	cutscene.addDialog(assets.dialogs.bossLastFairyCont);
+
 
 	//------------------------------------------------------------
 	// add a last fade before going back to the game
@@ -8080,9 +8106,10 @@ module.exports = fireFairy;
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
-
 var ONION         = assets.entities.onion;
 var ONION_ANIM    = [ONION.walk0, ONION.walk1, ONION.walk2, ONION.walk3, ONION.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 var BOB_WALK_ANIM = [252, 253, 254];
 var BOB_SPEED     = 1;
 
@@ -8187,12 +8214,13 @@ function intro(gameController) {
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
 	cutscene.addAnimation(function () {
 		onionGuy.x += 0.8;
 		cls();
 		draw(bossBackground);
 		onionGuy.draw();
-		// TODO draw the boss
+		bossGuy.draw();
 		return (onionGuy.x >= 10); // ends the animation
 	});
 
@@ -8220,6 +8248,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function waterFairy(gameController) {
 	// give Bob new abilities
@@ -8272,6 +8302,7 @@ function waterFairy(gameController) {
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
 
 	cutscene.addAnimation(function () {
 		onionGuy.x += 0.8;
@@ -8290,7 +8321,7 @@ function waterFairy(gameController) {
 		cls();
 		draw(background);
 		onionGuy.draw();
-		// TODO draw the boss
+		bossGuy.draw();
 	});
 	
 	cutscene.addDelay(1);
