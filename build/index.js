@@ -9223,7 +9223,7 @@ Stump.prototype.spit = function () {
 	this.controller.addEntity(spit);
 };
 },{"../AABBcollision.js":37,"./Entity.js":53,"./Spit.js":57}],59:[function(require,module,exports){
-var DEBUG = true;
+var DEBUG = false;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // PREPARE LEVELS
