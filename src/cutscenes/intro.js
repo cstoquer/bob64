@@ -9,6 +9,8 @@ var BOB_SPEED     = 1;
 
 
 function intro(gameController) {
+	// get the chainsaw !
+	gameController.bob.canAttack = true;
 
 	var cutscene = new CutScene();
 
