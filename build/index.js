@@ -7738,7 +7738,7 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk2];
 var BOSS          = assets.entities.boss;
-var BOSS_ANIM    = [BOSS.hack0];
+var BOSS_ANIM    = [BOSS.hit0];
 
 var expl = assets.entities.explosion;
 var EXPLOSION_ANIMATION = [expl.frame0, expl.frame1, expl.frame2, expl.frame3, expl.frame4, expl.frame5, expl.frame6, expl.frame7, expl.frame8];
@@ -7829,6 +7829,24 @@ function afterLastBattle(gameController) {
 	// add a last fade before going back to the game
 	cutscene.addFade();
 
+
+
+	//------------------------------------------------------------
+	// rolloff
+	var scroll = 70;
+	cutscene.addAnimation(function () {
+		scroll -= 0.15;
+		cls();
+		draw(assets.credits, 0, scroll);
+		return (scroll < -220);
+	});
+
+	//------------------------------------------------------------
+	// HACK: game has ended, loop forever
+	cutscene.addAnimation(function(){
+		return false;
+	});
+
 	//------------------------------------------------------------
 	// return the cutscene	
 	return cutscene;
@@ -7849,6 +7867,12 @@ var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function beforeLastBattle(gameController) {
 
+	// HACK: remove door from the level
+	var level = gameController.level
+	var door = level.map.find(4)[0];
+	level.removeTile(door.x, door.y);
+
+	//------------------------------------------------------------
 	var cutscene = new CutScene();
 
 	//------------------------------------------------------------
@@ -8120,6 +8144,24 @@ function intro(gameController) {
 
 	var cutscene = new CutScene();
 
+
+	//------------------------------------------------------------
+	// TITLE SCREEN
+
+	cutscene.enqueue(function () {
+		paper(5);
+		pen(10);
+		cls();
+		draw(assets.title, 15, 10);
+		print('press space', 10, 48);
+	});
+
+	cutscene.addAnimation(function () {
+		return (btnp.A);
+	});
+
+	cutscene.addFade();
+
 	//------------------------------------------------------------
 	// clear screen and draw background
 	var background = getMap('introCutScene');
@@ -8135,6 +8177,8 @@ function intro(gameController) {
 		draw(background);
 		bob.draw();
 	});
+
+	cutscene.addDelay(0.5);
 	
 	//------------------------------------------------------------
 	// dialog
@@ -8423,6 +8467,8 @@ var Onion          = require('./Onion.js');
 var AABBcollision  = require('../AABBcollision.js');
 var tiles          = require('../tiles.js');
 var ShortAnimation = require('./ShortAnimation.js');
+var afterLastBattle = require('../cutscenes/afterLastBattle.js');
+
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
@@ -8548,15 +8594,15 @@ Boss.prototype.animate = function () {
 		if (this.lifePoints > 0) {
 			this.createPlots();
 		} else {
-			console.log('boss defeated')
-			// TODO
+			// HACK: start beforeLastBattle cutscene
+			this.controller.startCutScene(afterLastBattle());
 		}
 	} else if (this.frame >= this.anim.length) this.frame = 0;
 	var img = this.anim[~~this.frame];
 	draw(img, this.x - 12, this.y, this.flipH);
 };
 
-},{"../AABBcollision.js":37,"../tiles.js":60,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":54,"./ShortAnimation.js":55}],53:[function(require,module,exports){
+},{"../AABBcollision.js":37,"../cutscenes/afterLastBattle.js":45,"../tiles.js":60,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":54,"./ShortAnimation.js":55}],53:[function(require,module,exports){
 var ShortAnimation = require('./ShortAnimation.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -9259,7 +9305,6 @@ for (var i = 0; i < cutscenes.length; i++) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 var gameController = require('./GameController.js');
-
 
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

@@ -4,6 +4,8 @@ var Onion          = require('./Onion.js');
 var AABBcollision  = require('../AABBcollision.js');
 var tiles          = require('../tiles.js');
 var ShortAnimation = require('./ShortAnimation.js');
+var afterLastBattle = require('../cutscenes/afterLastBattle.js');
+
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
@@ -129,8 +131,8 @@ Boss.prototype.animate = function () {
 		if (this.lifePoints > 0) {
 			this.createPlots();
 		} else {
-			console.log('boss defeated')
-			// TODO
+			// HACK: start beforeLastBattle cutscene
+			this.controller.startCutScene(afterLastBattle());
 		}
 	} else if (this.frame >= this.anim.length) this.frame = 0;
 	var img = this.anim[~~this.frame];

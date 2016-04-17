@@ -1,5 +1,6 @@
 [
-	{ "level": "cloudShrine", "cutsceneId": "cloudFairy" },
-	{ "level": "waterShrine", "cutsceneId": "waterFairy" },
-	{ "level": "fireShrine",  "cutsceneId": "fireFairy" }
+	{ "level": "cloudShrine", "cutsceneId": "cloudFairy"       },
+	{ "level": "waterShrine", "cutsceneId": "waterFairy"       },
+	{ "level": "fireShrine",  "cutsceneId": "fireFairy"        },
+	{ "level": "bossRoom",    "cutsceneId": "beforeLastBattle" }
 ]
