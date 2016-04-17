@@ -15,6 +15,24 @@ function intro(gameController) {
 
 	var cutscene = new CutScene();
 
+
+	//------------------------------------------------------------
+	// TITLE SCREEN
+
+	cutscene.enqueue(function () {
+		paper(5);
+		pen(10);
+		cls();
+		draw(assets.title, 15, 10);
+		print('press space', 10, 48);
+	});
+
+	cutscene.addAnimation(function () {
+		return (btnp.A);
+	});
+
+	cutscene.addFade();
+
 	//------------------------------------------------------------
 	// clear screen and draw background
 	var background = getMap('introCutScene');
@@ -30,6 +48,8 @@ function intro(gameController) {
 		draw(background);
 		bob.draw();
 	});
+
+	cutscene.addDelay(0.5);
 	
 	//------------------------------------------------------------
 	// dialog
