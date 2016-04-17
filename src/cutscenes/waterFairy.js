@@ -6,6 +6,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function waterFairy(gameController) {
 	// give Bob new abilities
@@ -58,6 +60,7 @@ function waterFairy(gameController) {
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
 
 	cutscene.addAnimation(function () {
 		onionGuy.x += 0.8;
@@ -76,7 +79,7 @@ function waterFairy(gameController) {
 		cls();
 		draw(background);
 		onionGuy.draw();
-		// TODO draw the boss
+		bossGuy.draw();
 	});
 	
 	cutscene.addDelay(1);

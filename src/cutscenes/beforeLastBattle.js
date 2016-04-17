@@ -5,6 +5,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function beforeLastBattle(gameController) {
 
@@ -17,9 +19,11 @@ function beforeLastBattle(gameController) {
 
 	//------------------------------------------------------------
 	// bob walk in animation
-	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(10, 48);
-	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(40, 40);
-	onionGuy.flipH = true;
+	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(5, 48);
+	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(15, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
+
+	bossGuy.flipH = true;
 
 	cutscene.addAnimation(function () {
 		// draw the scene
@@ -27,7 +31,7 @@ function beforeLastBattle(gameController) {
 		draw(background);
 		bob.draw();
 		onionGuy.draw();
-		//TODO draw boss
+		bossGuy.draw();
 		return true;
 	});
 
