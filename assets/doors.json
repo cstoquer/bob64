@@ -9,6 +9,18 @@
 	["cloudCave3:2",   "mountain:1"],
 	["mountain:2",     "cloudShrine:1"],
 
+	["groundA:1",      "waterCave0:1"],
+	["waterCave0:2",   "waterCave1:1"],
+	["waterCave1:2",   "waterCave2:1"],
+	["waterCave2:2",   "waterShrine:1"],
+
+	["ground2:1",      "lavaCave0:1"],
+	["lavaCave0:2",    "lavaCave2:1"],
+	["lavaCave2:2",    "lavaCave1:1"],
+	["lavaCave1:2",    "lavaCave3:1"],
+	["lavaCave3:2",    "fireShrine:1"],
+
 	["ground7:1",  "tree:1"],
-	["ground3:1",  "bossRoom:1"]
+
+	["ground7:2",  "bossRoom:1"]
 ]

@@ -27,10 +27,12 @@
 	"waterCave0":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
 	"waterCave1":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
 	"waterCave2":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
-
-	"lavaCave1":    { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
-
 	"waterShrine":  { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+
+	"lavaCave0":    { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+	"lavaCave1":    { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+	"lavaCave2":    { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+	"lavaCave3":    { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
 	"fireShrine":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
 
 
