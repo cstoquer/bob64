@@ -85,7 +85,9 @@
 		{ "who": "boss",  "text": "I know, the new iFone model was announced!" },
 		{ "who": "boss",  "text": "I think it's too big, personally." },
 		{ "who": "boss",  "text": "Though the attached selfie stick is cool." },
-		{ "who": "stump", "text": "No no no! It's Bob! He's found the last fairy!" },
+		{ "who": "stump", "text": "No no no! It's Bob! He's found the last fairy!" }
+	],
+	"bossLastFairyCont": [
 		{ "who": "boss",  "text": "What?! H-he has? Why didn't you warn me!" },
 		{ "who": "boss",  "text": "The forest is doomed!" },
 		{ "who": "stump", "text": "..." }
