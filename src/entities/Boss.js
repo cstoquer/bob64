@@ -5,6 +5,7 @@ var AABBcollision  = require('../AABBcollision.js');
 var tiles          = require('../tiles.js');
 var ShortAnimation = require('./ShortAnimation.js');
 
+
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 

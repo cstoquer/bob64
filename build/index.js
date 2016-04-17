@@ -7849,6 +7849,12 @@ var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function beforeLastBattle(gameController) {
 
+	// HACK: remove door from the level
+	var level = gameController.level
+	var door = level.map.find(4)[0];
+	level.removeTile(door.x, door.y);
+
+	//------------------------------------------------------------
 	var cutscene = new CutScene();
 
 	//------------------------------------------------------------
@@ -8443,6 +8449,7 @@ var Onion          = require('./Onion.js');
 var AABBcollision  = require('../AABBcollision.js');
 var tiles          = require('../tiles.js');
 var ShortAnimation = require('./ShortAnimation.js');
+
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
@@ -9197,7 +9204,7 @@ Stump.prototype.spit = function () {
 	this.controller.addEntity(spit);
 };
 },{"../AABBcollision.js":37,"./Entity.js":53,"./Spit.js":57}],59:[function(require,module,exports){
-var DEBUG = false;
+var DEBUG = true;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // PREPARE LEVELS
