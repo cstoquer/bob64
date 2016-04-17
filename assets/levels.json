@@ -19,5 +19,13 @@
 	"mountainCave": { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
 	"mountain":     { "name": "", "bgcolor": 6, "left": null,      "right": null,      "up": null,    "down": null      },
 
+	"cloudCave2":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+
+	"waterCave0":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+	"waterCave1":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+	"waterCave2":   { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+
+	"lavaCave1":    { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      },
+
 	"bossRoom":     { "name": "", "bgcolor": 0, "left": null,      "right": null,      "up": null,    "down": null      }
 }

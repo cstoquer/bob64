@@ -1,35 +1,31 @@
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
-var BOB_WALK_ANIM   = [252, 253, 254];
 
-var onion = assets.entities.onion;
-var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var ONION         = assets.entities.onion;
+var ONION_ANIM    = [ONION.walk0, ONION.walk1, ONION.walk2, ONION.walk3, ONION.walk4];
+var BOB_WALK_ANIM = [252, 253, 254];
+var BOB_SPEED     = 1;
 
-function intro() {
+
+function intro(gameController) {
 
 	var cutscene = new CutScene();
 
 	//------------------------------------------------------------
 	// clear screen and draw background
-	var background = getMap('ground0'); // TODO
-	cutscene.addBackgroundChange(0);
+	var background = getMap('introCutScene');
+	cutscene.addBackgroundChange(6);
 
 	//------------------------------------------------------------
 	// bob walk in animation
-	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.2).setPosition(-20, 48);
+	var bob = new AnimatedSprite(BOB_WALK_ANIM, 0.4).setPosition(36, 40);
+	bob.flipH = true;
 
-	cutscene.addAnimation(function () {
-		bob.x += 0.4;
-
-		// draw the scene
+	cutscene.enqueue(function () {
 		cls();
 		draw(background);
 		bob.draw();
-		if (bob.x < 10) {
-			return false;
-		}
-		return true;
 	});
 	
 	//------------------------------------------------------------
@@ -37,89 +33,62 @@ function intro() {
 	cutscene.addDialog(assets.dialogs.bobSnack);
 
 	cutscene.addAnimation(function () {
-		bob.x += 0.4;
+		bob.x += BOB_SPEED;
+		bob.flipH = false;
 
 		// draw the scene
 		cls();
 		draw(background);
 		bob.draw();
-		if (bob.x < 65) {
-			return false;
-		}
-		return true;
+		return (bob.x >= 65);
 	});
 
 	//------------------------------------------------------------
 	// add a last fade before going to next scene
 	cutscene.addFade();
 
-	//------------------------------------------------------------
-	// add a waiting delay of 0.2 seconds
-	cutscene.addDelay(0.2);
-
-	var bobHouseBg = getMap('cave'); // TODO Bob house
-	cutscene.addBackgroundChange(0, bobHouseBg);
-
 	cutscene.enqueue(function () {
-		camera(0,0);
-		paper(0).cls();
-		draw(bobHouseBg);
-		bob.setPosition(-20,48);
+		paper(6);
+		background = getMap('house');
+		bob.setPosition(104, 56);
 	});
 
 	cutscene.addAnimation(function () {
-		bob.x += 0.4;
-
+		bob.x += BOB_SPEED;
 		// draw the scene
+		camera(bob.x - 28, bob.y - 48);
 		cls();
-		draw(bobHouseBg);
+		draw(background);
 		bob.draw();
-		if (bob.x < 10) {
-			return false;
-		}
-		return true;
+		return (bob.x >= 114);
 	});
 
 	//------------------------------------------------------------
 	// dialog
 	cutscene.addDialog(assets.dialogs.bobPackage);
 
-	//------------------------------------------------------------
-	// add a waiting delay of 0.2 seconds
-	cutscene.addDelay(0.2);
-
 	cutscene.addAnimation(function () {
-		bob.x += 0.4;
-
+		bob.x += BOB_SPEED;
 		// draw the scene
+		camera(bob.x - 28, bob.y - 48);
 		cls();
-		draw(bobHouseBg);
+		draw(background);
 		bob.draw();
-		if (bob.x < 15) {
-			return false;
-		}
-		return true;
+		return (bob.x >= 140);
 	});
 
 	//------------------------------------------------------------
 	// dialog
 	cutscene.addDialog(assets.dialogs.bobConfirm);
 
-	//------------------------------------------------------------
-	// add a waiting delay of 0.2 seconds
-	cutscene.addDelay(0.2);
-
 	cutscene.addAnimation(function () {
-		bob.x += 0.4;
-
+		bob.x += BOB_SPEED;
 		// draw the scene
+		camera(bob.x - 28, bob.y - 48);
 		cls();
-		draw(bobHouseBg);
+		draw(background);
 		bob.draw();
-		if (bob.x < 40) {
-			return false;
-		}
-		return true;
+		return (bob.x >= 152);
 	});
 
 	//------------------------------------------------------------
@@ -129,10 +98,6 @@ function intro() {
 	//------------------------------------------------------------
 	// add a last fade before going to next scene
 	cutscene.addFade();
-
-	//------------------------------------------------------------
-	// add a waiting delay of 0.2 seconds
-	cutscene.addDelay(0.2);
 
 	var bossBackground = getMap('bossCutScene');
 	cutscene.addBackgroundChange(0, bossBackground);
@@ -147,8 +112,7 @@ function intro() {
 		draw(bossBackground);
 		onionGuy.draw();
 		// TODO draw the boss
-		if (onionGuy.x < 10) return false; // continue the animation
-		return true; // ends the animation
+		return (onionGuy.x >= 10); // ends the animation
 	});
 
 	//------------------------------------------------------------

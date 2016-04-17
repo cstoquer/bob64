@@ -50,6 +50,10 @@ function Bob() {
 	this.canDive       = false;
 	this.canDoubleJump = false;
 
+	this.hasCloudFairy = false;
+	this.hasWaterFairy = false;
+	this.hasFireFairy  = false;
+
 	// state
 	this.resetState();
 	this.maxLifePoints = 3;

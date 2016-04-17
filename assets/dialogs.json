@@ -1,6 +1,6 @@
 {
 	"bobSnack": [
-		{ "who": "bob", "text": "Whew, am I BEAT!\n*grumble*\n\nAnd hungry!\nSure could go for a grilled cheese...\nGuess I’ll head home and grab a snack." }
+		{ "who": "bob", "text": "Whew, am I BEAT!\n*grumble*\n\nAnd hungry!\nSure could go for a grilled cheese...\nGuess I'll head home and grab a snack." }
 	],
 	"bobPackage": [
 		{ "who": "bob", "text": "C-could it be?!"}
@@ -33,7 +33,8 @@
 		{ "who": "stump", "text": "Uh..." },
 		{ "who": "boss",  "text": "What is it now?!" },
 		{ "who": "stump", "text": "My apologies, sir. It's Bob. He's... Found the first fairy." },
-		{ "who": "boss",  "text": "...\n...\nHah, this cat gif is pretty great. Hahaha! Upvote!" },
+		{ "who": "boss",  "text": "...\n..." },
+		{ "who": "boss",  "text": "Hah,\nthis cat gif is pretty great. Hahaha! Upvote!" },
 		{ "who": "stump", "text": "Sir?" },
 		{ "who": "boss",  "text": "Hmm? You're still here? Honestly, that mouthbreather probably stumbled on the fairy by accident! There's no way he'll find all three. Close the door on your way out?" },
 		{ "who": "stump", "text": "Hah... Y-yeah, I guess you're right." }
@@ -61,5 +62,20 @@
 		{ "who": "stump", "text": "No no no! It's Bob! He's found the last fairy!" },
 		{ "who": "boss",  "text": "What?! H-he has? You fool! Why didn't you warn me! The forest is doomed!" },
 		{ "who": "stump", "text": "..." }
+	],
+	"beforeLastBattle":[
+		{ "who": "boss",  "text": "So... It's come to this.\nI'm the last line of defense\nagainst the greed of men..." },
+		{ "who": "stump", "text": "S-sir?\nWhen did you\nbecome so poetic? " },
+		{ "who": "bob",   "text": "Huh, I was wondering\nwhat was behind\nthat door.\nSeems like some kinda\nsci-fi tree party or something?\nMan, I hate nature." }
+	],
+	"afterLastBattle":[
+		{ "who": "boss",  "text": "Aarrrrrggghhhhh" }
+	],
+	"afterLastBattleCont":[
+		{ "who": "bob",   "text": "Wait a sec...\nThis Twoot!\n'Totally hacked\nBob's chainsaw\norder Lol rofl\n#ThugLife'\n\nIt was you! How dare you\ninterfere with a man's\nonline interactions!" },
+		{ "who": "stump", "text": "Hah. Maybe we're\nnot so different, you and I.\nShame it has to end this way.\nIn another life…\nMaybe... we could\nhave been... Smilebook friends.\nHah...\nHahahaha!" }
+	],
+	"afterLastBattleFinal":[	
+		{ "who": "bob",   "text": "That was weird.\n...\nMan, I hate nature." }
 	]
 }

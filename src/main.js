@@ -9,7 +9,7 @@ function createDefaultLevel(id, error) {
 	var geometryId = id + "_geo";
 	var background = id;
 	var bgcolor = 0;
-	if (!getMap(geometryId)) return console.error(error + ': No geometry found for level', id);
+	if (!getMap(geometryId)) return console.error(error + ': No geometry found for level ' + id);
 	if (!getMap(background)) { background = geometryId; bgcolor = 10; }
 	// if only geo exist, create a default for rendering
 	var level = { "name": "", "background": background, "geometry": geometryId, "bgcolor": bgcolor, "doors": ["", "", ""] };
@@ -54,10 +54,12 @@ for (var i = 0; i < doors.length; i++) {
 // PREPARE CUTSCENES
 
 var CUTSCENES_ANIMATIONS = {
-	intro:       require('./cutscenes/intro.js'),
-	cloudFairy:  require('./cutscenes/cloudFairy.js'),
-	waterFairy:  require('./cutscenes/waterFairy.js'),
-	fireFairy:   require('./cutscenes/fireFairy.js')
+	intro:             require('./cutscenes/intro.js'),
+	cloudFairy:        require('./cutscenes/cloudFairy.js'),
+	waterFairy:        require('./cutscenes/waterFairy.js'),
+	fireFairy:         require('./cutscenes/fireFairy.js'),
+	beforeLastBattle:  require('./cutscenes/beforeLastBattle.js'),
+	afterLastBattle:   require('./cutscenes/afterLastBattle.js')
 };
 
 var cutscenes = assets.cutscenes;
@@ -92,8 +94,8 @@ if (DEBUG) {
 	// load cutscene from console
 	window.cutscene = function (id) {
 		var cutscene = CUTSCENES_ANIMATIONS[id];
-		if (!cutscene) return console.error('cutscene does not exist');
-		gameController.startCutScene(cutscene());
+		if (!cutscene) return console.error('cutscene does not exist: ' + id);
+		gameController.startCutScene(cutscene(gameController));
 	}
 
 	// load level from console

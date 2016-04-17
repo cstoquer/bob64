@@ -1,48 +1,17 @@
+var tiles         = require('./tiles.js');
 var Onion         = require('./entities/Onion.js');
 var Stump         = require('./entities/Stump.js');
 var SingletonItem = require('./entities/SingletonItem.js');
+var Bloc          = require('./entities/Bloc.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
-
-var EMPTY   = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0 };
-var SOLID   = { isEmpty: false, isSolid: true,  isTopSolid: true,  isWater: 0 };
-var ONE_WAY = { isEmpty: false, isSolid: false, isTopSolid: true,  isWater: 0, canJumpThru: true };
-var VINE    = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isVine: true };
-var VINETOP = { isEmpty: false, isSolid: false, isTopSolid: true,  isWater: 0, isVine: true, canJumpThru: true };
-var DOOR_0  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isDoor: true, doorId: 0 };
-var DOOR_1  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isDoor: true, doorId: 1 };
-var DOOR_2  = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isDoor: true, doorId: 2 };
-var WATER   = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 1 };
-var WATER_S = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 2 };
-var KILL    = { isEmpty: true,  isSolid: false, isTopSolid: false, kill: true };
-var ENLIMIT = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0, isEntityLimit: true };
-
-
-function getTileFromMapItem(mapItem) {
-	if (!mapItem) return EMPTY;
-	switch (mapItem.sprite) {
-		case 0:  return SOLID;
-		case 1:  return ONE_WAY;
-		case 2:  return VINE;
-		case 3:  return VINETOP;
-		case 4:  return DOOR_0;
-		case 5:  return DOOR_1;
-		case 6:  return DOOR_2;
-		case 7:  return WATER;
-		case 8:  return WATER_S;
-		case 9:  return KILL;
-		case 32: return ENLIMIT;
-		default: return EMPTY;
-	}
-}
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 var ON_LIFE_CONTAINER_PICKUP = function (item, bob) {
 	bob.maxLifePoints += 1;
 	bob.lifePoints = bob.maxLifePoints;
 };
-
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function Level() {
@@ -91,14 +60,14 @@ Level.prototype.load = function (id) {
 	for (var x = 0; x < map.width;  x++) {
 	for (var y = 0; y < map.height; y++) {
 		var item = map.items[x][y];
-		this.grid[x][y] = getTileFromMapItem(item);
+		this.grid[x][y] = tiles.getTileFromMapItem(item);
 		this._addEntityFromMapItem(item);
 	}}
 
 	this._initBackground(def);
 
 	if (def.cutscene) {
-		this.controller.startCutScene(def.cutscene());
+		this.controller.startCutScene(def.cutscene(this.controller));
 		def.cutscene = null; // make sure to play cutscene only once
 	}
 };
@@ -110,13 +79,26 @@ Level.prototype._addEntity = function (entityClass, item) {
 	this.controller.addEntity(entity);
 };
 
+Level.prototype._createDestroyableBloc = function (item) {
+	// add solid bloc in logic grid
+	this.grid[item.x][item.y] = tiles.SOLID;
+	// create and add entity
+	var bloc = new Bloc(this, item);
+	this.controller.addEntity(bloc);
+};
+
 Level.prototype._addEntityFromMapItem = function (item) {
 	if (!item || item.sprite < 128) return;
 	switch (item.sprite) {
 		case 128: this._addEntity(Onion, item); break;
 		case 129: this._addEntity(Stump, item); break;
-		case 192:
-			// life container
+		case 160: // cloud bloc
+		case 161: // water bloc
+		case 162: // fire block
+		case 163: // simple bloc
+			this._createDestroyableBloc(item);
+			break;
+		case 192: // life container
 			var entity = new SingletonItem(194, this.map, item, ON_LIFE_CONTAINER_PICKUP);
 			entity.setPosition(item.x * TILE_WIDTH, item.y * TILE_HEIGHT);
 			this.controller.addEntity(entity);
@@ -211,6 +193,20 @@ Level.prototype.getTileAt = function (x, y) {
 	if (y < 0) y = 0; else if (y >= this.height) y = this.height - 1;
 	// if (x < 0 || y < 0 || x >= this.width || y >= this.height) return EMPTY;
 	return this.grid[x][y];
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Level.prototype.removeTile = function (x, y) {
+	// remove from logic
+	this.grid[x][y] = tiles.EMPTY;
+
+	// remove from rendering
+	/*this.background.ctx.clearRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+	if (this.isAnimated) {
+		for (var i = 0; i < this.animatedBackgrounds.length; i++) {
+			this.animatedBackgrounds[i].ctx.clearRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+		}
+	}*/
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
