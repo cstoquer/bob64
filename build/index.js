@@ -8388,6 +8388,7 @@ Bloc.prototype.animate = function () {
 },{"../AABBcollision.js":37,"../tiles.js":60,"./Entity.js":53,"./ShortAnimation.js":55}],52:[function(require,module,exports){
 var Entity         = require('./Entity.js');
 var Bloc           = require('./Bloc.js');
+var Onion          = require('./Onion.js');
 var AABBcollision  = require('../AABBcollision.js');
 var tiles          = require('../tiles.js');
 var ShortAnimation = require('./ShortAnimation.js');
@@ -8399,12 +8400,26 @@ var TILE_HEIGHT = settings.spriteSize[1];
 var expl = assets.entities.explosion;
 var EXPLOSION_ANIMATION = [expl.frame0, expl.frame1, expl.frame2, expl.frame3, expl.frame4, expl.frame5, expl.frame6, expl.frame7, expl.frame8];
 
-var BOSS_IDLE_IMG = assets.entities.boss.boss; // TODO
+var ba = assets.entities.boss;
+var BOSS_IDLE_ANIM = [ba.hack0]; // TODO
+var BOSS_HACK_ANIM = [ba.hack0, ba.hack1, ba.hack2, ba.hack3];
+var BOSS_HIT_ANIM  = [ba.hit0, ba.hit1, ba.hit0, ba.hit1, ba.hit0, ba.hit1, ba.hit0, ba.hit1, ba.hit0, ba.hit1];
+
+var BOSS_HACK_ANIM_SPEED = 0.1;
+var BOSS_HIT_ANIM_SPEED = 0.3;
 
 var BLOC_POSITIONS = [
 	{ x:  4, y: 10, sprite: 163 },
 	{ x:  8, y: 10, sprite: 163 },
 	{ x: 12, y: 10, sprite: 163 }
+];
+
+var ONION_POSITIONS = [
+	{ x:  4, y: 1 },
+	{ x:  8, y: 6 },
+	{ x: 12, y: 1 },
+	{ x:  6, y: 8 },
+	{ x: 10, y: 9 }
 ];
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -8417,6 +8432,12 @@ function Boss() {
 	this.height = TILE_HEIGHT * 5;
 	this.flipH = false;
 
+	// animation
+	this.frame = 0;
+	this.anim = BOSS_HACK_ANIM;
+	this.animSpeed = BOSS_HACK_ANIM_SPEED;
+
+	// state
 	this.lifePoints = 3;
 	this.phase = 0;
 	this.blocCount = 0;
@@ -8453,6 +8474,18 @@ Boss.prototype.createPlots = function () {
 		var bloc = new Bloc(null, def, onPlotDestruct);
 		this.controller.addEntity(bloc);
 	}
+
+	this.invokeOnions(3 + this.phase);
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Boss.prototype.invokeOnions = function (count) {
+	for (var i = 0; i < count; i++) {
+		var pos = ONION_POSITIONS[i];
+		var onion = new Onion().setPosition(pos.x, pos.y);
+		onion.sx = 0;
+		this.controller.addEntity(onion);
+	}
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -8468,22 +8501,31 @@ Boss.prototype.hit = function (bob) {
 	this.lifePoints -= 1;
 	this.phase += 1;
 
-	if (this.lifePoints > 0) {
-		this.createPlots();
-		this.flipH = false;
-	} else {
-		console.log('boss defeated')
-		// TODO
-	}
+	this.anim = BOSS_HIT_ANIM;
+	this.animSpeed = BOSS_HIT_ANIM_SPEED;
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** draw item */
 Boss.prototype.animate = function () {
-	draw(BOSS_IDLE_IMG, this.x - 12, this.y, this.flipH);
+	this.frame += this.animSpeed;
+	if (this.anim === BOSS_HIT_ANIM && this.frame >= this.anim.length) {
+		this.anim = BOSS_HACK_ANIM;
+		this.frame = 0;
+		this.flipH = false;
+		this.animSpeed = BOSS_HACK_ANIM_SPEED;
+		if (this.lifePoints > 0) {
+			this.createPlots();
+		} else {
+			console.log('boss defeated')
+			// TODO
+		}
+	} else if (this.frame >= this.anim.length) this.frame = 0;
+	var img = this.anim[~~this.frame];
+	draw(img, this.x - 12, this.y, this.flipH);
 };
 
-},{"../AABBcollision.js":37,"../tiles.js":60,"./Bloc.js":51,"./Entity.js":53,"./ShortAnimation.js":55}],53:[function(require,module,exports){
+},{"../AABBcollision.js":37,"../tiles.js":60,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":54,"./ShortAnimation.js":55}],53:[function(require,module,exports){
 var ShortAnimation = require('./ShortAnimation.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
