@@ -1,9 +1,10 @@
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
-
 var ONION         = assets.entities.onion;
 var ONION_ANIM    = [ONION.walk0, ONION.walk1, ONION.walk2, ONION.walk3, ONION.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 var BOB_WALK_ANIM = [252, 253, 254];
 var BOB_SPEED     = 1;
 
@@ -108,12 +109,13 @@ function intro(gameController) {
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
 	cutscene.addAnimation(function () {
 		onionGuy.x += 0.8;
 		cls();
 		draw(bossBackground);
 		onionGuy.draw();
-		// TODO draw the boss
+		bossGuy.draw();
 		return (onionGuy.x >= 10); // ends the animation
 	});
 
