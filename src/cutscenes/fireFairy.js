@@ -6,6 +6,8 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk0, onion.walk1, onion.walk2, onion.walk3, onion.walk4];
+var BOSS          = assets.entities.boss;
+var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 
 function fireFairy(gameController) {
 	// give Bob new abilities
@@ -48,7 +50,7 @@ function fireFairy(gameController) {
 	// add a last fade before going to next scene
 	cutscene.addFade();
 
-	cutscene.addBackgroundChange(0);
+	// cutscene.addBackgroundChange(0);
 
 	//------------------------------------------------------------
 	cutscene.enqueue(function () {
@@ -59,28 +61,45 @@ function fireFairy(gameController) {
 	// add an animation.
 	// an animation is a function that will be called every frame until its returns true
 	var onionGuy = new AnimatedSprite(ONION_ANIM, 0.2).setPosition(-7, 40);
+	var bossGuy = new AnimatedSprite(BOSS_ANIM, 0.4).setPosition(20, 16);
+
 	cutscene.addAnimation(function () {
+		background = getMap('bossCutScene');
 		onionGuy.x += 0.8;
 		cls();
+		draw(background); // draw boss room
 		onionGuy.draw();
-		// TODO draw the boss
+		bossGuy.draw();
 		if (onionGuy.x < 10) return false; // continue the animation
 		return true; // ends the animation
 	});
 	
-	cutscene.enqueue(function () {
-		background = getMap('bossCutScene');
-		cls(); // set background color to 0 (black) and clear screen
-		draw(background); // draw boss room
-		onionGuy.draw();
-		// TODO draw the boss
-	});
-	
-	cutscene.addDelay(1);
-	
 	//------------------------------------------------------------
 	// display a dialog
 	cutscene.addDialog(assets.dialogs.bossLastFairy);
+
+	cutscene.enqueue(function(){
+		bossGuy.flipH = true;
+	});
+
+	cutscene.addAnimation(function () {
+		background = getMap('bossCutScene');
+		onionGuy.x += 0.8;
+		cls();
+		draw(background); // draw boss room
+		onionGuy.draw();
+		bossGuy.draw();
+		return true; // ends the animation
+	});
+	
+	//------------------------------------------------------------
+	// add a waiting delay of 0.2 seconds
+	cutscene.addDelay(0.2);
+
+	//------------------------------------------------------------
+	// display a dialog
+	cutscene.addDialog(assets.dialogs.bossLastFairyCont);
+
 
 	//------------------------------------------------------------
 	// add a last fade before going back to the game
