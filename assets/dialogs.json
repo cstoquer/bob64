@@ -29,7 +29,10 @@
 		{ "who": "bob",        "text": "Pleeeeease!" },
 		{ "who": "cloudFairy", "text": "Alright, fine!" },
 		{ "who": "cloudFairy", "text": "It is kinda boring up here anyhow." },
-		{ "who": "cloudFairy", "text": "Cool if I bring along my comics and pop?" }
+		{ "who": "cloudFairy", "text": "Cool if I bring along my comics and pop?" },
+		{ "who": "cloudFairy", "text": "Oh, you can double jump now by the way." },
+		{ "who": "cloudFairy", "text": "...And breathe underwater." },
+		{ "who": "cloudFairy", "text": "Don't say I never did anything fer ya!" }
 	],
 	"bossFirstFairy": [
 		{ "who": "stump", "text": "Uh..." },
@@ -58,7 +61,10 @@
 		{ "who": "waterFairy", "text": "Your what now? You mean that doohickey?" },
 		{ "who": "waterFairy", "text": "Well, shucks, I suppose I could." },
 		{ "who": "waterFairy", "text": "All I really do is sing to this seaweed anyhow." },
-		{ "who": "waterFairy", "text": "I reckon it'll grow just fine without me." }
+		{ "who": "waterFairy", "text": "I reckon it'll grow just fine without me." },
+		{ "who": "waterFairy", "text": "Say, you ever seen any blue-\ncolored bricks?" },
+		{ "who": "waterFairy", "text": "Ya'll can cut right through 'em now!" },
+		{ "who": "waterFairy", "text": "So be on the lookout for 'em, ya hear?" }
 	],
 	"bossSecondFairy": [
 		{ "who": "boss",  "text": "Hey, man! What the heck!" },
@@ -78,7 +84,10 @@
 		{ "who": "bob",       "text": "Tell me about it! You want in?" },
 		{ "who": "fireFairy", "text": "Y-you mean me?! I'm honored." },
 		{ "who": "fireFairy", "text": "You won't regret this, pal." },
-		{ "who": "fireFairy", "text": "With me in there she'll run like a dream!" }
+		{ "who": "fireFairy", "text": "With me in there she'll run like a dream!" },
+		{ "who": "fireFairy", "text": "You'll be able to cut bricks of any color!" },
+		{ "who": "fireFairy", "text": "Tear right through 'em! Bzzzz!" },
+		{ "who": "fireFairy", "text": "How sweet is that?" }
 	],
 	"bossLastFairy": [
 		{ "who": "stump", "text": "Sir! Sir! It's happened!" },
