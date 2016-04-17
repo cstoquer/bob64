@@ -7738,7 +7738,7 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk2];
 var BOSS          = assets.entities.boss;
-var BOSS_ANIM    = [BOSS.hack0];
+var BOSS_ANIM    = [BOSS.hit0];
 
 var expl = assets.entities.explosion;
 var EXPLOSION_ANIMATION = [expl.frame0, expl.frame1, expl.frame2, expl.frame3, expl.frame4, expl.frame5, expl.frame6, expl.frame7, expl.frame8];
@@ -7828,6 +7828,18 @@ function afterLastBattle(gameController) {
 	//------------------------------------------------------------
 	// add a last fade before going back to the game
 	cutscene.addFade();
+
+
+
+	//------------------------------------------------------------
+	// TODO rolloff
+
+
+	//------------------------------------------------------------
+	// HACK: game has ended, loop forever
+	cutscene.addAnimation(function(){
+		return false;
+	});
 
 	//------------------------------------------------------------
 	// return the cutscene	
@@ -8449,6 +8461,7 @@ var Onion          = require('./Onion.js');
 var AABBcollision  = require('../AABBcollision.js');
 var tiles          = require('../tiles.js');
 var ShortAnimation = require('./ShortAnimation.js');
+var afterLastBattle = require('../cutscenes/afterLastBattle.js');
 
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -8496,7 +8509,7 @@ function Boss() {
 	this.animSpeed = BOSS_HACK_ANIM_SPEED;
 
 	// state
-	this.lifePoints = 3;
+	this.lifePoints = 1;
 	this.phase = 0;
 	this.blocCount = 0;
 
@@ -8575,15 +8588,15 @@ Boss.prototype.animate = function () {
 		if (this.lifePoints > 0) {
 			this.createPlots();
 		} else {
-			console.log('boss defeated')
-			// TODO
+			// HACK: start beforeLastBattle cutscene
+			this.controller.startCutScene(afterLastBattle());
 		}
 	} else if (this.frame >= this.anim.length) this.frame = 0;
 	var img = this.anim[~~this.frame];
 	draw(img, this.x - 12, this.y, this.flipH);
 };
 
-},{"../AABBcollision.js":37,"../tiles.js":60,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":54,"./ShortAnimation.js":55}],53:[function(require,module,exports){
+},{"../AABBcollision.js":37,"../cutscenes/afterLastBattle.js":45,"../tiles.js":60,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":54,"./ShortAnimation.js":55}],53:[function(require,module,exports){
 var ShortAnimation = require('./ShortAnimation.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];

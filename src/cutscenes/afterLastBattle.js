@@ -7,7 +7,7 @@ var BOB_WALK_ANIM   = [252, 253, 254];
 var onion = assets.entities.onion;
 var ONION_ANIM = [onion.walk2];
 var BOSS          = assets.entities.boss;
-var BOSS_ANIM    = [BOSS.hack0];
+var BOSS_ANIM    = [BOSS.hit0];
 
 var expl = assets.entities.explosion;
 var EXPLOSION_ANIMATION = [expl.frame0, expl.frame1, expl.frame2, expl.frame3, expl.frame4, expl.frame5, expl.frame6, expl.frame7, expl.frame8];
@@ -97,6 +97,18 @@ function afterLastBattle(gameController) {
 	//------------------------------------------------------------
 	// add a last fade before going back to the game
 	cutscene.addFade();
+
+
+
+	//------------------------------------------------------------
+	// TODO rolloff
+
+
+	//------------------------------------------------------------
+	// HACK: game has ended, loop forever
+	cutscene.addAnimation(function(){
+		return false;
+	});
 
 	//------------------------------------------------------------
 	// return the cutscene	
