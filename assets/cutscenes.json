@@ -1,3 +1,5 @@
 [
-	{ "level": "bossRoom", "cutsceneId": "cloudFairy" }
+	{ "level": "cloudShrine", "cutsceneId": "cloudFairy" },
+	{ "level": "waterShrine", "cutsceneId": "waterFairy" },
+	{ "level": "fireShrine",  "cutsceneId": "fireFairy" }
 ]

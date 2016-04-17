@@ -1,8 +1,14 @@
 [
 	["house:1",    "inside:1"],
 	["house:1",    "inside:1"],
-	["ground4:1",  "mountainCave:1"],
+
+	["ground4:1",      "mountainCave:1"],
+	["mountainCave:2", "cloudCave1:1"],
+	["cloudCave1:2",   "cloudCave2:1"],
+	["cloudCave2:2",   "cloudCave3:1"],
+	["cloudCave3:2",   "mountain:1"],
+	["mountain:2",     "cloudShrine:1"],
+
 	["ground7:1",  "tree:1"],
-	["mountain:1", "mountainCave:2"],
 	["ground3:1",  "bossRoom:1"]
 ]
