@@ -11,9 +11,11 @@ var BOSS_ANIM    = [BOSS.hack0, BOSS.hack1, BOSS.hack2];
 function beforeLastBattle(gameController) {
 
 	// HACK: remove door from the level
-	var level = gameController.level
-	var door = level.map.find(4)[0];
-	level.removeTile(door.x, door.y);
+	window.setTimeout(function () {
+		var level = gameController.level
+		var door = level.map.find(4)[0];
+		level.removeTile(door.x, door.y);
+	}, 500);
 
 	//------------------------------------------------------------
 	var cutscene = new CutScene();
