@@ -58,6 +58,9 @@ function Bob() {
 	this.resetState();
 	this.maxLifePoints = 3;
 	this.lifePoints    = 3;
+
+	// scoring
+	this.deathCount = 0;
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -417,6 +420,7 @@ Bob.prototype.hit = function (attacker) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 Bob.prototype.kill = function (params) {
 	this.isDead = params;
+	this.deathCount += 1;
 };
 
 

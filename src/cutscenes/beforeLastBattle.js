@@ -15,6 +15,7 @@ function beforeLastBattle(gameController) {
 		var level = gameController.level
 		var door = level.map.find(4)[0];
 		level.removeTile(door.x, door.y);
+		level.map.remove(door.x, door.y);
 	}, 500);
 
 	//------------------------------------------------------------

@@ -110,6 +110,30 @@ function afterLastBattle(gameController) {
 		return (scroll < -220);
 	});
 
+
+	cutscene.addDelay(8);
+	cutscene.addFade();
+
+
+	//------------------------------------------------------------
+	// statistics
+	cutscene.enqueue(function () {
+		var duration = (gameController.time / 60);
+		var minutes  = ~~(duration / 60);
+		var seconds  = ~~(duration - minutes * 60);
+		var milli    = ~~((duration - minutes - seconds) * 1000);
+
+		cls();
+		println('');
+		println('');
+		println(' total duration:');
+		println('    ' + minutes + ':' + seconds + '.' + milli);
+		println('');
+		println('');
+		println('    ' + gameController.bob.deathCount + ' death');
+	});
+
+
 	//------------------------------------------------------------
 	// HACK: game has ended, loop forever
 	cutscene.addAnimation(function(){
