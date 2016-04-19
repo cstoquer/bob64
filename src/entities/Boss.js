@@ -132,7 +132,7 @@ Boss.prototype.animate = function () {
 			this.createPlots();
 		} else {
 			// HACK: start beforeLastBattle cutscene
-			this.controller.startCutScene(afterLastBattle());
+			this.controller.startCutScene(afterLastBattle(this.controller));
 		}
 	} else if (this.frame >= this.anim.length) this.frame = 0;
 	var img = this.anim[~~this.frame];

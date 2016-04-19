@@ -33,6 +33,8 @@ function GameController() {
 		levelId: 'ground0',
 		bob: null // TODO
 	};
+
+	this.time = 0;
 }
 
 module.exports = new GameController();
@@ -142,6 +144,8 @@ GameController.prototype.killBob = function (params) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
 	if (isLocked) return isLocked.update();
+
+	this.time += 1;
 
 	bob.update();
 
