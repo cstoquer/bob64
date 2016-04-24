@@ -149,8 +149,8 @@ GameController.prototype.update = function () {
 
 	bob.update();
 
-	var scrollX = clip(bob.x - 28, 0, level.width  * TILE_WIDTH  - 64);
-	var scrollY = clip(bob.y - 28, 0, level.height * TILE_HEIGHT - 64);
+	var scrollX = clip(bob.x - 126, 0, level.width  * TILE_WIDTH  - 256);
+	var scrollY = clip(bob.y - 120, 0, level.height * TILE_HEIGHT - 240);
 
 	cls();
 	camera(scrollX, scrollY);

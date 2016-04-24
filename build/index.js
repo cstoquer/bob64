@@ -6556,9 +6556,9 @@ assetLoader.preloadStaticAssets(onAssetsLoaded, showProgress);
 },{"../settings.json":36,"../src/main.js":59,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
 module.exports={
 	"screen": {
-		"width": 64,
-		"height": 64,
-		"pixelSize": [8, 6]
+		"width": 256,
+		"height": 240,
+		"pixelSize": [4, 4]
 	},
 	"spriteSize": [8, 8],
 	"palette": [
@@ -7385,8 +7385,8 @@ GameController.prototype.update = function () {
 
 	bob.update();
 
-	var scrollX = clip(bob.x - 28, 0, level.width  * TILE_WIDTH  - 64);
-	var scrollY = clip(bob.y - 28, 0, level.height * TILE_HEIGHT - 64);
+	var scrollX = clip(bob.x - 126, 0, level.width  * TILE_WIDTH  - 256);
+	var scrollY = clip(bob.y - 120, 0, level.height * TILE_HEIGHT - 240);
 
 	cls();
 	camera(scrollX, scrollY);
@@ -9258,7 +9258,7 @@ Stump.prototype.spit = function () {
 	this.controller.addEntity(spit);
 };
 },{"../AABBcollision.js":37,"./Entity.js":53,"./Spit.js":57}],59:[function(require,module,exports){
-var DEBUG = false;
+var DEBUG = true;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // PREPARE LEVELS

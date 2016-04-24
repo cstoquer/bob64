@@ -1,8 +1,8 @@
 {
 	"screen": {
-		"width": 64,
-		"height": 64,
-		"pixelSize": [8, 6]
+		"width": 256,
+		"height": 240,
+		"pixelSize": [4, 4]
 	},
 	"spriteSize": [8, 8],
 	"palette": [
