@@ -48,6 +48,7 @@ Entity.prototype.collideFront = function () {};
 Entity.prototype.onGrounds = function () {};
 Entity.prototype.animate = function () {};
 Entity.prototype.hit = function (attacker) {};
+Entity.prototype.setDirection = function () {};
 
 //████████████████████████████████████████████████
 //████████████████████████████████████████████████
