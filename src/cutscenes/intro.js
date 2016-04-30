@@ -19,15 +19,27 @@ function intro(gameController) {
 	//------------------------------------------------------------
 	// TITLE SCREEN
 
+	var splashBackground = getMap('splash');
+	var splashBackgroundPos = 0;
+	var splashBackgroundMax = splashBackground.width * 8 - 64;
+
 	cutscene.enqueue(function () {
-		paper(5);
-		pen(10);
-		cls();
-		draw(assets.title, 15, 10);
-		print('press space', 10, 48);
+		paper(6);
+		
 	});
 
 	cutscene.addAnimation(function () {
+		splashBackgroundPos += 0.5;
+		if (splashBackgroundPos > splashBackgroundMax) splashBackgroundPos -= splashBackgroundMax;
+		cls();
+		draw(splashBackground, -splashBackgroundPos, 0);
+		draw(assets.title, 0, 0);
+		if (splashBackgroundPos % 16 < 8) {
+			pen(14).print('press space', 10, 52);
+			pen(14).print('press space', 10, 53);
+			pen(14).print('press space', 11, 53);
+			pen( 1).print('press space', 11, 52);
+		}
 		return (btnp.A);
 	});
 
