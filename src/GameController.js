@@ -2,7 +2,7 @@ var level          = require('./Level.js');
 var bob            = require('./Bob.js');
 var TextDisplay    = require('./TextDisplay.js');
 var Entity         = require('./entities/Entity.js');
-var ShortAnimation = require('./entities/ShortAnimation.js');
+// var ShortAnimation = require('./entities/ShortAnimation.js');
 var FadeTransition = require('./FadeTransition.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -18,6 +18,12 @@ var fader       = new FadeTransition();
 var textDisplay = new TextDisplay();
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+function unlock() {
+	paper(level.bgcolor);
+	isLocked = null;
+}
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function GameController() {
 	this.level       = level;
 	this.bob         = bob;
@@ -27,7 +33,7 @@ function GameController() {
 	level.controller = this;
 	bob.controller   = this;
 	Entity.prototype.controller = this;
-	ShortAnimation.prototype.controller = this;
+	// ShortAnimation.prototype.controller = this;
 
 	this.checkpoint = {
 		levelId: 'ground0',
@@ -67,6 +73,7 @@ GameController.prototype.removeEntity = function (entity) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.addAnimation = function (animation) {
+	animation.controller = this;
 	this.animations.push(animation);
 };
 
@@ -79,7 +86,8 @@ GameController.prototype.removeAnimation = function (animation) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.loadLevel = function (id, doorId, side) {
-	this.entities = []; // remove all entities
+	this.entities   = []; // remove all entities
+	this.animations = []; // remove all animations
 	level.load(id);
 	if (doorId !== undefined) level.setBobPositionOnDoor(doorId);
 	if (side) level.setBobPositionOnSide(bob, side);
@@ -92,7 +100,7 @@ GameController.prototype.startFade = function () {
 	isLocked = fader;
 	var self = this;
 	fader.start(null, function () {
-		isLocked = null;
+		unlock();
 		self.loadLevel(nextLevel, nextDoor, nextSide);
 	});
 };
@@ -118,17 +126,13 @@ GameController.prototype.goToNeighbourLevel = function (direction) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.displayDialog = function (dialog) {
 	isLocked = textDisplay;
-	textDisplay.start(dialog, function () {
-		isLocked = null;
-	});
+	textDisplay.start(dialog, unlock);
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.startCutScene = function (cutscene) {
 	isLocked = cutscene;
-	cutscene.start(function () {
-		isLocked = null;
-	});
+	cutscene.start(unlock);
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -136,10 +140,13 @@ GameController.prototype.killBob = function (params) {
 	var self = this;
 	isLocked = fader;
 	fader.start({ img: assets.ditherFonduRed }, function () {
-		isLocked = null;
+		unlock();
 		self.restoreState();
 	});
 };
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.unlock = unlock;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
@@ -155,11 +162,11 @@ GameController.prototype.update = function () {
 	cls();
 	camera(scrollX, scrollY);
 	level.draw();
-	for (var i = this.entities.length - 1; i >= 0; i--) {
-		this.entities[i].update(level, bob); // update and draw
-	}
 	for (var i = this.animations.length - 1; i >= 0; i--) {
 		this.animations[i].update(); // update and draw
+	}
+	for (var i = this.entities.length - 1; i >= 0; i--) {
+		this.entities[i].update(level, bob); // update and draw
 	}
 	bob.draw();
 };

@@ -1,6 +1,7 @@
 var tiles         = require('./tiles.js');
 var Onion         = require('./entities/Onion.js');
 var Stump         = require('./entities/Stump.js');
+var LavaSpit      = require('./entities/LavaSpit.js');
 var Boss          = require('./entities/Boss.js');
 var SingletonItem = require('./entities/SingletonItem.js');
 var Bloc          = require('./entities/Bloc.js');
@@ -25,6 +26,7 @@ function Level() {
 	this.doors  = [null, null, null];
 
 	this.background  = new Texture();
+	this.bgcolor = 0;
 	this.animatedBackgrounds = [];
 	this.isAnimated = false;
 	this.frame = 0;
@@ -36,6 +38,7 @@ Level.prototype.load = function (id) {
 
 	var def = assets.levels[id];
 	if (!def) return console.error('Level definition does not exist for level ' + id);
+	this.bgcolor = def.bgcolor;
 	paper(def.bgcolor);
 
 	var map = getMap(def.geometry);
@@ -91,9 +94,10 @@ Level.prototype._createDestroyableBloc = function (item) {
 Level.prototype._addEntityFromMapItem = function (item) {
 	if (!item || item.sprite < 128) return;
 	switch (item.sprite) {
-		case 128: this._addEntity(Onion, item); break;
-		case 129: this._addEntity(Stump, item); break;
-		case 144: this._addEntity(Boss,  item); break;
+		case 128: this._addEntity(Onion,    item); break;
+		case 129: this._addEntity(Stump,    item); break;
+		case 130: this._addEntity(LavaSpit, item); break;
+		case 144: this._addEntity(Boss,     item); break;
 		case 160: // cloud bloc
 		case 161: // water bloc
 		case 162: // fire block

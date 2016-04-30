@@ -432,7 +432,7 @@ Map.prototype.find = function (sprite, flagA, flagB) {
 };
 
 
-},{"../../settings.json":36,"Texture":26}],3:[function(require,module,exports){
+},{"../../settings.json":37,"Texture":26}],3:[function(require,module,exports){
 var Transition         = require('./Transition');
 var TransitionRelative = require('./TransitionRelative');
 
@@ -4457,7 +4457,7 @@ Texture.prototype.textScroll = function (n) {
 };
 
 
-},{"../../settings.json":36}],27:[function(require,module,exports){
+},{"../../settings.json":37}],27:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /**
  * @module loader
@@ -5414,7 +5414,7 @@ Sound.prototype.stop = function (cb) {
 	return cb && cb(); // TODO: fade-out
 };
 
-},{"./ISound.js":29,"util":64}],32:[function(require,module,exports){
+},{"./ISound.js":29,"util":67}],32:[function(require,module,exports){
 var inherits = require('util').inherits;
 var ISound   = require('./ISound.js');
 
@@ -5797,7 +5797,7 @@ SoundBuffered.prototype.stop = function (cb) {
 };
 
 
-},{"./ISound.js":29,"util":64}],33:[function(require,module,exports){
+},{"./ISound.js":29,"util":67}],33:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** Set of sound played in sequence each times it triggers
  *  used for animation sfx
@@ -6276,6 +6276,70 @@ AudioManager.prototype.createSoundGroups = function (soundGroupDefs, channelId) 
 };
 
 },{"./AudioChannel.js":28,"./ISound.js":29,"./OrderedList":30,"./Sound.js":31,"./SoundBuffered.js":32,"./SoundGroup.js":33}],35:[function(require,module,exports){
+// dom utilities
+
+var DOCUMENT_BODY = document.getElementsByTagName('body')[0];
+
+exports.createDom = function (type, className, parent) {
+	parent = parent || DOCUMENT_BODY;
+	var dom = document.createElement(type);
+	parent.appendChild(dom);
+	if (className) dom.className = className;
+	return dom;
+};
+
+exports.createDiv = function (className, parent) {
+	return exports.createDom('div', className, parent);
+};
+
+exports.removeDom = function (dom, parent) {
+	parent = parent || DOCUMENT_BODY;
+	parent.removeChild(dom);
+};
+
+exports.makeButton = function (dom, onClic) {
+	dom.addEventListener('mousedown', function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		onClic(e, dom);
+	});
+	return dom;
+};
+
+function startDrag(dom, e) {
+	var d = document;
+
+	rect = dom.getBoundingClientRect();
+
+	var startX = e.clientX - rect.left;
+	var startY = e.clientY - rect.top;
+
+	function dragMove(e) {
+		e.preventDefault();
+		dom.style.left = (e.clientX - startX) + 'px';
+		dom.style.top  = (e.clientY - startY) + 'px';
+	}
+
+	function dragEnd(e) {
+		e.preventDefault();
+		d.removeEventListener('mouseup',   dragEnd);
+		d.removeEventListener('mousemove', dragMove);
+	}
+
+	d.addEventListener('mousemove', dragMove, false);
+	d.addEventListener('mouseup',   dragEnd,  false);
+}
+
+exports.makeDragable = function (dom, target) {
+	target = target || dom;
+	dom.addEventListener('mousedown', function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		startDrag(target, e);
+	});
+	return dom;
+}
+},{}],36:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /**
  * Pixelbox main framework module
@@ -6553,7 +6617,7 @@ function showProgress(load, current, count, percent) {
 cls().paper(1).pen(1).rect(CENTER - HALF_WIDTH - 2, MIDDLE - 4, HALF_WIDTH * 2 + 4, 8); // loading bar
 assetLoader.preloadStaticAssets(onAssetsLoaded, showProgress);
 
-},{"../settings.json":36,"../src/main.js":59,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
+},{"../settings.json":37,"../src/main.js":62,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],37:[function(require,module,exports){
 module.exports={
 	"screen": {
 		"width": 64,
@@ -6588,7 +6652,7 @@ module.exports={
 		"B": 88
 	}
 }
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 
 function AABBcollision(a, b) {
 	return a.x < b.x + b.width  
@@ -6599,7 +6663,7 @@ function AABBcollision(a, b) {
 
 module.exports = AABBcollision;
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /**
  * @param {number[] | Image[] | mixed[]} animation - an array of something drawable. 
@@ -6643,7 +6707,7 @@ AnimatedSprite.prototype.setPosition = function (x, y) {
 	return this;
 };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var level          = require('./Level.js');
 var ShortAnimation = require('./entities/ShortAnimation.js');
 var AABBcollision  = require('./AABBcollision.js');
@@ -7072,7 +7136,7 @@ Bob.prototype.kill = function (params) {
 
 module.exports = new Bob();
 
-},{"./AABBcollision.js":37,"./Level.js":43,"./entities/ShortAnimation.js":55}],40:[function(require,module,exports){
+},{"./AABBcollision.js":38,"./Level.js":44,"./entities/ShortAnimation.js":58}],41:[function(require,module,exports){
 var TextDisplay    = require('./TextDisplay.js');
 var FadeTransition = require('./FadeTransition.js');
 
@@ -7197,7 +7261,7 @@ CutScene.prototype._startFade = function (options) {
 	});
 };
 
-},{"./FadeTransition.js":41,"./TextDisplay.js":44}],41:[function(require,module,exports){
+},{"./FadeTransition.js":42,"./TextDisplay.js":45}],42:[function(require,module,exports){
 var TILE_WIDTH  = settings.spriteSize[0];
 var TILE_HEIGHT = settings.spriteSize[1];
 
@@ -7233,12 +7297,12 @@ FadeTransition.prototype.update = function () {
 	return true;
 };
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var level          = require('./Level.js');
 var bob            = require('./Bob.js');
 var TextDisplay    = require('./TextDisplay.js');
 var Entity         = require('./entities/Entity.js');
-var ShortAnimation = require('./entities/ShortAnimation.js');
+// var ShortAnimation = require('./entities/ShortAnimation.js');
 var FadeTransition = require('./FadeTransition.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -7254,6 +7318,12 @@ var fader       = new FadeTransition();
 var textDisplay = new TextDisplay();
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+function unlock() {
+	paper(level.bgcolor);
+	isLocked = null;
+}
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function GameController() {
 	this.level       = level;
 	this.bob         = bob;
@@ -7263,7 +7333,7 @@ function GameController() {
 	level.controller = this;
 	bob.controller   = this;
 	Entity.prototype.controller = this;
-	ShortAnimation.prototype.controller = this;
+	// ShortAnimation.prototype.controller = this;
 
 	this.checkpoint = {
 		levelId: 'ground0',
@@ -7303,6 +7373,7 @@ GameController.prototype.removeEntity = function (entity) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.addAnimation = function (animation) {
+	animation.controller = this;
 	this.animations.push(animation);
 };
 
@@ -7315,7 +7386,8 @@ GameController.prototype.removeAnimation = function (animation) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.loadLevel = function (id, doorId, side) {
-	this.entities = []; // remove all entities
+	this.entities   = []; // remove all entities
+	this.animations = []; // remove all animations
 	level.load(id);
 	if (doorId !== undefined) level.setBobPositionOnDoor(doorId);
 	if (side) level.setBobPositionOnSide(bob, side);
@@ -7328,7 +7400,7 @@ GameController.prototype.startFade = function () {
 	isLocked = fader;
 	var self = this;
 	fader.start(null, function () {
-		isLocked = null;
+		unlock();
 		self.loadLevel(nextLevel, nextDoor, nextSide);
 	});
 };
@@ -7354,17 +7426,13 @@ GameController.prototype.goToNeighbourLevel = function (direction) {
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.displayDialog = function (dialog) {
 	isLocked = textDisplay;
-	textDisplay.start(dialog, function () {
-		isLocked = null;
-	});
+	textDisplay.start(dialog, unlock);
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.startCutScene = function (cutscene) {
 	isLocked = cutscene;
-	cutscene.start(function () {
-		isLocked = null;
-	});
+	cutscene.start(unlock);
 };
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -7372,10 +7440,13 @@ GameController.prototype.killBob = function (params) {
 	var self = this;
 	isLocked = fader;
 	fader.start({ img: assets.ditherFonduRed }, function () {
-		isLocked = null;
+		unlock();
 		self.restoreState();
 	});
 };
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+GameController.prototype.unlock = unlock;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.update = function () {
@@ -7391,19 +7462,20 @@ GameController.prototype.update = function () {
 	cls();
 	camera(scrollX, scrollY);
 	level.draw();
-	for (var i = this.entities.length - 1; i >= 0; i--) {
-		this.entities[i].update(level, bob); // update and draw
-	}
 	for (var i = this.animations.length - 1; i >= 0; i--) {
 		this.animations[i].update(); // update and draw
+	}
+	for (var i = this.entities.length - 1; i >= 0; i--) {
+		this.entities[i].update(level, bob); // update and draw
 	}
 	bob.draw();
 };
 
-},{"./Bob.js":39,"./FadeTransition.js":41,"./Level.js":43,"./TextDisplay.js":44,"./entities/Entity.js":53,"./entities/ShortAnimation.js":55}],43:[function(require,module,exports){
+},{"./Bob.js":40,"./FadeTransition.js":42,"./Level.js":44,"./TextDisplay.js":45,"./entities/Entity.js":54}],44:[function(require,module,exports){
 var tiles         = require('./tiles.js');
 var Onion         = require('./entities/Onion.js');
 var Stump         = require('./entities/Stump.js');
+var LavaSpit      = require('./entities/LavaSpit.js');
 var Boss          = require('./entities/Boss.js');
 var SingletonItem = require('./entities/SingletonItem.js');
 var Bloc          = require('./entities/Bloc.js');
@@ -7428,6 +7500,7 @@ function Level() {
 	this.doors  = [null, null, null];
 
 	this.background  = new Texture();
+	this.bgcolor = 0;
 	this.animatedBackgrounds = [];
 	this.isAnimated = false;
 	this.frame = 0;
@@ -7439,6 +7512,7 @@ Level.prototype.load = function (id) {
 
 	var def = assets.levels[id];
 	if (!def) return console.error('Level definition does not exist for level ' + id);
+	this.bgcolor = def.bgcolor;
 	paper(def.bgcolor);
 
 	var map = getMap(def.geometry);
@@ -7494,9 +7568,10 @@ Level.prototype._createDestroyableBloc = function (item) {
 Level.prototype._addEntityFromMapItem = function (item) {
 	if (!item || item.sprite < 128) return;
 	switch (item.sprite) {
-		case 128: this._addEntity(Onion, item); break;
-		case 129: this._addEntity(Stump, item); break;
-		case 144: this._addEntity(Boss,  item); break;
+		case 128: this._addEntity(Onion,    item); break;
+		case 129: this._addEntity(Stump,    item); break;
+		case 130: this._addEntity(LavaSpit, item); break;
+		case 144: this._addEntity(Boss,     item); break;
 		case 160: // cloud bloc
 		case 161: // water bloc
 		case 162: // fire block
@@ -7627,7 +7702,7 @@ Level.prototype.draw = function () {
 }
 
 module.exports = new Level();
-},{"./entities/Bloc.js":51,"./entities/Boss.js":52,"./entities/Onion.js":54,"./entities/SingletonItem.js":56,"./entities/Stump.js":58,"./tiles.js":60}],44:[function(require,module,exports){
+},{"./entities/Bloc.js":52,"./entities/Boss.js":53,"./entities/LavaSpit.js":55,"./entities/Onion.js":56,"./entities/SingletonItem.js":59,"./entities/Stump.js":61,"./tiles.js":63}],45:[function(require,module,exports){
 TextDisplay = function () {
 	this.textWindow = new Texture(64, 19);
 	this.textBuffer = '';
@@ -7736,7 +7811,7 @@ TextDisplay.prototype._setDialog = function () {
 	this.textBuffer += this.textParts.shift() + '\n' + (this.textParts.shift() || '') + '\n' + (this.textParts.shift() || '');
 };
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 var ShortAnimation = require('../entities/ShortAnimation.js');
@@ -7859,14 +7934,13 @@ function afterLastBattle(gameController) {
 	cutscene.enqueue(function () {
 		var duration = (gameController.time / 60);
 		var minutes  = ~~(duration / 60);
-		var seconds  = ~~(duration - minutes * 60);
-		var milli    = ~~((duration - minutes - seconds) * 1000);
+		var seconds  = ~~((duration - minutes * 60) * 100) / 100;
 
 		cls();
 		println('');
 		println('');
 		println(' total duration:');
-		println('    ' + minutes + ':' + seconds + '.' + milli);
+		println('    ' + minutes + ':' + seconds.toFixed(2));
 		println('');
 		println('');
 		println('    ' + gameController.bob.deathCount + ' death');
@@ -7886,7 +7960,7 @@ function afterLastBattle(gameController) {
 
 module.exports = afterLastBattle;
 
-},{"../AnimatedSprite.js":38,"../CutScene.js":40,"../entities/ShortAnimation.js":55}],46:[function(require,module,exports){
+},{"../AnimatedSprite.js":39,"../CutScene.js":41,"../entities/ShortAnimation.js":58}],47:[function(require,module,exports){
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
@@ -7948,7 +8022,7 @@ function beforeLastBattle(gameController) {
 
 module.exports = beforeLastBattle;
 
-},{"../AnimatedSprite.js":38,"../CutScene.js":40}],47:[function(require,module,exports){
+},{"../AnimatedSprite.js":39,"../CutScene.js":41}],48:[function(require,module,exports){
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
@@ -8046,7 +8120,7 @@ function cloudFairy(gameController) {
 
 module.exports = cloudFairy;
 
-},{"../AnimatedSprite.js":38,"../CutScene.js":40}],48:[function(require,module,exports){
+},{"../AnimatedSprite.js":39,"../CutScene.js":41}],49:[function(require,module,exports){
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
@@ -8161,7 +8235,7 @@ function fireFairy(gameController) {
 
 module.exports = fireFairy;
 
-},{"../AnimatedSprite.js":38,"../CutScene.js":40}],49:[function(require,module,exports){
+},{"../AnimatedSprite.js":39,"../CutScene.js":41}],50:[function(require,module,exports){
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
@@ -8183,15 +8257,27 @@ function intro(gameController) {
 	//------------------------------------------------------------
 	// TITLE SCREEN
 
+	var splashBackground = getMap('splash');
+	var splashBackgroundPos = 0;
+	var splashBackgroundMax = splashBackground.width * 8 - 64;
+
 	cutscene.enqueue(function () {
-		paper(5);
-		pen(10);
-		cls();
-		draw(assets.title, 15, 10);
-		print('press space', 10, 48);
+		paper(6);
+		
 	});
 
 	cutscene.addAnimation(function () {
+		splashBackgroundPos += 0.5;
+		if (splashBackgroundPos > splashBackgroundMax) splashBackgroundPos -= splashBackgroundMax;
+		cls();
+		draw(splashBackground, -splashBackgroundPos, 0);
+		draw(assets.title, 0, 0);
+		if (splashBackgroundPos % 16 < 8) {
+			pen(14).print('press space', 10, 52);
+			pen(14).print('press space', 10, 53);
+			pen(14).print('press space', 11, 53);
+			pen( 1).print('press space', 11, 52);
+		}
 		return (btnp.A);
 	});
 
@@ -8318,7 +8404,7 @@ function intro(gameController) {
 
 module.exports = intro;
 
-},{"../AnimatedSprite.js":38,"../CutScene.js":40}],50:[function(require,module,exports){
+},{"../AnimatedSprite.js":39,"../CutScene.js":41}],51:[function(require,module,exports){
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
@@ -8420,7 +8506,7 @@ function waterFairy(gameController) {
 
 module.exports = waterFairy;
 
-},{"../AnimatedSprite.js":38,"../CutScene.js":40}],51:[function(require,module,exports){
+},{"../AnimatedSprite.js":39,"../CutScene.js":41}],52:[function(require,module,exports){
 var Entity         = require('./Entity.js');
 var AABBcollision  = require('../AABBcollision.js');
 var tiles          = require('../tiles.js');
@@ -8495,7 +8581,7 @@ Bloc.prototype.animate = function () {
 	sprite(this.sprite, this.x, this.y);
 };
 
-},{"../AABBcollision.js":37,"../tiles.js":60,"./Entity.js":53,"./ShortAnimation.js":55}],52:[function(require,module,exports){
+},{"../AABBcollision.js":38,"../tiles.js":63,"./Entity.js":54,"./ShortAnimation.js":58}],53:[function(require,module,exports){
 var Entity         = require('./Entity.js');
 var Bloc           = require('./Bloc.js');
 var Onion          = require('./Onion.js');
@@ -8637,7 +8723,7 @@ Boss.prototype.animate = function () {
 	draw(img, this.x - 12, this.y, this.flipH);
 };
 
-},{"../AABBcollision.js":37,"../cutscenes/afterLastBattle.js":45,"../tiles.js":60,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":54,"./ShortAnimation.js":55}],53:[function(require,module,exports){
+},{"../AABBcollision.js":38,"../cutscenes/afterLastBattle.js":46,"../tiles.js":63,"./Bloc.js":52,"./Entity.js":54,"./Onion.js":56,"./ShortAnimation.js":58}],54:[function(require,module,exports){
 var ShortAnimation = require('./ShortAnimation.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -8688,6 +8774,7 @@ Entity.prototype.collideFront = function () {};
 Entity.prototype.onGrounds = function () {};
 Entity.prototype.animate = function () {};
 Entity.prototype.hit = function (attacker) {};
+Entity.prototype.setDirection = function () {};
 
 //████████████████████████████████████████████████
 //████████████████████████████████████████████████
@@ -8794,7 +8881,85 @@ Entity.prototype.levelCollisions = function (level, bob) {
 	this.y = y;
 };
 
-},{"./ShortAnimation.js":55}],54:[function(require,module,exports){
+},{"./ShortAnimation.js":58}],55:[function(require,module,exports){
+var Entity        = require('./Entity.js');
+var Particle      = require('./Particle.js');
+var AABBcollision = require('../AABBcollision.js');
+
+var fld  = assets.entities.lavaSpit;
+var ANIM = [fld.frame0, fld.frame1, fld.frame2];
+var PARTICLE_EFFECT = {
+	gravity:   0.01,
+	animation: [fld.particle0, fld.particle1, fld.particle2],
+	animSpeed: 0.1,
+	lifetime:  null // default to animation end
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+function LavaSpit() {
+	Entity.call(this);
+
+	// properties
+	this.isAttackable = false;
+
+	// physic
+	this.gravity    = 0.1;
+	this.maxGravity = Infinity;
+
+	// rendering & animation
+	this.frame = 0;
+
+	// state
+	this.jumpCounter = 0;
+	this.jumping = true;
+}
+inherits(LavaSpit, Entity);
+
+module.exports = LavaSpit;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+/* return true if entity needs to check collision with level */
+LavaSpit.prototype.move = function (level, bob) {
+
+	if (bob.isAttackable && AABBcollision(this, bob)) {
+		// collision with Bob detected
+		bob.hit(this);
+	}
+
+	if (this.jumping) {
+		this.fall();
+		this.y += this.sy;
+
+		if (this.y > level.height * 8) {
+			this.jumping = false;
+		}
+
+		// add particle effect
+		if (random(4) === 1) {
+			var particle = new Particle(PARTICLE_EFFECT);
+			var py = this.sy > 0 ? 1 : 7;
+			particle.sy = Math.min(0, this.sy / 10);
+			particle.setPosition(this.x + random(5), this.y + py + random(3));
+			this.controller.addAnimation(particle);
+		}
+
+	} else if (this.jumpCounter++ > 40) {
+		this.jumpCounter = 0;
+		this.jumping = true;
+		this.sy = -this.sy - this.gravity;
+	}
+
+	return false; // don't need to check collision with level
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+LavaSpit.prototype.animate = function () {
+	this.frame += 0.3;
+	if (this.frame >= ANIM.length) this.frame = 0;
+	draw(ANIM[~~this.frame], this.x, this.y, false, this.sy > 0);
+};
+
+},{"../AABBcollision.js":38,"./Entity.js":54,"./Particle.js":57}],56:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var AABBcollision = require('../AABBcollision.js');
 
@@ -8944,7 +9109,70 @@ Onion.prototype.hit = function (attacker) {
 	this.sy = -2;
 };
 
-},{"../AABBcollision.js":37,"./Entity.js":53}],55:[function(require,module,exports){
+},{"../AABBcollision.js":38,"./Entity.js":54}],57:[function(require,module,exports){
+var DEFAULT_ANIMATION = [0];
+
+function Particle(params) {
+	params = params || {};
+
+	this.x  = 0;
+	this.y  = 0;
+	this.sx = 0;
+	this.sy = 0;
+
+	this.frame = 0;
+	this.life  = 0;
+	this.flipH = false;
+	this.flipV = false;
+
+	this.animSpeed = params.animSpeed || 0.2;
+	this.animation = params.animation || DEFAULT_ANIMATION;
+	this.lifetime  = params.lifetime  || this.animation.length / this.animSpeed;
+	this.gravity   = params.gravity   || 0;
+
+	// TODO gravity settings
+}
+
+module.exports = Particle;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Particle.prototype.update = function () {
+	this.life += 1;
+	if (this.life >= this.lifetime) {
+		this.controller.removeAnimation(this);
+		return;
+	}
+
+	// TODO movement & gravity
+	this.sy += this.gravity;
+	this.x  += this.sx;
+	this.y  += this.sy;
+
+	this.frame += this.animSpeed;
+	if (this.frame >= this.animation.length) this.frame = 0;
+
+	var current = this.animation[~~this.frame];
+	if (typeof current === 'number') {
+		sprite(current, this.x, this.y, this.flipH, this.flipV);
+	} else {
+		draw(current, this.x, this.y, this.flipH, this.flipV);
+	}
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Particle.prototype.setAnimation = function (animation, animSpeed) {
+	this.animation = animation;
+	this.animSpeed = animSpeed || this.animSpeed || 0.2;
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Particle.prototype.setPosition = function (x, y) {
+	this.x = x;
+	this.y = y;
+	return this;
+};
+},{}],58:[function(require,module,exports){
 function ShortAnimation(animation, animSpeed) {
 	this.x = 0;
 	this.y = 0;
@@ -8985,7 +9213,7 @@ ShortAnimation.prototype.setPosition = function (x, y) {
 	this.y = y;
 	return this;
 };
-},{}],56:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var AABBcollision = require('../AABBcollision.js');
 
@@ -9034,7 +9262,7 @@ SingletonItem.prototype.setPosition = function (x ,y) {
 	this.y = y;
 	return this;
 };
-},{"../AABBcollision.js":37,"./Entity.js":53}],57:[function(require,module,exports){
+},{"../AABBcollision.js":38,"./Entity.js":54}],60:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var AABBcollision = require('../AABBcollision.js');
 
@@ -9098,7 +9326,7 @@ Spit.prototype.setPosition = function (x ,y) {
 	this.y = y;
 	return this;
 };
-},{"../AABBcollision.js":37,"./Entity.js":53}],58:[function(require,module,exports){
+},{"../AABBcollision.js":38,"./Entity.js":54}],61:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var Spit          = require('./Spit.js');
 var AABBcollision = require('../AABBcollision.js');
@@ -9257,7 +9485,7 @@ Stump.prototype.spit = function () {
 	spit.setDirection(this.direction).setPosition(this.x, this.y + 3);
 	this.controller.addEntity(spit);
 };
-},{"../AABBcollision.js":37,"./Entity.js":53,"./Spit.js":57}],59:[function(require,module,exports){
+},{"../AABBcollision.js":38,"./Entity.js":54,"./Spit.js":60}],62:[function(require,module,exports){
 var DEBUG = false;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -9346,6 +9574,12 @@ var gameController = require('./GameController.js');
 // DEBUGGING FUNCTIONS 
 
 if (DEBUG) {
+	var domUtils     = require('domUtils');
+	var createDom    = domUtils.createDom;
+	var createDiv    = domUtils.createDiv;
+	var makeButton   = domUtils.makeButton;
+	var makeDragable = domUtils.makeDragable;
+
 	window.controller = gameController;
 	window.bob        = gameController.bob;
 	window.level      = gameController.level;
@@ -9358,18 +9592,63 @@ if (DEBUG) {
 	}
 
 	// load level from console
-	window.loadLevel = function (id) {
+	function loadLevel(id) {
 		// let's try to create the level if it does't exist
 		if (!assets.levels[id]) createDefaultLevel(id);
 		gameController.loadLevel(id);
 		gameController.saveState();
 	};
 
+	window.loadLevel = loadLevel;
+
+	// level loader panel
+	var levelLoader = createDiv('panel');
+	makeDragable(createDiv('panelHandle', levelLoader), levelLoader).innerText = 'LEVELS';
+
+	for (var id in levels) {
+		var btn = createDiv('button', levelLoader);
+		btn.innerText = id;
+		btn.levelId = id;
+		makeButton(btn, function (e, btn) {
+			loadLevel(btn.levelId);
+		});
+	}
+
 	// hack Bob abilities
 	var bob = require('./Bob.js');
+	bob.canAttack     = true;
 	bob.canDive       = true;
 	bob.canDoubleJump = true;
-	bob.canAttack     = true;
+
+	var bobAbilities = createDiv('panel');
+	makeDragable(createDiv('panelHandle', bobAbilities), bobAbilities).innerText = 'BOB';
+
+	var abilities = ['canAttack', 'canDive', 'canDoubleJump', 'hasCloudFairy', 'hasWaterFairy', 'hasFireFairy'];
+
+	for (var i = 0; i < abilities.length; i++) {
+		var ability = abilities[i];
+		var btn = createDiv('button', bobAbilities);
+		btn.ability   = ability;
+		btn.checkbox  = createDiv('checkbox', btn);
+		createDom('span', '', btn).innerText = ability;
+		btn.checkbox.innerText = bob[btn.ability] ? 'X' : '.';
+		makeButton(btn, function (e, btn) {
+			bob[btn.ability] = !bob[btn.ability];
+			btn.checkbox.innerText = bob[btn.ability] ? 'X' : '.';
+		});
+	}
+
+	createDiv('separator', bobAbilities)
+
+	// restore life
+	makeButton(createDiv('button', bobAbilities), function (e, btn) {
+		bob.lifePoints = bob.maxLifePoints;
+	}).innerText = 'restore life';
+
+	// skip
+	makeButton(createDiv('button', bobAbilities), function (e, btn) {
+		gameController.unlock();
+	}).innerText = 'skip cutscene';
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -9378,7 +9657,7 @@ gameController.loadLevel('inside');
 gameController.saveState();
 
 // start intro
-if (!DEBUG) gameController.startCutScene(CUTSCENES_ANIMATIONS.intro(gameController));
+gameController.startCutScene(CUTSCENES_ANIMATIONS.intro(gameController));
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // Update is called once per frame
@@ -9386,7 +9665,7 @@ exports.update = function () {
 	gameController.update();
 };
 
-},{"./Bob.js":39,"./GameController.js":42,"./cutscenes/afterLastBattle.js":45,"./cutscenes/beforeLastBattle.js":46,"./cutscenes/cloudFairy.js":47,"./cutscenes/fireFairy.js":48,"./cutscenes/intro.js":49,"./cutscenes/waterFairy.js":50}],60:[function(require,module,exports){
+},{"./Bob.js":40,"./GameController.js":43,"./cutscenes/afterLastBattle.js":46,"./cutscenes/beforeLastBattle.js":47,"./cutscenes/cloudFairy.js":48,"./cutscenes/fireFairy.js":49,"./cutscenes/intro.js":50,"./cutscenes/waterFairy.js":51,"domUtils":35}],63:[function(require,module,exports){
 
 var EMPTY   = exports.EMPTY   = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0 };
 var SOLID   = exports.SOLID   = { isEmpty: false, isSolid: true,  isTopSolid: true,  isWater: 0 };
@@ -9420,7 +9699,7 @@ exports.getTileFromMapItem = function (mapItem) {
 	}
 };
 
-},{}],61:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -9445,7 +9724,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],62:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -9538,14 +9817,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],63:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],64:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -10135,4 +10414,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":63,"_process":62,"inherits":61}]},{},[35]);
+},{"./support/isBuffer":66,"_process":65,"inherits":64}]},{},[36]);
