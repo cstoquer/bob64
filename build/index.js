@@ -7316,7 +7316,8 @@ GameController.prototype.removeAnimation = function (animation) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.loadLevel = function (id, doorId, side) {
-	this.entities = []; // remove all entities
+	this.entities   = []; // remove all entities
+	this.animations = []; // remove all animations
 	level.load(id);
 	if (doorId !== undefined) level.setBobPositionOnDoor(doorId);
 	if (side) level.setBobPositionOnSide(bob, side);
@@ -9415,7 +9416,7 @@ Stump.prototype.spit = function () {
 	this.controller.addEntity(spit);
 };
 },{"../AABBcollision.js":37,"./Entity.js":53,"./Spit.js":59}],61:[function(require,module,exports){
-var DEBUG = true;
+var DEBUG = false;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // PREPARE LEVELS
