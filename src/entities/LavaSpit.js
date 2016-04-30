@@ -1,7 +1,15 @@
 var Entity        = require('./Entity.js');
+var Particle      = require('./Particle.js');
 var AABBcollision = require('../AABBcollision.js');
 
-var img = assets.entities.lavaSpit.frame0;
+var fld  = assets.entities.lavaSpit;
+var ANIM = [fld.frame0, fld.frame1, fld.frame2];
+var PARTICLE_EFFECT = {
+	gravity:   0.01,
+	animation: [fld.particle0, fld.particle1, fld.particle2],
+	animSpeed: 0.1,
+	lifetime:  null // default to animation end
+};
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function LavaSpit() {
@@ -15,6 +23,7 @@ function LavaSpit() {
 	this.maxGravity = Infinity;
 
 	// rendering & animation
+	this.frame = 0;
 
 	// state
 	this.jumpCounter = 0;
@@ -41,6 +50,15 @@ LavaSpit.prototype.move = function (level, bob) {
 			this.jumping = false;
 		}
 
+		// add particle effect
+		if (random(4) === 1) {
+			var particle = new Particle(PARTICLE_EFFECT);
+			var py = this.sy > 0 ? 1 : 7;
+			particle.sy = Math.min(0, this.sy / 10);
+			particle.setPosition(this.x + random(5), this.y + py + random(3));
+			this.controller.addAnimation(particle);
+		}
+
 	} else if (this.jumpCounter++ > 40) {
 		this.jumpCounter = 0;
 		this.jumping = true;
@@ -52,5 +70,7 @@ LavaSpit.prototype.move = function (level, bob) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 LavaSpit.prototype.animate = function () {
-	draw(img, this.x, this.y, false, this.sy > 0);
+	this.frame += 0.3;
+	if (this.frame >= ANIM.length) this.frame = 0;
+	draw(ANIM[~~this.frame], this.x, this.y, false, this.sy > 0);
 };

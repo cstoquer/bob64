@@ -5414,7 +5414,7 @@ Sound.prototype.stop = function (cb) {
 	return cb && cb(); // TODO: fade-out
 };
 
-},{"./ISound.js":29,"util":65}],32:[function(require,module,exports){
+},{"./ISound.js":29,"util":66}],32:[function(require,module,exports){
 var inherits = require('util').inherits;
 var ISound   = require('./ISound.js');
 
@@ -5797,7 +5797,7 @@ SoundBuffered.prototype.stop = function (cb) {
 };
 
 
-},{"./ISound.js":29,"util":65}],33:[function(require,module,exports){
+},{"./ISound.js":29,"util":66}],33:[function(require,module,exports){
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 /** Set of sound played in sequence each times it triggers
  *  used for animation sfx
@@ -6553,7 +6553,7 @@ function showProgress(load, current, count, percent) {
 cls().paper(1).pen(1).rect(CENTER - HALF_WIDTH - 2, MIDDLE - 4, HALF_WIDTH * 2 + 4, 8); // loading bar
 assetLoader.preloadStaticAssets(onAssetsLoaded, showProgress);
 
-},{"../settings.json":36,"../src/main.js":60,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
+},{"../settings.json":36,"../src/main.js":61,"EventEmitter":1,"Map":2,"TINA":23,"Texture":26,"assetLoader":27,"audio-manager":34}],36:[function(require,module,exports){
 module.exports={
 	"screen": {
 		"width": 64,
@@ -7072,7 +7072,7 @@ Bob.prototype.kill = function (params) {
 
 module.exports = new Bob();
 
-},{"./AABBcollision.js":37,"./Level.js":43,"./entities/ShortAnimation.js":56}],40:[function(require,module,exports){
+},{"./AABBcollision.js":37,"./Level.js":43,"./entities/ShortAnimation.js":57}],40:[function(require,module,exports){
 var TextDisplay    = require('./TextDisplay.js');
 var FadeTransition = require('./FadeTransition.js');
 
@@ -7238,7 +7238,7 @@ var level          = require('./Level.js');
 var bob            = require('./Bob.js');
 var TextDisplay    = require('./TextDisplay.js');
 var Entity         = require('./entities/Entity.js');
-var ShortAnimation = require('./entities/ShortAnimation.js');
+// var ShortAnimation = require('./entities/ShortAnimation.js');
 var FadeTransition = require('./FadeTransition.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -7263,7 +7263,7 @@ function GameController() {
 	level.controller = this;
 	bob.controller   = this;
 	Entity.prototype.controller = this;
-	ShortAnimation.prototype.controller = this;
+	// ShortAnimation.prototype.controller = this;
 
 	this.checkpoint = {
 		levelId: 'ground0',
@@ -7303,6 +7303,7 @@ GameController.prototype.removeEntity = function (entity) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 GameController.prototype.addAnimation = function (animation) {
+	animation.controller = this;
 	this.animations.push(animation);
 };
 
@@ -7391,16 +7392,16 @@ GameController.prototype.update = function () {
 	cls();
 	camera(scrollX, scrollY);
 	level.draw();
-	for (var i = this.entities.length - 1; i >= 0; i--) {
-		this.entities[i].update(level, bob); // update and draw
-	}
 	for (var i = this.animations.length - 1; i >= 0; i--) {
 		this.animations[i].update(); // update and draw
+	}
+	for (var i = this.entities.length - 1; i >= 0; i--) {
+		this.entities[i].update(level, bob); // update and draw
 	}
 	bob.draw();
 };
 
-},{"./Bob.js":39,"./FadeTransition.js":41,"./Level.js":43,"./TextDisplay.js":44,"./entities/Entity.js":53,"./entities/ShortAnimation.js":56}],43:[function(require,module,exports){
+},{"./Bob.js":39,"./FadeTransition.js":41,"./Level.js":43,"./TextDisplay.js":44,"./entities/Entity.js":53}],43:[function(require,module,exports){
 var tiles         = require('./tiles.js');
 var Onion         = require('./entities/Onion.js');
 var Stump         = require('./entities/Stump.js');
@@ -7629,7 +7630,7 @@ Level.prototype.draw = function () {
 }
 
 module.exports = new Level();
-},{"./entities/Bloc.js":51,"./entities/Boss.js":52,"./entities/LavaSpit.js":54,"./entities/Onion.js":55,"./entities/SingletonItem.js":57,"./entities/Stump.js":59,"./tiles.js":61}],44:[function(require,module,exports){
+},{"./entities/Bloc.js":51,"./entities/Boss.js":52,"./entities/LavaSpit.js":54,"./entities/Onion.js":55,"./entities/SingletonItem.js":58,"./entities/Stump.js":60,"./tiles.js":62}],44:[function(require,module,exports){
 TextDisplay = function () {
 	this.textWindow = new Texture(64, 19);
 	this.textBuffer = '';
@@ -7888,7 +7889,7 @@ function afterLastBattle(gameController) {
 
 module.exports = afterLastBattle;
 
-},{"../AnimatedSprite.js":38,"../CutScene.js":40,"../entities/ShortAnimation.js":56}],46:[function(require,module,exports){
+},{"../AnimatedSprite.js":38,"../CutScene.js":40,"../entities/ShortAnimation.js":57}],46:[function(require,module,exports){
 var CutScene       = require('../CutScene.js');
 var AnimatedSprite = require('../AnimatedSprite.js');
 
@@ -8509,7 +8510,7 @@ Bloc.prototype.animate = function () {
 	sprite(this.sprite, this.x, this.y);
 };
 
-},{"../AABBcollision.js":37,"../tiles.js":61,"./Entity.js":53,"./ShortAnimation.js":56}],52:[function(require,module,exports){
+},{"../AABBcollision.js":37,"../tiles.js":62,"./Entity.js":53,"./ShortAnimation.js":57}],52:[function(require,module,exports){
 var Entity         = require('./Entity.js');
 var Bloc           = require('./Bloc.js');
 var Onion          = require('./Onion.js');
@@ -8651,7 +8652,7 @@ Boss.prototype.animate = function () {
 	draw(img, this.x - 12, this.y, this.flipH);
 };
 
-},{"../AABBcollision.js":37,"../cutscenes/afterLastBattle.js":45,"../tiles.js":61,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":55,"./ShortAnimation.js":56}],53:[function(require,module,exports){
+},{"../AABBcollision.js":37,"../cutscenes/afterLastBattle.js":45,"../tiles.js":62,"./Bloc.js":51,"./Entity.js":53,"./Onion.js":55,"./ShortAnimation.js":57}],53:[function(require,module,exports){
 var ShortAnimation = require('./ShortAnimation.js');
 
 var TILE_WIDTH  = settings.spriteSize[0];
@@ -8809,11 +8810,19 @@ Entity.prototype.levelCollisions = function (level, bob) {
 	this.y = y;
 };
 
-},{"./ShortAnimation.js":56}],54:[function(require,module,exports){
+},{"./ShortAnimation.js":57}],54:[function(require,module,exports){
 var Entity        = require('./Entity.js');
+var Particle      = require('./Particle.js');
 var AABBcollision = require('../AABBcollision.js');
 
-var img = assets.entities.lavaSpit.frame0;
+var fld  = assets.entities.lavaSpit;
+var ANIM = [fld.frame0, fld.frame1, fld.frame2];
+var PARTICLE_EFFECT = {
+	gravity:   0.01,
+	animation: [fld.particle0, fld.particle1, fld.particle2],
+	animSpeed: 0.1,
+	lifetime:  null // default to animation end
+};
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 function LavaSpit() {
@@ -8827,6 +8836,7 @@ function LavaSpit() {
 	this.maxGravity = Infinity;
 
 	// rendering & animation
+	this.frame = 0;
 
 	// state
 	this.jumpCounter = 0;
@@ -8853,6 +8863,15 @@ LavaSpit.prototype.move = function (level, bob) {
 			this.jumping = false;
 		}
 
+		// add particle effect
+		if (random(4) === 1) {
+			var particle = new Particle(PARTICLE_EFFECT);
+			var py = this.sy > 0 ? 1 : 7;
+			particle.sy = Math.min(0, this.sy / 10);
+			particle.setPosition(this.x + random(5), this.y + py + random(3));
+			this.controller.addAnimation(particle);
+		}
+
 	} else if (this.jumpCounter++ > 40) {
 		this.jumpCounter = 0;
 		this.jumping = true;
@@ -8864,10 +8883,12 @@ LavaSpit.prototype.move = function (level, bob) {
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 LavaSpit.prototype.animate = function () {
-	draw(img, this.x, this.y, false, this.sy > 0);
+	this.frame += 0.3;
+	if (this.frame >= ANIM.length) this.frame = 0;
+	draw(ANIM[~~this.frame], this.x, this.y, false, this.sy > 0);
 };
 
-},{"../AABBcollision.js":37,"./Entity.js":53}],55:[function(require,module,exports){
+},{"../AABBcollision.js":37,"./Entity.js":53,"./Particle.js":56}],55:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var AABBcollision = require('../AABBcollision.js');
 
@@ -9018,6 +9039,69 @@ Onion.prototype.hit = function (attacker) {
 };
 
 },{"../AABBcollision.js":37,"./Entity.js":53}],56:[function(require,module,exports){
+var DEFAULT_ANIMATION = [0];
+
+function Particle(params) {
+	params = params || {};
+
+	this.x  = 0;
+	this.y  = 0;
+	this.sx = 0;
+	this.sy = 0;
+
+	this.frame = 0;
+	this.life  = 0;
+	this.flipH = false;
+	this.flipV = false;
+
+	this.animSpeed = params.animSpeed || 0.2;
+	this.animation = params.animation || DEFAULT_ANIMATION;
+	this.lifetime  = params.lifetime  || this.animation.length / this.animSpeed;
+	this.gravity   = params.gravity   || 0;
+
+	// TODO gravity settings
+}
+
+module.exports = Particle;
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Particle.prototype.update = function () {
+	this.life += 1;
+	if (this.life >= this.lifetime) {
+		this.controller.removeAnimation(this);
+		return;
+	}
+
+	// TODO movement & gravity
+	this.sy += this.gravity;
+	this.x  += this.sx;
+	this.y  += this.sy;
+
+	this.frame += this.animSpeed;
+	if (this.frame >= this.animation.length) this.frame = 0;
+
+	var current = this.animation[~~this.frame];
+	if (typeof current === 'number') {
+		sprite(current, this.x, this.y, this.flipH, this.flipV);
+	} else {
+		draw(current, this.x, this.y, this.flipH, this.flipV);
+	}
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Particle.prototype.setAnimation = function (animation, animSpeed) {
+	this.animation = animation;
+	this.animSpeed = animSpeed || this.animSpeed || 0.2;
+	return this;
+};
+
+//▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+Particle.prototype.setPosition = function (x, y) {
+	this.x = x;
+	this.y = y;
+	return this;
+};
+},{}],57:[function(require,module,exports){
 function ShortAnimation(animation, animSpeed) {
 	this.x = 0;
 	this.y = 0;
@@ -9058,7 +9142,7 @@ ShortAnimation.prototype.setPosition = function (x, y) {
 	this.y = y;
 	return this;
 };
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var AABBcollision = require('../AABBcollision.js');
 
@@ -9107,7 +9191,7 @@ SingletonItem.prototype.setPosition = function (x ,y) {
 	this.y = y;
 	return this;
 };
-},{"../AABBcollision.js":37,"./Entity.js":53}],58:[function(require,module,exports){
+},{"../AABBcollision.js":37,"./Entity.js":53}],59:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var AABBcollision = require('../AABBcollision.js');
 
@@ -9171,7 +9255,7 @@ Spit.prototype.setPosition = function (x ,y) {
 	this.y = y;
 	return this;
 };
-},{"../AABBcollision.js":37,"./Entity.js":53}],59:[function(require,module,exports){
+},{"../AABBcollision.js":37,"./Entity.js":53}],60:[function(require,module,exports){
 var Entity        = require('./Entity.js');
 var Spit          = require('./Spit.js');
 var AABBcollision = require('../AABBcollision.js');
@@ -9330,7 +9414,7 @@ Stump.prototype.spit = function () {
 	spit.setDirection(this.direction).setPosition(this.x, this.y + 3);
 	this.controller.addEntity(spit);
 };
-},{"../AABBcollision.js":37,"./Entity.js":53,"./Spit.js":58}],60:[function(require,module,exports){
+},{"../AABBcollision.js":37,"./Entity.js":53,"./Spit.js":59}],61:[function(require,module,exports){
 var DEBUG = true;
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -9459,7 +9543,7 @@ exports.update = function () {
 	gameController.update();
 };
 
-},{"./Bob.js":39,"./GameController.js":42,"./cutscenes/afterLastBattle.js":45,"./cutscenes/beforeLastBattle.js":46,"./cutscenes/cloudFairy.js":47,"./cutscenes/fireFairy.js":48,"./cutscenes/intro.js":49,"./cutscenes/waterFairy.js":50}],61:[function(require,module,exports){
+},{"./Bob.js":39,"./GameController.js":42,"./cutscenes/afterLastBattle.js":45,"./cutscenes/beforeLastBattle.js":46,"./cutscenes/cloudFairy.js":47,"./cutscenes/fireFairy.js":48,"./cutscenes/intro.js":49,"./cutscenes/waterFairy.js":50}],62:[function(require,module,exports){
 
 var EMPTY   = exports.EMPTY   = { isEmpty: true,  isSolid: false, isTopSolid: false, isWater: 0 };
 var SOLID   = exports.SOLID   = { isEmpty: false, isSolid: true,  isTopSolid: true,  isWater: 0 };
@@ -9493,7 +9577,7 @@ exports.getTileFromMapItem = function (mapItem) {
 	}
 };
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -9518,7 +9602,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -9611,14 +9695,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -10208,4 +10292,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":64,"_process":63,"inherits":62}]},{},[35]);
+},{"./support/isBuffer":65,"_process":64,"inherits":63}]},{},[35]);
