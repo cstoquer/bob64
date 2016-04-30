@@ -86,6 +86,12 @@ var gameController = require('./GameController.js');
 // DEBUGGING FUNCTIONS 
 
 if (DEBUG) {
+	var domUtils     = require('domUtils');
+	var createDom    = domUtils.createDom;
+	var createDiv    = domUtils.createDiv;
+	var makeButton   = domUtils.makeButton;
+	var makeDragable = domUtils.makeDragable;
+
 	window.controller = gameController;
 	window.bob        = gameController.bob;
 	window.level      = gameController.level;
@@ -98,18 +104,63 @@ if (DEBUG) {
 	}
 
 	// load level from console
-	window.loadLevel = function (id) {
+	function loadLevel(id) {
 		// let's try to create the level if it does't exist
 		if (!assets.levels[id]) createDefaultLevel(id);
 		gameController.loadLevel(id);
 		gameController.saveState();
 	};
 
+	window.loadLevel = loadLevel;
+
+	// level loader panel
+	var levelLoader = createDiv('panel');
+	makeDragable(createDiv('panelHandle', levelLoader), levelLoader).innerText = 'LEVELS';
+
+	for (var id in levels) {
+		var btn = createDiv('button', levelLoader);
+		btn.innerText = id;
+		btn.levelId = id;
+		makeButton(btn, function (e, btn) {
+			loadLevel(btn.levelId);
+		});
+	}
+
 	// hack Bob abilities
 	var bob = require('./Bob.js');
+	bob.canAttack     = true;
 	bob.canDive       = true;
 	bob.canDoubleJump = true;
-	bob.canAttack     = true;
+
+	var bobAbilities = createDiv('panel');
+	makeDragable(createDiv('panelHandle', bobAbilities), bobAbilities).innerText = 'BOB';
+
+	var abilities = ['canAttack', 'canDive', 'canDoubleJump', 'hasCloudFairy', 'hasWaterFairy', 'hasFireFairy'];
+
+	for (var i = 0; i < abilities.length; i++) {
+		var ability = abilities[i];
+		var btn = createDiv('button', bobAbilities);
+		btn.ability   = ability;
+		btn.checkbox  = createDiv('checkbox', btn);
+		createDom('span', '', btn).innerText = ability;
+		btn.checkbox.innerText = bob[btn.ability] ? 'X' : '.';
+		makeButton(btn, function (e, btn) {
+			bob[btn.ability] = !bob[btn.ability];
+			btn.checkbox.innerText = bob[btn.ability] ? 'X' : '.';
+		});
+	}
+
+	createDiv('separator', bobAbilities)
+
+	// restore life
+	makeButton(createDiv('button', bobAbilities), function (e, btn) {
+		bob.lifePoints = bob.maxLifePoints;
+	}).innerText = 'restore life';
+
+	// skip
+	makeButton(createDiv('button', bobAbilities), function (e, btn) {
+		gameController.unlock();
+	}).innerText = 'skip cutscene';
 }
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -118,7 +169,7 @@ gameController.loadLevel('inside');
 gameController.saveState();
 
 // start intro
-if (!DEBUG) gameController.startCutScene(CUTSCENES_ANIMATIONS.intro(gameController));
+gameController.startCutScene(CUTSCENES_ANIMATIONS.intro(gameController));
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // Update is called once per frame

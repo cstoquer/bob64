@@ -2,6 +2,7 @@ body {
 	text-align: center;
 	font-family: verdana;
 	background-color: #7F7F7F;
+	overflow: hidden;
 }
 
 canvas {
@@ -13,4 +14,52 @@ canvas {
 	image-rendering: optimize-contrast;
 	image-rendering: pixelated;
 	-ms-interpolation-mode: nearest-neighbor;
+}
+
+.panel {
+	position: absolute;
+	padding: 2px;
+	left: 0px;
+	top: 0px;
+	border-radius: 5px;
+	box-shadow: 1px 1px 10px #333;
+	font-size: 12px;
+	background-color: #CCC;
+	z-index: 0;
+}
+
+.panelHandle {
+	font-weight: bolder;
+	font-size: 15px;
+	padding: 1px;
+	border-radius: 3px;
+	background-color: #AAA;
+}
+
+.button {
+	text-align: left;
+	margin: 0 1px;
+	padding: 1px 3px;
+	border-radius: 4px;
+}
+
+.button:hover {
+	background-color: #FF2;
+}
+
+.separator {
+	height: 1px;
+	background-color: #333;
+	margin: 1px 0;
+}
+
+.checkbox {
+	text-align: center;
+	font-weight: bolder;
+	border-radius: 2px;
+	background-color: #AAA;
+	display: inline-block;
+	margin: 2px;
+	width: 15px;
+	height: 15px;
 }

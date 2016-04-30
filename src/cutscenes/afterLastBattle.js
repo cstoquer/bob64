@@ -120,14 +120,13 @@ function afterLastBattle(gameController) {
 	cutscene.enqueue(function () {
 		var duration = (gameController.time / 60);
 		var minutes  = ~~(duration / 60);
-		var seconds  = ~~(duration - minutes * 60);
-		var milli    = ~~((duration - minutes - seconds) * 1000);
+		var seconds  = ~~((duration - minutes * 60) * 100) / 100;
 
 		cls();
 		println('');
 		println('');
 		println(' total duration:');
-		println('    ' + minutes + ':' + seconds + '.' + milli);
+		println('    ' + minutes + ':' + seconds.toFixed(2));
 		println('');
 		println('');
 		println('    ' + gameController.bob.deathCount + ' death');

@@ -26,6 +26,7 @@ function Level() {
 	this.doors  = [null, null, null];
 
 	this.background  = new Texture();
+	this.bgcolor = 0;
 	this.animatedBackgrounds = [];
 	this.isAnimated = false;
 	this.frame = 0;
@@ -37,6 +38,7 @@ Level.prototype.load = function (id) {
 
 	var def = assets.levels[id];
 	if (!def) return console.error('Level definition does not exist for level ' + id);
+	this.bgcolor = def.bgcolor;
 	paper(def.bgcolor);
 
 	var map = getMap(def.geometry);
